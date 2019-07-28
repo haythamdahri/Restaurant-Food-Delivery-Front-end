@@ -1,0 +1,74 @@
+<div class="row">
+
+  <div class="col-lg-8 col-lg-offset-2 mx-auto mt-4">
+
+
+    <form [formGroup]="form" (ngSubmit)="onSendMessage()">
+
+      <div class="alert alert-primary" role="alert">
+        <i class="fas fa-info-circle"></i> Please fill information
+      </div>
+
+      <div class="controls">
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="form_name">Firstname *</label>
+              <input formControlName="firstName" [ngClass]="{'is-invalid': form.controls.firstName.touched && form.controls.firstName.invalid, 'is-valid': form.controls.firstName.touched && form.controls.firstName.valid }" type="text" name="firstName" class="form-control"
+                placeholder="Please enter your firstname *" required="required">
+              <div class="invalid-feedback" *ngIf="form.controls.firstName.touched && form.controls.firstName.invalid">
+                  <ng-container *ngIf="form.controls.firstName.errors.required">
+                    First name is required
+                  </ng-container>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="form_lastname">Lastname *</label>
+              <input formControlName="lastName" type="text" name="lastName" class="form-control"
+                placeholder="Please enter your lastname *" required="required">
+                <div class="invalid-feedback" *ngIf="form.controls.lastName.touched && form.controls.firstName.invalid">
+                    {{ form.controls.lastName.errors }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="form_email">Email *</label>
+              <input formControlName="email" type="email" name="email" class="form-control"
+                placeholder="Please enter your email *" required="required" >
+              <div class="help-block with-errors"></div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="form_phone">Phone</label>
+              <input formControlName="phone" type="tel" name="phone" class="form-control" >
+              <div class="help-block with-errors"></div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="form_message">Message *</label>
+              <textarea formControlName="message" class="form-control" placeholder="Message for me *" rows="4"></textarea>
+              <div class="help-block with-errors"></div>
+            </div>
+          </div>
+          <div class="col-md-12">
+              <button type="submit" [disabled]="!form.valid" class="btn btn-success btn-send">Send message</button>
+          </div>
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
