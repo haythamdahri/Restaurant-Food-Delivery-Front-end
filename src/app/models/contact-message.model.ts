@@ -4,4 +4,5 @@ export class ContactMessage {
     public email: string;
     public phone: string;
     public message: string;
+    public time: Date;
 }
