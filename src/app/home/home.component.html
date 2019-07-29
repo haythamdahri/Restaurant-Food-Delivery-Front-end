@@ -1,3 +1,23 @@
-<p>
-  home works!
-</p>
+<div class="row">
+
+  <!-- Laoding icon -->
+  <div class="col-12 text-center mt-4" *ngIf="!meals">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+
+  <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 mx-auto mt-5 mb-5" *ngFor="let meal of meals">
+
+    <div class="card shadow p-3 mb-5 bg-white rounded" style="padding: 2rem;">
+      <img [src]="meal.image" class="card-img-top shadow-sm p-3 mb-5 rounded" alt="{{ meal.name }}">
+      <div class="card-body">
+        <h5 class="card-title">{{ meal.name }}</h5>
+        <p class="card-text">{{ meal.price }} Dhs</p>
+        <a href="#" class="btn btn-primary shadow-lg btn-block" (click)="onAddMealOrder(meal)"><i class="fas fa-cart-plus"></i> Add To Cart</a>
+      </div>
+    </div>
+
+  </div>
+
+</div>

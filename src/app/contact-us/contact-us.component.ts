@@ -3,6 +3,7 @@ import { ContactMessage } from "./../models/contact-message.model";
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import Swal from 'sweetalert2'
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-contact-us',
@@ -16,6 +17,7 @@ export class ContactUsComponent implements OnInit, OnDestroy {
   @ViewChild('sendBtn', {static: false}) sendBtn: ElementRef;
   formSubmitted = false;
   errorMode = false;
+  subscription: Subscription;
 
   constructor(private contactService: ContactService) { }
 
@@ -32,6 +34,9 @@ export class ContactUsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.errorMode = false;
     this.formSubmitted = false;
+    if( this.subscription != null ) {
+      this.subscription.unsubscribe();
+    }
   }
 
   onSendMessage() {
@@ -50,15 +55,17 @@ export class ContactUsComponent implements OnInit, OnDestroy {
       this.contactMessage.phone = this.form.controls.phone.value;
       this.contactMessage.message = this.form.controls.message.value;
       const formData = new FormData();
-      this.contactService.sendContactMessage(this.contactMessage).subscribe(
+      this.subscription = this.contactService.sendContactMessage(this.contactMessage).subscribe(
         (message: ContactMessage) => {
           console.log(message);
           this.formSubmitted = true;
+          this.errorMode = false;
         },
         (err) => {
           (<HTMLElement>this.sendBtn.nativeElement).innerHTML = '<i class="far fa-paper-plane"></i> Send message';
           (<HTMLElement>this.sendBtn.nativeElement).attributes['disabled'] = false;
           this.errorMode = true;
+          this.formSubmitted = false;
           console.log(err.getMessage());
         })
     }
