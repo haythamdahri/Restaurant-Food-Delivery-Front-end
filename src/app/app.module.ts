@@ -8,9 +8,9 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
 import { LayoutModule } from '@angular/cdk/layout';
-import { BuyFoodComponent } from './buy-food/buy-food.component';
 import { ContactUsComponent } from './contact-us/contact-us.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { CartComponent } from './cart/cart.component';
 
 @NgModule({
   declarations: [
@@ -18,9 +18,9 @@ import { NotFoundComponent } from './not-found/not-found.component';
     NavbarComponent,
     FooterComponent,
     HomeComponent,
-    BuyFoodComponent,
     ContactUsComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    CartComponent
   ],
   imports: [
     BrowserModule,

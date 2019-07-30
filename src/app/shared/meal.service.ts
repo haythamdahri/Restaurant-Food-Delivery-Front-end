@@ -16,7 +16,7 @@ export class MealService {
   constructor(private http: HttpClient) {}
 
   getMeals() {
-    return this.http.get<Array<Meal>>(`${this.API}/meals`).pipe(
+    return this.http.get<Array<Meal>>(`${this.API}/meals?sort=id,desc`).pipe(
       map(data => {
         const meals = new Array<Meal>();
         for (let meal of data['_embedded']['meals']) {
@@ -39,5 +39,9 @@ export class MealService {
     mealOrder.quantity = quantity;
     console.log(mealOrder);
     return this.http.post(`${this.API_V1}/add-user-meal-order`, mealOrder);
+  }
+
+  saveMeal(meal: Meal) {
+    return this.http.post<Meal>(`${this.API}/meals`, meal);
   }
 }

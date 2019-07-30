@@ -3,4 +3,5 @@ export class Meal {
     public name: string;
     public image: string;
     public price: number;
+    public stock: number;
 }
