@@ -4,7 +4,7 @@
 
 
     <div class="alert alert-primary" role="alert" *ngIf="!errorMode && !formSubmitted">
-      <i class="fas fa-info-circle"></i> Please fill information
+      <i class="fas fa-info-circle"></i> Please fill informations
     </div>
 
     <div class="alert alert-danger" role="alert" *ngIf="errorMode">
@@ -12,7 +12,7 @@
     </div>
 
     <div class="alert alert-success" role="alert" *ngIf="formSubmitted">
-      <i class="fas fa-exclamation-circle"></i> Your message has been sent successflly, we will contact you soon!
+      <i class="fas fa-exclamation-circle"></i> Your message has been sent successfully, we will contact you soon!
     </div>
 
     <form *ngIf="!formSubmitted" [formGroup]="form" (ngSubmit)="onSendMessage()">

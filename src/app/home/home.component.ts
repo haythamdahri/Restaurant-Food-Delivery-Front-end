@@ -10,8 +10,9 @@ import {
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
-import * as $ from 'jquery';
 
+
+declare var $: any;
 
 
 @Component({
@@ -22,6 +23,7 @@ import * as $ from 'jquery';
 export class HomeComponent implements OnInit, OnDestroy {
   meals: Array<Meal>;
   subscription: Subscription;
+  mealSubscription: Subscription;
   orderSubscription: Subscription;
   errorMode = false;
   form;
@@ -32,6 +34,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.form = new FormGroup({
+      id: new FormControl(''),
       name: new FormControl('', [
         Validators.required,
         Validators.minLength(4),
@@ -71,6 +74,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.orderSubscription) {
       this.orderSubscription.unsubscribe();
     }
+    if( this.mealSubscription ) {
+      this.mealSubscription.unsubscribe();
+    }
   }
 
   setButtonState(mode: number) {
@@ -86,19 +92,31 @@ export class HomeComponent implements OnInit, OnDestroy {
       (<HTMLInputElement>this.saveBtn.nativeElement).attributes[
         'disabled'
       ] = false;
-      (<HTMLInputElement>this.closeBtn.nativeElement).click();
+      $("#meal-form-modal").modal('hide');
+      // Initialize form after saving
+      this.initForm();
     }
   }
 
-  async onSaveNewMeal() {
+  async onSaveMeal() {
     if (this.form.valid) {
       // Set button for loading mode
       this.setButtonState(1);
       const meal = this.form.value;
       await this.mealService.saveMeal(meal).subscribe(
         (newMeal) => {
-          this.meals = [newMeal, ...this.meals];
+          if( this.meals.filter(tempMeal => tempMeal.id == newMeal.id).length == 0 ) {
+            this.meals = [newMeal, ...this.meals];
+          } else {
+            this.meals.find(tempMeal => tempMeal.id == newMeal.id).id = newMeal.id;
+            this.meals.find(tempMeal => tempMeal.id == newMeal.id).name = newMeal.name;
+            this.meals.find(tempMeal => tempMeal.id == newMeal.id).image = newMeal.image;
+            this.meals.find(tempMeal => tempMeal.id == newMeal.id).price = newMeal.price;
+            this.meals.find(tempMeal => tempMeal.id == newMeal.id).stock = newMeal.stock;
+          }
           // Set button for normal mode
+          this.setButtonState(0);
+          // Success message
           const Toast = Swal.mixin({
             toast: true,
             position: 'bottom-left',
@@ -111,6 +129,9 @@ export class HomeComponent implements OnInit, OnDestroy {
           });
         },
         err => {
+          // Set button for normal mode
+          this.setButtonState(0);
+          // Error message
           const Toast = Swal.mixin({
             toast: true,
             position: 'bottom-left',
@@ -124,15 +145,13 @@ export class HomeComponent implements OnInit, OnDestroy {
           });
         }
       );
-      // Set button for normal mode
-      this.setButtonState(0);
     } else {
       Swal.fire('Invalid data', 'Please fill correct data save', 'error');
     }
   }
 
   onAddMealOrder(meal: Meal) {
-    this.orderSubscription = this.mealService.addMealOrders(meal, 1).subscribe(
+    this.orderSubscription = this.mealService.addMealOrder(meal, 1).subscribe(
       data => {
         // Chek if data contain an error message
         if (data['error']) {
@@ -175,5 +194,37 @@ export class HomeComponent implements OnInit, OnDestroy {
         });
       }
     );
+  }
+
+  onMealFetch(id: number) {
+    this.mealSubscription = this.mealService.getMeal(id).subscribe(
+      (meal: Meal) => {
+        this.form.setValue({
+          id: meal.id,
+          name: meal.name,
+          image: meal.image,
+          price: meal.price,
+          stock: meal.stock
+        });
+        $('#meal-form-modal').modal('show');
+      },
+      (err) => {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'bottom-left',
+          showConfirmButton: false,
+          timer: 3000
+        });
+
+        Toast.fire({
+          type: 'error',
+          title: 'An error occurred, please try again!'
+        });
+      }
+    );
+  }
+
+  initForm() {
+    this.form.reset();
   }
 }

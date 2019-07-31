@@ -15,22 +15,23 @@
               <th scope="col">Available</th>
               <th scope="col" class="text-center">Quantity</th>
               <th scope="col" class="text-right">Price</th>
-              <th> </th>
+              <th scope="col"> </th>
+              <th scope="col"> </th>
             </tr>
           </thead>
           <tbody>
 
             <!-- No order done yet message -->
-            <tr *ngIf="activeOrder && !errorMode && activeOrder.mealOrders.length == 0">
-              <td colspan="6" class="alert alert-warning font-weight-bold text-center">
+            <tr *ngIf="activeOrder && !errorMode && (activeOrder.mealOrders == null || activeOrder.mealOrders?.length == 0)">
+              <td colspan="7" class="alert alert-warning font-weight-bold text-center">
                 No order has been done yet!
               </td>
             </tr>
 
             <!-- Laoding icon -->
-            <tr>
+            <tr *ngIf="!activeOrder && !errorMode">
               <td colspan="6">
-                <div class="col-12 text-center mt-4" *ngIf="!activeOrder && !errorMode">
+                <div class="col-12 text-center">
                   <div class="spinner-border" role="status">
                     <span class="sr-only">Loading...</span>
                   </div>
@@ -40,25 +41,31 @@
 
             <!-- Orders display -->
             <tr *ngFor="let mealOrder of activeOrder?.mealOrders">
-              <td><img src="https://dummyimage.com/50x50/55595c/fff" /> </td>
+              <td><img src="{{ mealOrder.meal.image }}" style="height: 50px; width: 50px;" /> </td>
               <td>{{ mealOrder.meal.name }}</td>
               <td>{{ mealOrder.meal.stock > 0 ? 'In Stock' : 'Not available' }}</td>
-              <td><input class="form-control" type="number" value="{{ mealOrder.quantity }}" /></td>
-              <td class="text-right">{{ mealOrder.price }} Dhs</td>
+              <td>
+                <input class="form-control" pattern="[0-9]*" (keyup)="onQuantityChange($event)" id="quantity{{ mealOrder.id }}" required max="650" min="1" type="number" value="{{ mealOrder.quantity }}" />
+              </td>
+              <td class="text-right">{{ mealOrder.price * mealOrder.quantity }} Dhs</td>
+              <td class="text-right"><button id="updateBtn{{ mealOrder.id }}" (click)="onUpdateMealOrderQuantity(mealOrder.id)" class="btn btn-sm btn-warning">
+                  <i class="fas fa-redo-alt"></i> Update</button>
+              </td>
               <td class="text-right"><button (click)="onDeleteMealOrder(mealOrder.id)" class="btn btn-sm btn-danger"><i
-                    class="fa fa-trash"></i> </button> </td>
+                    class="fa fa-trash"></i> </button>
+              </td>
             </tr>
             <ng-container *ngIf="activeOrder && !errorMode && activeOrder.mealOrders.length != 0">
               <tr>
-                <td colspan="5">Sub-Total</td>
+                <td colspan="6">Sub-Total</td>
                 <td class="text-right">{{ activeOrder?.totalPrice }} Dhs</td>
               </tr>
               <tr>
-                <td colspan="5">Shipping</td>
+                <td colspan="6">Shipping</td>
                 <td class="text-right">{{ 20 }} Dhs</td>
               </tr>
               <tr>
-                <td colspan="5"><strong>Total</strong></td>
+                <td colspan="6"><strong>Total</strong></td>
                 <td class="text-right"><strong>{{ activeOrder?.totalPrice + 20 }} Dhs</strong></td>
               </tr>
             </ng-container>
@@ -66,13 +73,15 @@
         </table>
       </div>
     </div>
-    <div class="col mb-2" *ngIf="activeOrder && !errorMode && activeOrder.mealOrders.length != 0">
+    <div class="col mb-2" *ngIf="activeOrder && !errorMode && (activeOrder.mealOrders == null || activeOrder.mealOrders?.length != 0)">
       <div class="row">
         <div class="col-sm-12  col-md-6">
-          <a [routerLink]="['']"><button class="btn btn-block btn-light">Continue Shopping</button></a>
+          <a [routerLink]="['']"><button class="btn btn-block btn-light"><i class="fas fa-home"></i> Continue
+              Shopping</button></a>
         </div>
         <div class="col-sm-12 col-md-6 text-right">
-          <button class="btn btn-lg btn-block btn-success text-uppercase">Checkout</button>
+          <button class="btn btn-lg btn-block btn-success text-uppercase"><i class="fas fa-shopping-cart"></i>
+            Checkout</button>
         </div>
       </div>
     </div>
