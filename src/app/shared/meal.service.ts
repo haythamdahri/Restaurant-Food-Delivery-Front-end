@@ -11,7 +11,6 @@ import { throwError } from 'rxjs';
 export class MealService {
   private API = 'http://localhost:8080/api';
   private API_V1 = 'http://localhost:8080/api/v1';
-  private headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
   constructor(private http: HttpClient) {}
 

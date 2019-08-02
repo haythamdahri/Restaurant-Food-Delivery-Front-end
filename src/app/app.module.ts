@@ -1,4 +1,6 @@
-import { CustomModule } from "./custom/custom.module";
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { RequestInterceptor } from "./shared/auth/request.interceptor";
+import { CustomModule } from './custom/custom.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -11,6 +13,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { ContactUsComponent } from './contact-us/contact-us.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { CartComponent } from './cart/cart.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -20,15 +23,17 @@ import { CartComponent } from './cart/cart.component';
     HomeComponent,
     ContactUsComponent,
     NotFoundComponent,
-    CartComponent
+    CartComponent,
+    LoginComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    CustomModule,
-    LayoutModule
+  imports: [BrowserModule, AppRoutingModule, CustomModule, LayoutModule],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: RequestInterceptor,
+      multi: true
+    }
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

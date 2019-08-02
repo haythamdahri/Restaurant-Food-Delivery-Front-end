@@ -12,10 +12,9 @@
             class="fas fa-home"></i> Home
           <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item" routerLinkActive="'active'">
+      <li class="nav-item" routerLinkActive="'active'" *ngIf="authService.isAuthenticated()">
         <a class="nav-link" routerLink="/cart" routerLinkActive="'active'" routerLinkActiveOptions="{exact: true}"><i
             class="far fa-credit-card"></i> Cart
-          Food
           <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item" routerLinkActive="'active'">
@@ -23,10 +22,16 @@
           routerLinkActiveOptions="{exact: true}"><i class="fas fa-address-book"></i> Contact Us
           <span class="sr-only">(current)</span></a>
       </li>
+      <li class="nav-item" routerLinkActive="'active'" *ngIf="!authService.isAuthenticated()">
+        <a class="nav-link" routerLink="/login" routerLinkActive="'active'"
+          routerLinkActiveOptions="{exact: true}"><i class="fas fa-sign-in-alt"></i> Login
+          <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item" routerLinkActive="'active'" *ngIf="authService.isAuthenticated()">
+        <a class="nav-link" style="cursor: pointer;" (click)="onLogout()"
+          routerLinkActiveOptions="{exact: true}"><i class="fas fa-sign-out-alt"></i> Logout
+          <span class="sr-only">(current)</span></a>
+      </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
   </div>
 </nav>

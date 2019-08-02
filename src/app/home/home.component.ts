@@ -1,3 +1,4 @@
+import { AuthService } from "./../shared/auth/auth.service";
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Meal } from './../models/meal.model';
 import { MealService } from './../shared/meal.service';
@@ -30,7 +31,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild('saveMealnBtn', { static: false }) saveBtn: ElementRef;
   @ViewChild('closeBtn', { static: false }) closeBtn: ElementRef;
 
-  constructor(private mealService: MealService) {}
+  constructor(private mealService: MealService, private authService: AuthService) {}
 
   ngOnInit() {
     this.form = new FormGroup({
