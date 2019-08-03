@@ -8,27 +8,34 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item" routerLinkActive="'active'">
-        <a class="nav-link" routerLink="" routerLinkActive="'active'" routerLinkActiveOptions="{exact: true}"><i
+        <a class="nav-link" routerLinkActive="'active'" routerLink="" routerLinkActive="'active'" routerLinkActiveOptions="{exact: true}"><i
             class="fas fa-home"></i> Home
           <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item" routerLinkActive="'active'" *ngIf="authService.isAuthenticated()">
-        <a class="nav-link" routerLink="/cart" routerLinkActive="'active'" routerLinkActiveOptions="{exact: true}"><i
+      <li class="nav-item" *ngIf="authService.isAuthenticated()">
+        <a class="nav-link" routerLinkActive="'active'" routerLink="/cart" routerLinkActive="'active'" routerLinkActiveOptions="{exact: true}"><i
             class="far fa-credit-card"></i> Cart
           <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item" routerLinkActive="'active'">
-        <a class="nav-link" routerLink="/contact-us" routerLinkActive="'active'"
+      <li class="nav-item">
+        <a class="nav-link" routerLinkActive="'active'" routerLink="/contact-us" routerLinkActive="'active'"
           routerLinkActiveOptions="{exact: true}"><i class="fas fa-address-book"></i> Contact Us
           <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item" routerLinkActive="'active'" *ngIf="!authService.isAuthenticated()">
-        <a class="nav-link" routerLink="/login" routerLinkActive="'active'"
-          routerLinkActiveOptions="{exact: true}"><i class="fas fa-sign-in-alt"></i> Login
-          <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item" routerLinkActive="'active'" *ngIf="authService.isAuthenticated()">
-        <a class="nav-link" style="cursor: pointer;" (click)="onLogout()"
+      <ng-container *ngIf="!authService.isAuthenticated()">
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="'active'" routerLink="/login" routerLinkActive="'active'"
+            routerLinkActiveOptions="{exact: true}"><i class="fas fa-sign-in-alt"></i> Login
+            <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="'active'" routerLink="/signup" routerLinkActive="'active'"
+            routerLinkActiveOptions="{exact: true}"><i class="fas fa-user-plus"></i> Sign up
+            <span class="sr-only">(current)</span></a>
+        </li>
+      </ng-container>
+      <li class="nav-item" *ngIf="authService.isAuthenticated()">
+        <a class="nav-link" routerLinkActive="'active'" style="cursor: pointer;" (click)="onLogout()"
           routerLinkActiveOptions="{exact: true}"><i class="fas fa-sign-out-alt"></i> Logout
           <span class="sr-only">(current)</span></a>
       </li>

@@ -1,7 +1,7 @@
 <div class="row">
 
   <!-- Add new meal icon -->
-  <div class="col-12 mt-2 font-weight-bold" *ngIf="authService.isAdmin()">
+  <div class="col-12 mt-2 font-weight-bold" *ngIf="authService.isAuthenticated() && authService.isAdmin()">
     <button (click)="initForm()" class="btn btn-warning btn-sm btn-block w-25 mx-auto" data-toggle="modal" data-target="#meal-form-modal"><i
         class="fas fa-plus-circle"></i> Add new meal</button>
   </div>
@@ -23,7 +23,7 @@
   <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 mx-auto mt-3" *ngFor="let meal of meals">
 
     <div class="card shadow p-3 mb-5 bg-white rounded" style="padding: 2rem;">
-      <button class="btn btn-debug btn-lg text-center" (click)="onMealFetch(meal.id)" *ngIf="authService.isAdmin()">
+      <button class="btn btn-debug btn-lg text-center" (click)="onMealFetch(meal.id)" *ngIf="authService.isAuthenticated() && authService.isAdmin()">
         <i class="fas fa-edit"></i>
       </button>
       <img [src]="meal.image" class="card-img-top shadow-sm p-3 mb-5 rounded" alt="{{ meal.name }}">
@@ -43,7 +43,7 @@
 
 <!-- Modals -->
 <div class="modal fade" id="meal-form-modal" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
-  aria-hidden="true" *ngIf="authService.isAdmin()">
+  aria-hidden="true" *ngIf="authService.isAuthenticated() && authService.isAdmin()">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">

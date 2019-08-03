@@ -1,14 +1,17 @@
 import { UserToken } from './../../models/user-token.model';
-import { map } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { map, retry, catchError } from "rxjs/operators";
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import * as jwtDecode from "jwt-decode";
+import { throwError, Observable } from 'rxjs';
+import { resolve } from 'q';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private static API = 'http://localhost:8080';
+  private static EMAIL_CHECK_ENDPINT = 'http://localhost:8080/api/users/search/existsByEmail';
 
   constructor(private http: HttpClient) {}
 
@@ -87,5 +90,24 @@ export class AuthService {
     userToken.roles = decoded.roles;
     userToken.exp = Number(decoded.exp * 1000);
     return userToken;
+  }
+
+  // Check if the email is already used
+  checkEmailValidity(email: string) {
+    return this.http.get<boolean>(AuthService.EMAIL_CHECK_ENDPINT, {params: new HttpParams().append('email', email)}).pipe(
+      map((exists) => {
+        if( exists ) {
+          return {'isEmailAlreadyUsed': exists};
+        } else {
+          return null;
+        }
+      }),
+      retry(3),
+      catchError(this.handleEmailValidityError)
+    );
+  }
+
+  handleEmailValidityError(error) {
+    return throwError(error);
   }
 }

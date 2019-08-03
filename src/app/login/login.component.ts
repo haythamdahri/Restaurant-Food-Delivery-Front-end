@@ -9,7 +9,6 @@ import {
   ElementRef
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { UserToken } from '../models/user-token.model';
 import { Router } from '@angular/router';
 
 @Component({
@@ -57,9 +56,9 @@ export class LoginComponent implements OnInit, OnDestroy {
         title: 'Invalid login data'
       });
     } else {
-      (<HTMLElement>this.loginBtn.nativeElement).innerHTML =
+      (<HTMLButtonElement>this.loginBtn.nativeElement).innerHTML =
         '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Login';
-      (<HTMLElement>this.loginBtn.nativeElement).attributes['disabled'] = true;
+      (<HTMLButtonElement>this.loginBtn.nativeElement).setAttribute('disabled', 'true');
       this.authService
         .login(
           this.form.controls.email.value,
@@ -82,11 +81,9 @@ export class LoginComponent implements OnInit, OnDestroy {
           },
           err => {
             this.loginError = true;
-            (<HTMLInputElement>this.loginBtn.nativeElement).innerHTML =
+            (<HTMLButtonElement>this.loginBtn.nativeElement).innerHTML =
               '<i class="fas fa-sign-in-alt"></i> Login';
-            (<HTMLInputElement>this.loginBtn.nativeElement).attributes[
-              'disabled'
-            ] = false;
+            (<HTMLButtonElement>this.loginBtn.nativeElement).setAttribute('disabled', 'true');
           }
         );
     }
