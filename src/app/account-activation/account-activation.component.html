@@ -1,0 +1,43 @@
+<div class="row">
+
+  <div class="col-12 col-sm-12 col-md-8 col-lg-8 col-xl-8 mx-auto mt-4">
+
+    <div class="card">
+      <div class="card-header">
+        Account activation
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">
+          Account status
+        </h5>
+        <div class="card-text">
+
+          <!-- Loading bar -->
+          <div class="text-center" *ngIf="loading">
+            <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+
+          <!-- Success activation message -->
+          <div class="alert alert-success font-weight-bold" *ngIf="activationDone">
+            <i class="far fa-check-circle"></i> Your account has been activated successfully, {{ message }}.
+          </div>
+
+          <!-- Failed activation message -->
+          <div class="alert alert-danger font-weight-bold" *ngIf="activationFail">
+            <i class="far fa-times-circle"></i> Activation failed, {{ message }}!
+          </div>
+
+          <!-- Error message -->
+          <div class="alert alert-danger font-weight-bold" *ngIf="error">
+            <i class="far fa-times-circle"></i> An error occurred, please try again!
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

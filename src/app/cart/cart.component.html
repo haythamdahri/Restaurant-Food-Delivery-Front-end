@@ -22,9 +22,10 @@
           <tbody>
 
             <!-- No order done yet message -->
-            <tr *ngIf="activeOrder && !errorMode && (activeOrder.mealOrders == null || activeOrder.mealOrders?.length == 0)">
+            <tr
+              *ngIf="activeOrder && !errorMode && (activeOrder.mealOrders == null || activeOrder.mealOrders?.length == 0)">
               <td colspan="7" class="alert alert-warning font-weight-bold text-center">
-                No order has been done yet!
+                <i class="fas fa-exclamation-circle"></i> No order has been done yet!
               </td>
             </tr>
 
@@ -45,17 +46,21 @@
               <td>{{ mealOrder.meal.name }}</td>
               <td>{{ mealOrder.meal.stock > 0 ? 'In Stock' : 'Not available' }}</td>
               <td>
-                <input class="form-control" pattern="[0-9]*" (keyup)="onQuantityChange($event)" id="quantity{{ mealOrder.id }}" required max="650" min="1" type="number" value="{{ mealOrder.quantity }}" />
+                <input class="form-control" pattern="[0-9]*" (keyup)="onQuantityChange($event)"
+                  id="quantity{{ mealOrder.id }}" required max="650" min="1" type="number"
+                  value="{{ mealOrder.quantity }}" />
               </td>
               <td class="text-right">{{ mealOrder.price * mealOrder.quantity }} Dhs</td>
-              <td class="text-right"><button id="updateBtn{{ mealOrder.id }}" (click)="onUpdateMealOrderQuantity(mealOrder.id)" class="btn btn-sm btn-warning">
+              <td class="text-right"><button id="updateBtn{{ mealOrder.id }}"
+                  (click)="onUpdateMealOrderQuantity(mealOrder.id)" class="btn btn-sm btn-warning">
                   <i class="fas fa-redo-alt"></i> Update</button>
               </td>
               <td class="text-right"><button (click)="onDeleteMealOrder(mealOrder.id)" class="btn btn-sm btn-danger"><i
                     class="fa fa-trash"></i> </button>
               </td>
             </tr>
-            <ng-container *ngIf="activeOrder && !errorMode && activeOrder.mealOrders.length != 0">
+            <ng-container
+              *ngIf="activeOrder && !errorMode && activeOrder.mealOrders && activeOrder.mealOrders.length != 0">
               <tr>
                 <td colspan="6">Sub-Total</td>
                 <td class="text-right">{{ activeOrder?.totalPrice }} Dhs</td>
@@ -73,7 +78,8 @@
         </table>
       </div>
     </div>
-    <div class="col mb-2" *ngIf="activeOrder && !errorMode && (activeOrder.mealOrders == null || activeOrder.mealOrders?.length != 0)">
+    <div class="col mb-2"
+      *ngIf="activeOrder && !errorMode && (activeOrder.mealOrders == null || activeOrder.mealOrders?.length != 0)">
       <div class="row">
         <div class="col-sm-12  col-md-6">
           <a [routerLink]="['']"><button class="btn btn-block btn-light"><i class="fas fa-home"></i> Continue

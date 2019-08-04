@@ -1,3 +1,4 @@
+import { AccountActivationComponent } from "./account-activation/account-activation.component";
 import { LoginComponent } from "./login/login.component";
 import { AuthGuard } from "./shared/auth/auth-guard.service";
 import { CartComponent } from "./cart/cart.component";
@@ -23,6 +24,9 @@ const routes: Routes = [
   },
   {
     path: 'signup', component: SignupComponent
+  },
+  {
+    path: 'activate-account/:token', component: AccountActivationComponent
   },
   {
     path: '404', component: NotFoundComponent

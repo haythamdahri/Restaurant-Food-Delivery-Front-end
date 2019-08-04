@@ -1,4 +1,4 @@
-import { catchError } from "rxjs/operators";
+import { catchError, retry } from "rxjs/operators";
 import { User } from "./../models/user.model";
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from '@angular/core';
@@ -11,6 +11,7 @@ import { throwError } from 'rxjs';
 export class UserService {
 
   private static SIGN_UP_ENDPOINT = 'http://localhost:8080/api/v1/sign-up';
+  private static ACTIVATION_ACCOUNT_ENDPOINT = 'http://localhost:8080/api/v1/activate-account';
 
   constructor(private http: HttpClient) { }
 
@@ -19,12 +20,19 @@ export class UserService {
       map((user) => {
         return user;
       },
-      catchError(this.handleSignUpError)
+      catchError(this.handleHttpError)
       )
     );
   }
 
-  handleSignUpError(error) {
+  activateAccount(token: string) {
+    return this.http.get<{status: boolean, message: string}>(`${UserService.ACTIVATION_ACCOUNT_ENDPOINT}/${token}`).pipe(
+      retry(5),
+      catchError(this.handleHttpError)
+    );
+  }
+
+  handleHttpError(error) {
     return throwError(error);
   }
 }

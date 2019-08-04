@@ -1,3 +1,4 @@
+import { UserService } from "./../user.service";
 import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
@@ -21,13 +22,12 @@ export class RequestInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     // Retrieve connected user info
     const userToken = this.authService.getAuthenticatedUser();
-    if( userToken != null && userToken.bearerToken != null )
+    if( this.authService.isAuthenticated() && userToken != null && userToken.bearerToken != null )
     req = req.clone({
       setHeaders: {
         Authorization: userToken.bearerToken
       }
     });
-    console.log(req.headers.get('Authorization'));
     // Forward request handling
     return next.handle(req);
   }
