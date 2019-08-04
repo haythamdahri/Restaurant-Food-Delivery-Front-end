@@ -97,7 +97,7 @@ export class SignupComponent implements OnInit, OnDestroy {
 
       Toast.fire({
         type: 'error',
-        title: 'Invalid login data'
+        title: 'Invalid sign up data'
       });
     } else {
       (<HTMLButtonElement>this.signUpBtn.nativeElement).innerHTML =

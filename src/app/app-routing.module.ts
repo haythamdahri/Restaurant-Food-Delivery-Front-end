@@ -1,3 +1,5 @@
+import { AuthenticatedGuard } from "./shared/auth/authenticated-guard.service";
+import { PasswordResetComponent } from "./password-reset/password-reset.component";
 import { AccountActivationComponent } from "./account-activation/account-activation.component";
 import { LoginComponent } from "./login/login.component";
 import { AuthGuard } from "./shared/auth/auth-guard.service";
@@ -20,13 +22,19 @@ const routes: Routes = [
     path: 'contact-us', component: ContactUsComponent
   },
   {
-    path: 'login', component: LoginComponent
+    path: 'login', component: LoginComponent, canActivate: [AuthenticatedGuard]
   },
   {
-    path: 'signup', component: SignupComponent
+    path: 'signup', component: SignupComponent, canActivate: [AuthenticatedGuard]
   },
   {
-    path: 'activate-account/:token', component: AccountActivationComponent
+    path: 'activate-account/:token', component: AccountActivationComponent, canActivate: [AuthenticatedGuard]
+  },
+  {
+    path: 'reset-password', component: PasswordResetComponent, canActivate: [AuthenticatedGuard]
+  },
+  {
+    path: 'reset-password/:token', component: PasswordResetComponent, canActivate: [AuthenticatedGuard]
   },
   {
     path: '404', component: NotFoundComponent

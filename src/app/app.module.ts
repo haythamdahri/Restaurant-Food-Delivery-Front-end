@@ -16,6 +16,7 @@ import { CartComponent } from './cart/cart.component';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { AccountActivationComponent } from './account-activation/account-activation.component';
+import { PasswordResetComponent } from './password-reset/password-reset.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { AccountActivationComponent } from './account-activation/account-activat
     CartComponent,
     LoginComponent,
     SignupComponent,
-    AccountActivationComponent
+    AccountActivationComponent,
+    PasswordResetComponent
   ],
   imports: [BrowserModule, AppRoutingModule, CustomModule, LayoutModule],
   providers: [

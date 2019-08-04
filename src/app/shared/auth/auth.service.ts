@@ -4,7 +4,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import * as jwtDecode from "jwt-decode";
 import { throwError, Observable } from 'rxjs';
-import { resolve } from 'q';
 
 @Injectable({
   providedIn: 'root'
@@ -100,6 +99,21 @@ export class AuthService {
           return {'isEmailAlreadyUsed': exists};
         } else {
           return null;
+        }
+      }),
+      retry(3),
+      catchError(this.handleEmailValidityError)
+    );
+  }
+
+  // Check if the email exists 
+  checkEmailExisting(email: string) {
+    return this.http.get<boolean>(AuthService.EMAIL_CHECK_ENDPINT, {params: new HttpParams().append('email', email)}).pipe(
+      map((exists) => {
+        if( exists ) {
+          return null;
+        } else {
+          return {'isEmailDoesNotExist': true};
         }
       }),
       retry(3),
