@@ -32,11 +32,21 @@
             <div class="form-group">
               <label for="Username">Username</label>
               <input type="text" formControlName="username"
-                [ngClass]="{'is-invalid': form.controls.username.touched && form.controls.username.invalid, 'is-valid': form.controls.username.tuched && form.controls.username.valid}"
+                [ngClass]="{'is-invalid': form.controls.username.touched && form.controls.username.invalid, 'is-valid': form.controls.username.touched && form.controls.username.valid}"
                 class="form-control" id="Username" placeholder="Enter username" />
               <div class="invalid-feedback"
                 *ngIf="form.controls.username.touched && form.controls.username.invalid">
                 Invalid username
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="Location">Localtion</label>
+              <input type="text" formControlName="location"
+                [ngClass]="{'is-invalid': form.controls.location.touched && form.controls.location.invalid, 'is-valid': form.controls.location.touched && form.controls.location.valid}"
+                class="form-control" id="Location" placeholder="Enter location" />
+              <div class="invalid-feedback"
+                *ngIf="form.controls.location.touched && form.controls.location.invalid">
+                Invalid location
               </div>
             </div>
             <div class="form-group">
@@ -75,7 +85,7 @@
       </div>
       <div class="card-body">
         <h5 class="card-title">
-          Account has been registered successflly
+          Account has been registered successfully
         </h5>
         <div class="card-text alert alert-success">
           <i class="fas fa-check-circle"></i> Please activate your account via the received email.

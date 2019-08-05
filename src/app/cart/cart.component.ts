@@ -84,7 +84,7 @@ export class CartComponent implements OnInit, OnDestroy {
 
             Toast.fire({
               type: 'success',
-              title: 'Meal has been deleted from your cart successflly'
+              title: 'Meal has been deleted from your cart successfully'
             });
             this.subscription.unsubscribe();
             this.errorMode = false;
@@ -140,6 +140,8 @@ export class CartComponent implements OnInit, OnDestroy {
         '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...'
       );
       $('#updateBtn').attr('disabled', true);
+      console.log('Meal order id: ' + mealOrderId);
+      console.log('New quantity: ' + newQuantity);
       this.mealSaveSubscription = await this.mealService
         .updateQuantity(mealOrderId, newQuantity)
         .subscribe(
@@ -153,7 +155,7 @@ export class CartComponent implements OnInit, OnDestroy {
 
             Toast.fire({
               type: 'success',
-              title: 'Ordered quantity has been updated successflly'
+              title: 'Ordered quantity has been updated successfully'
             });
             this.ngOnInit();
           },

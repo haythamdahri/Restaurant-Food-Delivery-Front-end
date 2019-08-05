@@ -126,7 +126,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           });
           Toast.fire({
             type: 'success',
-            title: 'Meal has been saved successflly'
+            title: 'Meal has been saved successfully'
           });
         },
         err => {
@@ -177,7 +177,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
           Toast.fire({
             type: 'success',
-            title: 'Your order has been added to your cart successflly'
+            title: 'Your order has been added to your cart successfully'
           });
         }
       },

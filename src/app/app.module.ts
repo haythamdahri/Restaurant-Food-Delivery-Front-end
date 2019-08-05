@@ -17,6 +17,7 @@ import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { AccountActivationComponent } from './account-activation/account-activation.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
     LoginComponent,
     SignupComponent,
     AccountActivationComponent,
-    PasswordResetComponent
+    PasswordResetComponent,
+    ProfileComponent
   ],
   imports: [BrowserModule, AppRoutingModule, CustomModule, LayoutModule],
   providers: [

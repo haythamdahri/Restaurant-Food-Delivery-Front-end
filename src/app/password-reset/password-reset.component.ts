@@ -191,7 +191,7 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
       });
     } else {
       (<HTMLButtonElement>this.passwordResetBtn.nativeElement).innerHTML =
-        '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending ...';
+        '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Setting new password ...';
       (<HTMLButtonElement>this.passwordResetBtn.nativeElement).setAttribute(
         'disabled',
         'true'

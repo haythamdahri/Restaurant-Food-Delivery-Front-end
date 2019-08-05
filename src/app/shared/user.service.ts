@@ -1,9 +1,10 @@
+import { AuthService } from "./auth/auth.service";
 import { catchError, retry } from "rxjs/operators";
 import { User } from "./../models/user.model";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { throwError, pipe } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,11 @@ export class UserService {
   private static PASSWORD_RESET_ENDPOINT = 'http://localhost:8080/api/v1/reset-password';
   private static CHECK_TOKEN_ENDPOINT = 'http://localhost:8080/api/v1/check-token';
   private static PERFOMR_PASSWORD_RESET_ENDPOINT = 'http://localhost:8080/api/v1/perform-reset-password';
+  private static USER_ORDERS_API_ENDPOINT = 'http://localhost:8080/api/orders/search/findByUserEmail';
+  private static USER_DETAILS_API_ENDPOINT = 'http://localhost:8080/api/users/search/findByEmail';
+  public static USERS_IMAGE_PREFIX = "http://localhost:8080/uploads/users/images";
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
   register(user: User) {
     return this.http.post<User>(UserService.SIGN_UP_ENDPOINT, user).pipe(
@@ -51,6 +55,23 @@ export class UserService {
 
   checkPasswordResetToken(token: string) {
     return this.http.get<{status: boolean, message: string}>(`${UserService.CHECK_TOKEN_ENDPOINT}/${token}`).pipe(
+      retry(5),
+      catchError(this.handleHttpError)
+    );
+  }
+
+  getAuthenticatedUserDetails() {
+    return this.http.get<User>(`${UserService.USER_DETAILS_API_ENDPOINT}`, {params: new HttpParams().append('email', this.authService.getAuthenticatedUser().email)}).pipe(
+      retry(5),
+      catchError(this.handleHttpError)
+    );
+  }
+
+  getUserOrdersHistory() {
+    return this.http.get(`${UserService.USER_ORDERS_API_ENDPOINT}`, {params: new HttpParams().append('email', this.authService.getAuthenticatedUser().email)}).pipe(
+      map((data) => {
+        return data['_embedded']['orders'];
+      }),
       retry(5),
       catchError(this.handleHttpError)
     );

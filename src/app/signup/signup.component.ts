@@ -46,6 +46,12 @@ export class SignupComponent implements OnInit, OnDestroy {
         Validators.maxLength(150),
         Validators.pattern('[a-zA-Z]*')
       ]),
+      location: new FormControl('', [
+        Validators.required,
+        Validators.minLength(2),
+        Validators.maxLength(150),
+        Validators.pattern('[a-zA-Z]*')
+      ]),
       password: new FormControl('', [
         Validators.minLength(4),
         Validators.maxLength(150),
@@ -119,7 +125,7 @@ export class SignupComponent implements OnInit, OnDestroy {
             });
             Toast.fire({
               type: 'success',
-              title: 'Your account has been created successflly'
+              title: 'Your account has been created successfully'
             });
             this.signUpError = false;
             this.registered = true;

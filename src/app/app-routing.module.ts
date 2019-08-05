@@ -1,3 +1,4 @@
+import { ProfileComponent } from "./profile/profile.component";
 import { AuthenticatedGuard } from "./shared/auth/authenticated-guard.service";
 import { PasswordResetComponent } from "./password-reset/password-reset.component";
 import { AccountActivationComponent } from "./account-activation/account-activation.component";
@@ -17,6 +18,9 @@ const routes: Routes = [
   },
   {
     path: 'cart', component: CartComponent, canActivate: [AuthGuard]
+  },
+  {
+    path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]
   },
   {
     path: 'contact-us', component: ContactUsComponent

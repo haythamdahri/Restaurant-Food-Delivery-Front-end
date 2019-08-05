@@ -7,5 +7,6 @@ export class User {
     public username: string;
     public enabled: boolean;
     public image: string;
+    public location: string;
     public roles: Array<Role>;
 }
