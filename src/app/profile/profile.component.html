@@ -5,8 +5,11 @@
     <div class="bg-white shadow rounded overflow-hidden">
       <div class="px-4 pt-0 pb-4 bg-dark">
         <div class="media align-items-end profile-header">
-          <div class="profile mr-3"><img src="{{ USERS_IMAGE_PREFIX }}/{{ user?.image }}"
-              alt="{{ user?.username }}" width="130" class="rounded mb-2 img-thumbnail">
+          <div class="profile mr-3" style="height: 8rem; width: 8rem;">
+            <a href="{{ user?.image }}" data-lightbox="roadtrip" attr.data-title="{{ user.username }}"
+              attr.data-alt="{{ user.username }}"><img src="{{ user?.image }}" alt="{{ user?.username }}"
+                style="height: 100%; width: 100%; max-height: 100%; max-width: 100%;"
+                class="rounded mb-2 img-thumbnail"></a>
           </div>
           <div class="media-body mt-2 mb-5 text-white">
             <h4 class="mt-0 mb-0">{{ user?.username }}</h4>
@@ -28,11 +31,23 @@
         <div class="tab-content" id="pills-tabContent">
           <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
 
+            <!-- User Picture File Selector -->
+            <input type="file" (change)="onFileUpload($event)" #fileUpload style="display: none;"
+              accept="image/png, image/jpg, image/jpeg" />
+
             <div class="col-12 mt-3 mb-3">
-              <button href="#" class="btn btn-dark btn-sm mr-2"><i class="fas fa-user-edit"></i> Edit
+              <button href="#" (click)="onTriggerImageSelect()" class="btn btn-dark btn-sm mr-2"><i
+                  class="fas fa-user-edit"></i> Edit
                 Picture</button>
-              <button href="#" class="btn btn-dark btn-sm mr-2"><i class="fas fa-edit"></i> Edit Profile</button>
+              <a [routerLink]="['edit']" class="btn btn-dark btn-sm mr-2"><i class="fas fa-edit"></i> Edit Profile</a>
               <button href="#" class="btn btn-dark btn-sm"><i class="fas fa-key"></i> Change Password</button>
+            </div>
+
+            <!-- Uploading user image progress bar -->
+            <div class="progress" *ngIf="uploadingImage">
+              <div class="progress-bar" role="progressbar" [ngStyle]="{'width.%': uploadProgress}"
+                attr.aria-valuenow="{{ uploadProgress }}" aria-valuemin="0" aria-valuemax="100">{{ uploadProgress }}%
+              </div>
             </div>
 
             <!-- User info -->
@@ -139,5 +154,10 @@
       </div>
     </div><!-- End profile widget -->
 
+
+  <!-- Nested Router outlet -->
+  <router-outlet></router-outlet>
+
+  
   </div>
 </div>

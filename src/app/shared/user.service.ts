@@ -1,7 +1,7 @@
 import { AuthService } from "./auth/auth.service";
 import { catchError, retry } from "rxjs/operators";
 import { User } from "./../models/user.model";
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpParams, HttpEventType } from "@angular/common/http";
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { throwError, pipe } from 'rxjs';
@@ -11,6 +11,7 @@ import { throwError, pipe } from 'rxjs';
 })
 export class UserService {
 
+  private static API_V1_ENDPOINT = 'http://localhost:8080/api/v1';
   private static SIGN_UP_ENDPOINT = 'http://localhost:8080/api/v1/sign-up';
   private static ACTIVATION_ACCOUNT_ENDPOINT = 'http://localhost:8080/api/v1/activate-account';
   private static PASSWORD_RESET_ENDPOINT = 'http://localhost:8080/api/v1/reset-password';
@@ -62,6 +63,10 @@ export class UserService {
 
   getAuthenticatedUserDetails() {
     return this.http.get<User>(`${UserService.USER_DETAILS_API_ENDPOINT}`, {params: new HttpParams().append('email', this.authService.getAuthenticatedUser().email)}).pipe(
+      map((data) => {
+        data.image = UserService.USERS_IMAGE_PREFIX + '/' + data.image;
+        return data;
+      }),
       retry(5),
       catchError(this.handleHttpError)
     );
@@ -73,6 +78,27 @@ export class UserService {
         return data['_embedded']['orders'];
       }),
       retry(5),
+      catchError(this.handleHttpError)
+    );
+  }
+
+  updateUserImage(formData: FormData) {
+    return this.http.post<{status: boolean, message: string, user: User}>(`${UserService.API_V1_ENDPOINT}/edit-user-image`, formData, {reportProgress: true, observe: 'events'}).pipe(
+      map((event) => {
+
+        switch (event.type) {
+          case HttpEventType.UploadProgress:
+            const progress = Math.round(100 * event.loaded / event.total);
+            return { status: 'progress', message: progress };
+  
+          case HttpEventType.Response:
+            event.body.user.image = UserService.USERS_IMAGE_PREFIX + '/' + event.body.user.image;
+            return event.body;
+          default:
+            return `Unhandled event: ${event.type}`;
+        }
+      }),
+      retry(2),
       catchError(this.handleHttpError)
     );
   }

@@ -1,3 +1,4 @@
+import { EditProfileComponent } from "./profile/edit-profile/edit-profile.component";
 import { ProfileComponent } from "./profile/profile.component";
 import { AuthenticatedGuard } from "./shared/auth/authenticated-guard.service";
 import { PasswordResetComponent } from "./password-reset/password-reset.component";
@@ -20,7 +21,11 @@ const routes: Routes = [
     path: 'cart', component: CartComponent, canActivate: [AuthGuard]
   },
   {
-    path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]
+    path: 'profile', component: ProfileComponent, canActivate: [AuthGuard], children: [
+      {
+        path: 'edit', component: EditProfileComponent, canActivate: [AuthGuard]
+      }
+    ]
   },
   {
     path: 'contact-us', component: ContactUsComponent

@@ -1,5 +1,5 @@
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
-import { RequestInterceptor } from "./shared/auth/request.interceptor";
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { RequestInterceptor } from './shared/auth/request.interceptor';
 import { CustomModule } from './custom/custom.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -18,6 +18,7 @@ import { SignupComponent } from './signup/signup.component';
 import { AccountActivationComponent } from './account-activation/account-activation.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
 import { ProfileComponent } from './profile/profile.component';
+import { EditProfileComponent } from './profile/edit-profile/edit-profile.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { ProfileComponent } from './profile/profile.component';
     SignupComponent,
     AccountActivationComponent,
     PasswordResetComponent,
-    ProfileComponent
+    ProfileComponent,
+    EditProfileComponent
   ],
   imports: [BrowserModule, AppRoutingModule, CustomModule, LayoutModule],
   providers: [
