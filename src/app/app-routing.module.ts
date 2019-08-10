@@ -21,11 +21,7 @@ const routes: Routes = [
     path: 'cart', component: CartComponent, canActivate: [AuthGuard]
   },
   {
-    path: 'profile', component: ProfileComponent, canActivate: [AuthGuard], children: [
-      {
-        path: 'edit', component: EditProfileComponent, canActivate: [AuthGuard]
-      }
-    ]
+    path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]
   },
   {
     path: 'contact-us', component: ContactUsComponent
@@ -43,7 +39,7 @@ const routes: Routes = [
     path: 'reset-password', component: PasswordResetComponent, canActivate: [AuthenticatedGuard]
   },
   {
-    path: 'reset-password/:token', component: PasswordResetComponent, canActivate: [AuthenticatedGuard]
+    path: 'reset-password/:token', component: PasswordResetComponent
   },
   {
     path: '404', component: NotFoundComponent

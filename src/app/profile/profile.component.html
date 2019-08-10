@@ -1,4 +1,5 @@
 <div class="row mt-2">
+
   <div class="col-xl-10 col-md-10 col-sm-12 mx-auto">
 
     <!-- Profile widget -->
@@ -7,7 +8,7 @@
         <div class="media align-items-end profile-header">
           <div class="profile mr-3" style="height: 8rem; width: 8rem;">
             <a href="{{ user?.image }}" data-lightbox="roadtrip" attr.data-title="{{ user.username }}"
-              attr.data-alt="{{ user.username }}"><img src="{{ user?.image }}" alt="{{ user?.username }}"
+              attr.data-alt="{{ user.username }}"><img src="{{ user?.image }}?ts={{ ts }}" alt="{{ user?.username }}"
                 style="height: 100%; width: 100%; max-height: 100%; max-width: 100%;"
                 class="rounded mb-2 img-thumbnail"></a>
           </div>
@@ -39,8 +40,9 @@
               <button href="#" (click)="onTriggerImageSelect()" class="btn btn-dark btn-sm mr-2"><i
                   class="fas fa-user-edit"></i> Edit
                 Picture</button>
-              <a [routerLink]="['edit']" class="btn btn-dark btn-sm mr-2"><i class="fas fa-edit"></i> Edit Profile</a>
-              <button href="#" class="btn btn-dark btn-sm"><i class="fas fa-key"></i> Change Password</button>
+              <button (click)="onProfileStartEdit()" class="btn btn-dark btn-sm mr-2"><i class="fas fa-edit"></i> Edit Profile</button>
+              <button (click)="onEmailStartEdit()" class="btn btn-dark btn-sm mr-2"><i class="fas fa-envelope-open-text"></i> Edit Email</button>
+              <button #resetPasswordBtn (click)="onResetPassword()" class="btn btn-dark btn-sm"><i class="fas fa-key"></i> Send Password Reset Email</button>
             </div>
 
             <!-- Uploading user image progress bar -->
@@ -49,6 +51,13 @@
                 attr.aria-valuenow="{{ uploadProgress }}" aria-valuemin="0" aria-valuemax="100">{{ uploadProgress }}%
               </div>
             </div>
+
+
+            <!-- Edit profile info -->
+            <app-edit-profile [user]="editedUser" (userUpdate)="ngOnInit()"></app-edit-profile>
+
+            <!-- Edit profile email -->
+            <app-edit-email [email]="editedEmail"></app-edit-email>
 
             <!-- User info -->
             <table class="table" *ngIf="user && !errorUser">
@@ -155,9 +164,5 @@
     </div><!-- End profile widget -->
 
 
-  <!-- Nested Router outlet -->
-  <router-outlet></router-outlet>
-
-  
   </div>
 </div>

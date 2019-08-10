@@ -12,7 +12,7 @@ export class AuthService {
   private static API = 'http://localhost:8080';
   private static EMAIL_CHECK_ENDPINT = 'http://localhost:8080/api/users/search/existsByEmail';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // Check expiration date
   isValidToken(expiration: number) {
@@ -34,7 +34,7 @@ export class AuthService {
 
   // Get current user
   getAuthenticatedUser() {
-    let userToken: UserToken = JSON.parse(localStorage.getItem('userToken'));
+    const userToken: UserToken = JSON.parse(localStorage.getItem('userToken'));
     if (userToken != null) {
       return userToken;
     } else {
@@ -93,10 +93,18 @@ export class AuthService {
 
   // Check if the email is already used
   checkEmailValidity(email: string) {
-    return this.http.get<boolean>(AuthService.EMAIL_CHECK_ENDPINT, {params: new HttpParams().append('email', email)}).pipe(
+    return this.http.get<boolean>(AuthService.EMAIL_CHECK_ENDPINT, { params: new HttpParams().append('email', email) }).pipe(
       map((exists) => {
-        if( exists ) {
-          return {'isEmailAlreadyUsed': exists};
+        if (exists) {
+          if (!this.isAuthenticated()) {
+            return { 'isEmailAlreadyUsed': exists };
+          } else {
+            if (this.getAuthenticatedUser().email !== email) {
+              return { 'isEmailAlreadyUsed': exists };
+            } else {
+              return null;
+            }
+          }
         } else {
           return null;
         }
@@ -108,12 +116,12 @@ export class AuthService {
 
   // Check if the email exists 
   checkEmailExisting(email: string) {
-    return this.http.get<boolean>(AuthService.EMAIL_CHECK_ENDPINT, {params: new HttpParams().append('email', email)}).pipe(
+    return this.http.get<boolean>(AuthService.EMAIL_CHECK_ENDPINT, { params: new HttpParams().append('email', email) }).pipe(
       map((exists) => {
-        if( exists ) {
+        if (exists) {
           return null;
         } else {
-          return {'isEmailDoesNotExist': true};
+          return { 'isEmailDoesNotExist': true };
         }
       }),
       retry(3),

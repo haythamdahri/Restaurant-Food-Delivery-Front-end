@@ -19,6 +19,7 @@ import { AccountActivationComponent } from './account-activation/account-activat
 import { PasswordResetComponent } from './password-reset/password-reset.component';
 import { ProfileComponent } from './profile/profile.component';
 import { EditProfileComponent } from './profile/edit-profile/edit-profile.component';
+import { EditEmailComponent } from './profile/edit-email/edit-email.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { EditProfileComponent } from './profile/edit-profile/edit-profile.compon
     AccountActivationComponent,
     PasswordResetComponent,
     ProfileComponent,
-    EditProfileComponent
+    EditProfileComponent,
+    EditEmailComponent
   ],
   imports: [BrowserModule, AppRoutingModule, CustomModule, LayoutModule],
   providers: [

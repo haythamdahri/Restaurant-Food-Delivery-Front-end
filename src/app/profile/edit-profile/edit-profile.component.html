@@ -1,15 +1,27 @@
-<div class="col-12">
-
-  <button style="display: none;" #modalBtn type="button" data-toggle="modal" data-target="#editProfileModal"></button>
-
-
-  <div class="modal fade editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModal"
-    aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-
+<div class="row mb-2" *ngIf="user != null">
+  <div class="col-12">
+    <form [formGroup]="form" (ngSubmit)="onEditProfile()">
+      <div class="form-group">
+        <label for="Username">Username</label>
+        <input type="text" formControlName="username"
+          [ngClass]="{'is-invalid': form.controls.username.touched && form.controls.username.invalid, 'is-valid': form.controls.username.touched && form.controls.username.valid}"
+          class="form-control" id="Username" [ngModel]="user.username" placeholder="Enter new username" />
+        <div class="invalid-feedback" *ngIf="form.controls.username.touched && form.controls.username.invalid">
+          Invalid username
+        </div>
       </div>
-    </div>
-  </div>
 
+      <div class="form-group">
+        <label for="Location">Location</label>
+        <input type="text" formControlName="location"
+          [ngClass]="{'is-invalid': form.controls.location.touched && form.controls.location.invalid, 'is-valid': form.controls.location.touched && form.controls.location.valid}"
+          class="form-control" id="Location" [ngModel]="user.location" placeholder="Enter new location" />
+        <div class="invalid-feedback" *ngIf="form.controls.location.touched && form.controls.location.invalid">
+          Invalid location
+        </div>
+      </div>
+      <button type="submit" #saveBtn [disabled]="form.invalid" class="btn btn-warning btn-sm btn-block"><i
+          class="far fa-save"></i> Save</button>
+    </form>
+  </div>
 </div>

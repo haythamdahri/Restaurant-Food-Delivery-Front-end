@@ -18,6 +18,7 @@ import Swal from 'sweetalert2';
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   user: User = new User();
+  editedUser: User = null;
   userOrders: Array<Order>;
   errorOrders = false;
   errorUser = false;
@@ -28,12 +29,17 @@ export class ProfileComponent implements OnInit, OnDestroy {
   loadingImage = '../../assets/img/loading.gif';
   imageSubscription: Subscription;
   @ViewChild('fileUpload', { static: false }) fileBtn: ElementRef;
+  @ViewChild('resetPasswordBtn', { static: false }) resetPasswordBtn: ElementRef;
   uploadingImage = false;
   uploadProgress = 0;
+  ts: number;
+  editedEmail;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
 
   ngOnInit() {
+    this.editedEmail = null;
+    this.ts = Date.now();
     this.user.image = this.loadingImage;
     this.loadingOrders = true;
     this.loadingUser = true;
@@ -64,11 +70,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.uploadingImage = true;
     const oldImage = this.user.image;
     this.user.image = this.loadingImage;
-    let formData = new FormData();
+    const formData = new FormData();
     formData.append(
       'image',
       event.target.files[0],
-      (<File>event.target.files[0]).name
+      event.target.files[0].name
     );
     this.imageSubscription = this.userService
       .updateUserImage(formData)
@@ -87,6 +93,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             // Update user is status true
             if (response['status'] == true && response['user']) {
               this.user = response['user'];
+              this.ts = Date.now();
               // User message
               const Toast = Swal.mixin({
                 toast: true,
@@ -137,5 +144,52 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (this.imageSubscription) {
       this.imageSubscription.unsubscribe();
     }
+  }
+
+  // On start editing profile
+  onProfileStartEdit() {
+    this.editedUser = null;
+    this.editedUser = this.user;
+    this.editedEmail = null;
+  }
+
+
+  // On start editing email
+  onEmailStartEdit() {
+    this.editedEmail = null;
+    this.editedEmail = this.user.email;
+    this.editedUser = null;
+  }
+
+  // On reset password
+  onResetPassword() {
+    (<HTMLButtonElement>this.resetPasswordBtn.nativeElement).innerHTML =
+      '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending';
+    (<HTMLButtonElement>this.resetPasswordBtn.nativeElement).setAttribute('disabled', 'true');
+    this.userService.sendPasswordResetToken(this.user.email).subscribe(
+      (data) => {
+        Swal.fire(
+          'Reset password',
+          data.message,
+          data.status ? 'success' : 'error'
+        );
+        (<HTMLButtonElement>this.resetPasswordBtn.nativeElement).innerHTML = '<i class="fas fa-key"></i> Send Password Reset Email';
+        (<HTMLButtonElement>this.resetPasswordBtn.nativeElement).removeAttribute('disabled');
+      },
+      (err) => {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'bottom-left',
+          showConfirmButton: false,
+          timer: 3000
+        });
+        Toast.fire({
+          type: 'error',
+          title: 'An error occurred, please try again'
+        });
+        (<HTMLButtonElement>this.resetPasswordBtn.nativeElement).innerHTML = '<i class="fas fa-key"></i> Send Password Reset Email';
+        (<HTMLButtonElement>this.resetPasswordBtn.nativeElement).removeAttribute('disabled');
+      }
+    );
   }
 }
