@@ -152,6 +152,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   onAddMealOrder(meal: Meal) {
+    if( this.authService.isAuthenticated() ) {
     this.orderSubscription = this.mealService.addMealOrder(meal, 1).subscribe(
       data => {
         // Chek if data contain an error message
@@ -195,6 +196,9 @@ export class HomeComponent implements OnInit, OnDestroy {
         });
       }
     );
+    } else {
+      Swal.fire('Your are not connected', 'Please login', 'error');
+    }
   }
 
   onMealFetch(id: number) {
