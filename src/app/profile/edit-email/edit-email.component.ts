@@ -48,6 +48,7 @@ export class EditEmailComponent implements OnInit {
       });
     } else {
       if (this.authService.getAuthenticatedUser().email === this.form.controls.email.value) {
+        this.email = null;
         const Toast = Swal.mixin({
           toast: true,
           position: 'bottom-left',
@@ -58,7 +59,6 @@ export class EditEmailComponent implements OnInit {
           type: 'success',
           title: 'Email has not been changed'
         });
-        this.email = null;
       } else {
         (<HTMLButtonElement>this.saveBtn.nativeElement).innerHTML =
           '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving';

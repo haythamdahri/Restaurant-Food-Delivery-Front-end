@@ -1,18 +1,22 @@
 <div class="row mb-2" *ngIf="email != null">
-    <div class="col-12">
-      <form [formGroup]="form" (ngSubmit)="onEditEmail()">
-        <div class="form-group">
-          <label for="Email">Email</label>
-          <input type="text" formControlName="email"
-            [ngClass]="{'is-invalid': form.controls.email.touched && form.controls.email.invalid, 'is-valid': form.controls.email.touched && form.controls.email.valid}"
-            class="form-control" id="Email" [ngModel]="email" placeholder="Enter new email" />
-          <div class="invalid-feedback" *ngIf="form.controls.email.touched && form.controls.email.invalid">
-            Invalid email
-          </div>
+  <div class="col-12">
+    <form [formGroup]="form" (ngSubmit)="onEditEmail()">
+      <div class="form-group">
+        <label for="Email">Email</label>
+        <input type="text" formControlName="email"
+          [ngClass]="{'is-invalid': form.controls.email.touched && form.controls.email.invalid, 'is-valid': form.controls.email.touched && form.controls.email.valid}"
+          class="form-control" id="Email" [ngModel]="email" placeholder="Enter new email" />
+        <div class="invalid-feedback"
+          *ngIf="form.controls.email.touched && form.controls.email.invalid && !form.controls.email.errors.isEmailAlreadyUsed">
+          Invalid email
         </div>
-        <button type="submit" #saveBtn [disabled]="form.invalid" class="btn btn-warning btn-sm btn-block"><i
-            class="far fa-save"></i> Save</button>
-      </form>
-    </div>
+        <div class="invalid-feedback"
+          *ngIf="form.controls.email.touched && form.controls.email.invalid && form.controls.email.errors.isEmailAlreadyUsed">
+          Email is already used
+        </div>
+      </div>
+      <button type="submit" #saveBtn [disabled]="form.invalid" class="btn btn-warning btn-sm btn-block"><i
+          class="far fa-save"></i> Save</button>
+    </form>
   </div>
-  
+</div>
