@@ -14,13 +14,14 @@ import { EventEmitter } from 'events';
 export class UserService {
 
   private static API_ENDPOINT = 'http://localhost:8080/api';
-  private static API_V1_ENDPOINT = 'http://localhost:8080/api/v1';
-  private static SIGN_UP_ENDPOINT = 'http://localhost:8080/api/v1/sign-up';
-  private static ACTIVATION_ACCOUNT_ENDPOINT = 'http://localhost:8080/api/v1/activate-account';
-  private static PASSWORD_RESET_ENDPOINT = 'http://localhost:8080/api/v1/reset-password';
-  private static UPDATE_EMAIL_ENDPOINT = 'http://localhost:8080/api/v1/update-email';
-  private static CHECK_TOKEN_ENDPOINT = 'http://localhost:8080/api/v1/check-token';
-  private static PERFOMR_PASSWORD_RESET_ENDPOINT = 'http://localhost:8080/api/v1/perform-reset-password';
+  private static API_V1_ENDPOINT = 'http://localhost:8080/api/v1/users/';
+  private static SIGN_UP_ENDPOINT = 'http://localhost:8080/api/v1/users/';
+  private static ACTIVATION_ACCOUNT_ENDPOINT = 'http://localhost:8080/api/v1/users/activation';
+  private static PASSWORD_RESET_ENDPOINT = 'http://localhost:8080/api/v1/users/passwordreset/request';
+  private static UPDATE_EMAIL_ENDPOINT = 'http://localhost:8080/api/v1/users/email';
+  private static UPDATE_IMAGE_ENDPOINT = 'http://localhost:8080/api/v1/users/image';
+  private static CHECK_TOKEN_ENDPOINT = 'http://localhost:8080/api/v1/users/tokenscheck';
+  private static PERFORM_PASSWORD_RESET_ENDPOINT = 'http://localhost:8080/api/v1/users/passwordreset/finalization';
   private static USER_ORDERS_API_ENDPOINT = 'http://localhost:8080/api/orders/search/findByUserEmail';
   private static USER_DETAILS_API_ENDPOINT = 'http://localhost:8080/api/users/search/findByEmail';
   public static USERS_IMAGE_PREFIX = "http://localhost:8080/uploads/users/images";
@@ -53,7 +54,7 @@ export class UserService {
   }
 
   resetPassword(token: string, newPassword: string) {
-    return this.http.post<{ status: boolean, message: string }>(`${UserService.PERFOMR_PASSWORD_RESET_ENDPOINT}`, { token: token, newPassword: newPassword }).pipe(
+    return this.http.post<{ status: boolean, message: string }>(`${UserService.PERFORM_PASSWORD_RESET_ENDPOINT}`, { token: token, newPassword: newPassword }).pipe(
       retry(5),
       catchError(this.handleHttpError)
     );
@@ -94,7 +95,7 @@ export class UserService {
   }
 
   updateUserImage(formData: FormData) {
-    return this.http.post<{ status: boolean, message: string, user: User }>(`${UserService.API_V1_ENDPOINT}/edit-user-image`, formData, { reportProgress: true, observe: 'events' }).pipe(
+    return this.http.post<{ status: boolean, message: string, user: User }>(UserService.UPDATE_IMAGE_ENDPOINT, formData, { reportProgress: true, observe: 'events' }).pipe(
       map((event) => {
 
         switch (event.type) {

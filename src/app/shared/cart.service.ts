@@ -13,15 +13,15 @@ import { throwError } from 'rxjs';
 })
 export class CartService {
   private API = 'http://localhost:8080/api';
-  private API_VA = 'http://localhost:8080/api/v1';
+  private API_V1 = 'http://localhost:8080/api/v1';
   // Temprory user with id = 1
-  private USER_CART = 'http://localhost:8080/api/v1/user-cart';
+  private USER_CART = 'http://localhost:8080/api/v1/usercart';
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
   getUserCartOrders() {
     let headers = new HttpHeaders().set('Authorization', this.authService.getAuthenticatedUser().bearerToken);
-    return this.http.get(this.USER_CART, {
+    return this.http.get(`${this.USER_CART}/`, {
       headers: headers
     }).pipe(
       map((data) => {
