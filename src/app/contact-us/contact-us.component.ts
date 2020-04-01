@@ -4,6 +4,7 @@ import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/co
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import Swal from 'sweetalert2'
 import { Subscription } from 'rxjs';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-contact-us',
@@ -19,9 +20,11 @@ export class ContactUsComponent implements OnInit, OnDestroy {
   errorMode = false;
   subscription: Subscription;
 
-  constructor(private contactService: ContactService) { }
+  constructor(private contactService: ContactService, private titleService: Title) { }
 
   ngOnInit() {
+    // Set page title
+    this.titleService.setTitle('Contact us');
     this.form = new FormGroup({
       firstName: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
       lastName: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),

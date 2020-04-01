@@ -1,20 +1,21 @@
-import { UserService } from './../shared/user.service';
-import { Order } from './../models/order.model';
+import { UserService } from "./../shared/user.service";
+import { Order } from "./../models/order.model";
 import {
   Component,
   OnInit,
   OnDestroy,
   ViewChild,
   ElementRef
-} from '@angular/core';
-import { User } from '../models/user.model';
-import { Subscription } from 'rxjs';
-import Swal from 'sweetalert2';
+} from "@angular/core";
+import { User } from "../models/user.model";
+import { Subscription } from "rxjs";
+import Swal from "sweetalert2";
+import { Title } from "@angular/platform-browser";
 
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  selector: "app-profile",
+  templateUrl: "./profile.component.html",
+  styleUrls: ["./profile.component.css"]
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   user: User = new User();
@@ -26,19 +27,24 @@ export class ProfileComponent implements OnInit, OnDestroy {
   userSubscription: Subscription;
   loadingUser = false;
   loadingOrders = false;
-  loadingImage = '../../assets/img/loading.gif';
+  loadingImage = "../../assets/img/loading.gif";
   imageSubscription: Subscription;
-  @ViewChild('fileUpload', { static: false }) fileBtn: ElementRef;
-  @ViewChild('resetPasswordBtn', { static: false }) resetPasswordBtn: ElementRef;
+  @ViewChild("fileUpload", { static: false }) fileBtn: ElementRef;
+  @ViewChild("resetPasswordBtn", { static: false })
+  resetPasswordBtn: ElementRef;
   uploadingImage = false;
   uploadProgress = 0;
   ts: number;
   editedEmail;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private titleService: Title) {}
 
   ngOnInit() {
+    // Set page title
+    this.titleService.setTitle("Profile");
+    // Initialize fields
     this.editedEmail = null;
+    this.editedUser = null;
     this.ts = Date.now();
     this.user.image = this.loadingImage;
     this.loadingOrders = true;
@@ -57,6 +63,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
       .subscribe(
         data => {
           this.user = data;
+          // Update page title
+          this.titleService.setTitle(this.user.username);
           this.loadingUser = false;
         },
         err => {
@@ -71,39 +79,35 @@ export class ProfileComponent implements OnInit, OnDestroy {
     const oldImage = this.user.image;
     this.user.image = this.loadingImage;
     const formData = new FormData();
-    formData.append(
-      'image',
-      event.target.files[0],
-      event.target.files[0].name
-    );
+    formData.append("image", event.target.files[0], event.target.files[0].name);
     this.imageSubscription = this.userService
       .updateUserImage(formData)
       .subscribe(
         response => {
           console.log(response);
           if (
-            typeof response['status'] === 'string' ||
-            response['status'] instanceof String
+            typeof response["status"] === "string" ||
+            response["status"] instanceof String
           ) {
-            this.uploadProgress = response['message'];
+            this.uploadProgress = response["message"];
           } else {
             // Hide uploading progress bar
             this.uploadingImage = false;
             this.uploadProgress = 0;
             // Update user is status true
-            if (response['status'] == true && response['user']) {
-              this.user = response['user'];
+            if (response["status"] == true && response["user"]) {
+              this.user = response["user"];
               this.ts = Date.now();
               // User message
               const Toast = Swal.mixin({
                 toast: true,
-                position: 'bottom-left',
+                position: "bottom-left",
                 showConfirmButton: false,
                 timer: 3000
               });
               Toast.fire({
-                type: response['status'] == true ? 'success' : 'error',
-                title: response['message'].toString()
+                type: response["status"] == true ? "success" : "error",
+                title: response["message"].toString()
               });
             }
           }
@@ -115,13 +119,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.user.image = oldImage;
           const Toast = Swal.mixin({
             toast: true,
-            position: 'bottom-left',
+            position: "bottom-left",
             showConfirmButton: false,
             timer: 3000
           });
           Toast.fire({
-            type: 'error',
-            title: 'An error occurred, please try again'
+            type: "error",
+            title: "An error occurred, please try again"
           });
         }
       );
@@ -148,16 +152,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   // On start editing profile
   onProfileStartEdit() {
-    this.editedUser = null;
-    this.editedUser = this.user;
+    this.editedUser = this.editedUser != null ? null : this.user;
     this.editedEmail = null;
   }
 
-
   // On start editing email
   onEmailStartEdit() {
-    this.editedEmail = null;
-    this.editedEmail = this.user.email;
+    this.editedEmail = this.editedEmail != null ? null : this.user.email;
     this.editedUser = null;
   }
 
@@ -165,30 +166,39 @@ export class ProfileComponent implements OnInit, OnDestroy {
   onResetPassword() {
     (<HTMLButtonElement>this.resetPasswordBtn.nativeElement).innerHTML =
       '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending';
-    (<HTMLButtonElement>this.resetPasswordBtn.nativeElement).setAttribute('disabled', 'true');
+    (<HTMLButtonElement>this.resetPasswordBtn.nativeElement).setAttribute(
+      "disabled",
+      "true"
+    );
     this.userService.sendPasswordResetToken(this.user.email).subscribe(
-      (data) => {
+      data => {
         Swal.fire(
-          'Reset password',
+          "Reset password",
           data.message,
-          data.status ? 'success' : 'error'
+          data.status ? "success" : "error"
         );
-        (<HTMLButtonElement>this.resetPasswordBtn.nativeElement).innerHTML = '<i class="fas fa-key"></i> Send Password Reset Email';
-        (<HTMLButtonElement>this.resetPasswordBtn.nativeElement).removeAttribute('disabled');
+        (<HTMLButtonElement>this.resetPasswordBtn.nativeElement).innerHTML =
+          '<i class="fas fa-key"></i> Reset Password';
+        (<HTMLButtonElement>(
+          this.resetPasswordBtn.nativeElement
+        )).removeAttribute("disabled");
       },
-      (err) => {
+      err => {
         const Toast = Swal.mixin({
           toast: true,
-          position: 'bottom-left',
+          position: "bottom-left",
           showConfirmButton: false,
           timer: 3000
         });
         Toast.fire({
-          type: 'error',
-          title: 'An error occurred, please try again'
+          type: "error",
+          title: "An error occurred, please try again"
         });
-        (<HTMLButtonElement>this.resetPasswordBtn.nativeElement).innerHTML = '<i class="fas fa-key"></i> Send Password Reset Email';
-        (<HTMLButtonElement>this.resetPasswordBtn.nativeElement).removeAttribute('disabled');
+        (<HTMLButtonElement>this.resetPasswordBtn.nativeElement).innerHTML =
+          '<i class="fas fa-key"></i> Send Password Reset Email';
+        (<HTMLButtonElement>(
+          this.resetPasswordBtn.nativeElement
+        )).removeAttribute("disabled");
       }
     );
   }

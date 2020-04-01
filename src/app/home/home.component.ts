@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
+import { Title } from '@angular/platform-browser';
 
 
 declare var $: any;
@@ -31,9 +32,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild('saveMealnBtn', { static: false }) saveBtn: ElementRef;
   @ViewChild('closeBtn', { static: false }) closeBtn: ElementRef;
 
-  constructor(private mealService: MealService, private authService: AuthService) {}
+  constructor(private mealService: MealService, private authService: AuthService, private titleService: Title) {}
 
   ngOnInit() {
+    // Set page title
+    this.titleService.setTitle('Home');
     this.form = new FormGroup({
       id: new FormControl(''),
       name: new FormControl('', [

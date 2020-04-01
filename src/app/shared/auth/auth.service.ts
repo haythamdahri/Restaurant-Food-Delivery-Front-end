@@ -10,6 +10,7 @@ import { throwError, Observable } from 'rxjs';
 })
 export class AuthService {
   private static API = 'http://localhost:8080';
+  private static AUTH_ENDPOINT = 'http://localhost:8080/auth/';
   private static EMAIL_CHECK_ENDPINT = 'http://localhost:8080/api/users/search/existsByEmail';
 
   constructor(private http: HttpClient) { }
@@ -45,7 +46,7 @@ export class AuthService {
   // Login into internal system
   login(email: string, password: string) {
     return this.http
-      .post<{ token: string }>(`${AuthService.API}/authenticate`, {
+      .post<{ token: string }>(`${AuthService.AUTH_ENDPOINT}`, {
         email,
         password
       })

@@ -22,11 +22,6 @@
           <i class="fas fa-user"></i> Profile
           <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLinkActive="'active'" routerLink="/contact-us" routerLinkActive="'active'"
-          routerLinkActiveOptions="{exact: true}"><i class="fas fa-address-book"></i> Contact Us
-          <span class="sr-only">(current)</span></a>
-      </li>
       <ng-container *ngIf="!authService.isAuthenticated()">
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="'active'" routerLink="/login" routerLinkActive="'active'"
@@ -42,6 +37,11 @@
       <li class="nav-item" *ngIf="authService.isAuthenticated()">
         <a class="nav-link" routerLinkActive="'active'" style="cursor: pointer;" (click)="onLogout()"
           routerLinkActiveOptions="{exact: true}"><i class="fas fa-sign-out-alt"></i> Logout
+          <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLinkActive="'active'" routerLink="/contact-us" routerLinkActive="'active'"
+          routerLinkActiveOptions="{exact: true}"><i class="fas fa-address-book"></i> Contact Us
           <span class="sr-only">(current)</span></a>
       </li>
     </ul>

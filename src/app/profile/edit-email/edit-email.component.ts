@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 import { AuthService } from './../../shared/auth/auth.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Component, OnInit, Input, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 export class EditEmailComponent implements OnInit {
 
   @Input() email: string = null;
+  @Output() emailUpdate: EventEmitter<any> = new EventEmitter<any>();
   form: FormGroup;
   @ViewChild('saveBtn', { 'static': false }) saveBtn: ElementRef;
   updateEmailSubscription: Subscription;
@@ -59,6 +60,8 @@ export class EditEmailComponent implements OnInit {
           type: 'success',
           title: 'Email has not been changed'
         });
+        // Emit update email event
+        this.emailUpdate.emit(true);
       } else {
         (<HTMLButtonElement>this.saveBtn.nativeElement).innerHTML =
           '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving';
@@ -103,6 +106,10 @@ export class EditEmailComponent implements OnInit {
             });
             (<HTMLButtonElement>this.saveBtn.nativeElement).innerHTML = '<i class="far fa-save"></i> Save';
             (<HTMLButtonElement>this.saveBtn.nativeElement).removeAttribute('disabled');
+          },
+          () => {
+            // Emit update email event
+            this.emailUpdate.emit(true);
           }
         );
       }

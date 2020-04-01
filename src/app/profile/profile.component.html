@@ -1,74 +1,145 @@
 <div class="row mt-2">
-
   <div class="col-xl-10 col-md-10 col-sm-12 mx-auto">
-
     <!-- Profile widget -->
     <div class="bg-white shadow rounded overflow-hidden">
       <div class="px-4 pt-0 pb-4 bg-dark">
         <div class="media align-items-end profile-header">
           <div class="profile mr-3" style="height: 8rem; width: 8rem;">
-            <a href="{{ user?.image }}" data-lightbox="roadtrip" attr.data-title="{{ user.username }}"
-              attr.data-alt="{{ user.username }}"><img src="{{ user?.image }}?ts={{ ts }}" alt="{{ user?.username }}"
+            <a
+              href="{{ user?.image }}"
+              data-lightbox="roadtrip"
+              attr.data-title="{{ user.username }}"
+              attr.data-alt="{{ user.username }}"
+              ><img
+                src="{{ user?.image }}?ts={{ ts }}"
+                alt="{{ user?.username }}"
                 style="height: 100%; width: 100%; max-height: 100%; max-width: 100%;"
-                class="rounded mb-2 img-thumbnail"></a>
+                class="rounded mb-2 img-thumbnail"
+            /></a>
           </div>
           <div class="media-body mt-2 mb-5 text-white">
             <h4 class="mt-0 mb-0">{{ user?.username }}</h4>
-            <p class="small mb-4"> <i class="fa fa-map-marker mr-2"></i>{{ user?.location }}</p>
+            <p class="small mb-4">
+              <i class="fa fa-map-marker mr-2"></i>{{ user?.location }}
+            </p>
           </div>
         </div>
       </div>
       <div class="py-4 px-4 bg-light">
         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
           <li class="nav-item">
-            <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab"
-              aria-controls="pills-home" aria-selected="true"><i class="fas fa-home"></i> Home</a>
+            <a
+              class="nav-link active"
+              id="pills-home-tab"
+              data-toggle="pill"
+              href="#pills-home"
+              role="tab"
+              aria-controls="pills-home"
+              aria-selected="true"
+              ><i class="fas fa-home"></i> Home</a
+            >
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="pills-orders-tab" data-toggle="pill" href="#pills-orders" role="tab"
-              aria-controls="pills-profile" aria-selected="false"><i class="fas fa-sort-amount-up-alt"></i> Orders</a>
+            <a
+              class="nav-link"
+              id="pills-orders-tab"
+              data-toggle="pill"
+              href="#pills-orders"
+              role="tab"
+              aria-controls="pills-profile"
+              aria-selected="false"
+              ><i class="fas fa-sort-amount-up-alt"></i> Orders</a
+            >
           </li>
         </ul>
         <div class="tab-content" id="pills-tabContent">
-          <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-
+          <div
+            class="tab-pane fade show active"
+            id="pills-home"
+            role="tabpanel"
+            aria-labelledby="pills-home-tab"
+          >
             <!-- User Picture File Selector -->
-            <input type="file" (change)="onFileUpload($event)" #fileUpload style="display: none;"
-              accept="image/png, image/jpg, image/jpeg" />
+            <input
+              type="file"
+              (change)="onFileUpload($event)"
+              #fileUpload
+              style="display: none;"
+              accept="image/png, image/jpg, image/jpeg"
+            />
 
-            <div class="col-12 mt-3 mb-3">
-              <button href="#" (click)="onTriggerImageSelect()" class="btn btn-dark btn-sm mr-2"><i
-                  class="fas fa-user-edit"></i> Edit
-                Picture</button>
-              <button (click)="onProfileStartEdit()" class="btn btn-dark btn-sm mr-2"><i class="fas fa-edit"></i> Edit Profile</button>
-              <button (click)="onEmailStartEdit()" class="btn btn-dark btn-sm mr-2"><i class="fas fa-envelope-open-text"></i> Edit Email</button>
-              <button #resetPasswordBtn (click)="onResetPassword()" class="btn btn-dark btn-sm"><i class="fas fa-key"></i> Send Password Reset Email</button>
+            <div class="row" style="justify-content: center;">
+              <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3 mt-2 mb-2">
+                <button
+                  href="#"
+                  (click)="onTriggerImageSelect()"
+                  class="btn btn-outline-dark btn-sm btn-block"
+                >
+                  <i class="fas fa-user-edit"></i> Edit Picture
+                </button>
+              </div>
+              <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3 mt-2 mb-2">
+                <button
+                  (click)="onProfileStartEdit()"
+                  class="btn btn-outline-dark btn-sm btn-block"
+                >
+                  <i class="fas fa-edit"></i> Edit Profile
+                </button>
+              </div>
+              <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3 mt-2 mb-2">
+                <button
+                  (click)="onEmailStartEdit()"
+                  class="btn btn-outline-dark btn-sm btn-block"
+                >
+                  <i class="fas fa-envelope-open-text"></i> Edit Email
+                </button>
+              </div>
+              <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3 mt-2 mb-2">
+                <button
+                  #resetPasswordBtn
+                  (click)="onResetPassword()"
+                  class="btn btn-outline-dark btn-sm btn-block"
+                >
+                  <i class="fas fa-key"></i> Reset Password
+                </button>
+              </div>
             </div>
 
             <!-- Uploading user image progress bar -->
             <div class="progress" *ngIf="uploadingImage">
-              <div class="progress-bar" role="progressbar" [ngStyle]="{'width.%': uploadProgress}"
-                attr.aria-valuenow="{{ uploadProgress }}" aria-valuemin="0" aria-valuemax="100">{{ uploadProgress }}%
+              <div
+                class="progress-bar"
+                role="progressbar"
+                [ngStyle]="{ 'width.%': uploadProgress }"
+                attr.aria-valuenow="{{ uploadProgress }}"
+                aria-valuemin="0"
+                aria-valuemax="100"
+              >
+                {{ uploadProgress }}%
               </div>
             </div>
 
-
             <!-- Edit profile info -->
-            <app-edit-profile [user]="editedUser" (userUpdate)="ngOnInit()"></app-edit-profile>
+            <app-edit-profile
+              [user]="editedUser"
+              (userUpdate)="ngOnInit()"
+            ></app-edit-profile>
 
             <!-- Edit profile email -->
-            <app-edit-email [email]="editedEmail"></app-edit-email>
+            <app-edit-email
+              (emailUpdate)="ngOnInit()"
+              [email]="editedEmail"
+            ></app-edit-email>
 
             <!-- User info -->
             <table class="table" *ngIf="user && !errorUser">
               <thead class="thead-dark">
                 <tr>
                   <th scope="col">#</th>
-                  <th scope="col">{{ user?.id }}</th>
+                  <th style="text-align: center;">{{ user?.id }}</th>
                 </tr>
               </thead>
               <tbody>
-
                 <!-- Loading icon loadingUser-->
                 <tr *ngIf="loadingUser && !errorUser">
                   <td colspan="2">
@@ -82,29 +153,36 @@
 
                 <tr>
                   <th scope="row">Email</th>
-                  <td>{{ user?.email }}</td>
+                  <td align="center">{{ user?.email }}</td>
                 </tr>
                 <tr>
                   <th scope="row">Username</th>
-                  <td>{{ user?.username }}</td>
+                  <td align="center">{{ user?.username }}</td>
                 </tr>
                 <tr>
                   <th scope="row">Location</th>
-                  <td>{{ user?.location }}</td>
+                  <td align="center">{{ user?.location }}</td>
                 </tr>
 
                 <!-- Error user -->
                 <tr align="center" *ngIf="errorUser">
-                  <td colspan="2" class="alert alert-danger font-weight-bold text-center">
-                    <i class="fas fa-exclamation-triangle"></i> An error occurred!
+                  <td
+                    colspan="2"
+                    class="alert alert-danger font-weight-bold text-center"
+                  >
+                    <i class="fas fa-exclamation-triangle"></i> An error
+                    occurred!
                   </td>
                 </tr>
               </tbody>
             </table>
-
-
           </div>
-          <div class="tab-pane fade" id="pills-orders" role="tabpanel" aria-labelledby="pills-orders-tab">
+          <div
+            class="tab-pane fade"
+            id="pills-orders"
+            role="tabpanel"
+            aria-labelledby="pills-orders-tab"
+          >
             <table class="table">
               <thead class="thead-light">
                 <tr align="center">
@@ -116,9 +194,20 @@
               </thead>
               <tbody>
                 <!-- No order done yet message -->
-                <tr align="center" *ngIf="userOrders && !errorMode && (userOrders == null || userOrders?.length == 0)">
-                  <td colspan="4" class="alert alert-warning font-weight-bold text-center">
-                    <i class="fas fa-exclamation-circle"></i> No order has been done yet!
+                <tr
+                  align="center"
+                  *ngIf="
+                    userOrders &&
+                    !errorMode &&
+                    (userOrders == null || userOrders?.length == 0)
+                  "
+                >
+                  <td
+                    colspan="4"
+                    class="alert alert-warning font-weight-bold text-center"
+                  >
+                    <i class="fas fa-exclamation-circle"></i> No order has been
+                    done yet!
                   </td>
                 </tr>
 
@@ -145,24 +234,30 @@
                 <tr *ngFor="let order of userOrders" align="center">
                   <th scope="row">{{ order.id }}</th>
                   <th>{{ order.totalPrice }} Dhs</th>
-                  <td *ngIf="order.delivered; else notDelivered"><i class="far fa-check-square text-success"></i> </td>
-                  <td *ngIf="order.cancelled; else notCancelled"><i class="far fa-check-square text-success"></i></td>
+                  <td *ngIf="order.delivered; else notDelivered">
+                    <i class="far fa-check-square text-success"></i>
+                  </td>
+                  <td *ngIf="order.cancelled; else notCancelled">
+                    <i class="far fa-check-square text-success"></i>
+                  </td>
                 </tr>
 
                 <!-- Error orders -->
                 <tr align="center" *ngIf="errorOrders">
-                  <td colspan="3" class="alert alert-danger font-weight-bold text-center">
-                    <i class="fas fa-exclamation-triangle"></i> An error occurred!
+                  <td
+                    colspan="3"
+                    class="alert alert-danger font-weight-bold text-center"
+                  >
+                    <i class="fas fa-exclamation-triangle"></i> An error
+                    occurred!
                   </td>
                 </tr>
-
               </tbody>
             </table>
           </div>
         </div>
       </div>
-    </div><!-- End profile widget -->
-
-
+    </div>
+    <!-- End profile widget -->
   </div>
 </div>

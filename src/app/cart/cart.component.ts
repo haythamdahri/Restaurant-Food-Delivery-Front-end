@@ -6,6 +6,7 @@ import { Order } from '../models/order.model';
 import Swal from 'sweetalert2';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { MealOrder } from '../models/meal-order.model';
+import { Title } from '@angular/platform-browser';
 
 declare var $: any;
 
@@ -23,10 +24,13 @@ export class CartComponent implements OnInit, OnDestroy {
 
   constructor(
     private cartService: CartService,
-    private mealService: MealService
+    private mealService: MealService,
+    private titleService: Title
   ) {}
 
   ngOnInit() {
+    // Set page title
+    this.titleService.setTitle('Cart');
     this.form = new FormGroup({
       quantity: new FormControl('', [
         Validators.required,

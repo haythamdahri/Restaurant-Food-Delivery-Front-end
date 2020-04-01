@@ -2,6 +2,7 @@ import { Subscription } from 'rxjs';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../shared/user.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-account-activation',
@@ -19,10 +20,13 @@ export class AccountActivationComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private userService: UserService
+    private userService: UserService,
+    private titleService: Title
   ) {}
 
   ngOnInit() {
+    // Set page title
+    this.titleService.setTitle('Account activation');
     this.routeSubscription = this.route.params.subscribe(
       params => {
         const token = params['token'];
