@@ -1,7 +1,7 @@
 import { UserToken } from './../../models/user-token.model';
 import { map, retry, catchError } from "rxjs/operators";
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import * as jwtDecode from "jwt-decode";
 import { throwError, Observable } from 'rxjs';
 
@@ -13,6 +13,8 @@ export class AuthService {
   private static AUTH_ENDPOINT = 'http://localhost:8080/auth/';
   private static EMAIL_CHECK_ENDPINT = 'http://localhost:8080/api/users/search/existsByEmail';
 
+  public userAuthEvent: EventEmitter<any> = new EventEmitter<any>();
+  
   constructor(private http: HttpClient) { }
 
   // Check expiration date
@@ -54,6 +56,8 @@ export class AuthService {
         map(userData => {
           let userToken = this.decodeToken(userData.token);
           localStorage.setItem('userToken', JSON.stringify(userToken));
+          // Emit auth event
+          this.userAuthEvent.emit(true);
           return userToken;
         })
       );

@@ -14,7 +14,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   user: User;
   userSubscription: Subscription;
-  userImageChangedSubscription: Subscription;
+  userUpdateSubscription: Subscription;
+  userAuthSubscription: Subscription;
   loadingUser: boolean = true;
   errorUser: boolean = false;
   loadingImage = "../../assets/img/loading.gif";
@@ -26,9 +27,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // Fetch user
     this.retrieveCurrentUserData();
-    // Listen to image change events
-    this.userImageChangedSubscription = this.userService.userImageChangedEvent.subscribe(
+    // Listen to user update events
+    this.userUpdateSubscription = this.userService.userUpdateEvent.subscribe(
       () => {
+        this.retrieveCurrentUserData();
+        // Change updates value to refresh image
+        this.updates = Date.now();
+      }
+    )
+    // Listen to user auth events
+    this.userAuthSubscription = this.authService.userAuthEvent.subscribe(
+      () => {
+        console.log("Auth changed");
         this.retrieveCurrentUserData();
         // Change updates value to refresh image
         this.updates = Date.now();
@@ -52,9 +62,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Unsubscribe from user
+    // Unsubscribe from subscribed events
     if( this.userSubscription != null ) {
       this.userSubscription.unsubscribe();
+    }
+    if( this.userAuthSubscription != null ) {
+      this.userAuthSubscription.unsubscribe();
     }
   }
 

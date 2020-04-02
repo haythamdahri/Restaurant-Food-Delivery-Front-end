@@ -23,7 +23,7 @@ export class UserService {
   private static USER_DETAILS_API_ENDPOINT = 'http://localhost:8080/api/users/search/findByEmail';
   public static USERS_IMAGE_PREFIX = "http://localhost:8080/uploads/users/images";
 
-  public userImageChangedEvent: EventEmitter<any> = new EventEmitter<any>();
+  public userUpdateEvent: EventEmitter<any> = new EventEmitter<any>();
 
 
   constructor(private http: HttpClient, private authService: AuthService) { }
@@ -103,7 +103,7 @@ export class UserService {
 
           case HttpEventType.Response:
             // Emit user image event
-            this.userImageChangedEvent.emit(true); 
+            this.userUpdateEvent.emit(true); 
             event.body.user.image = UserService.USERS_IMAGE_PREFIX + '/' + event.body.user.image;
             return event.body;
           default:

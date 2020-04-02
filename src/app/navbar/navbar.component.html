@@ -23,10 +23,10 @@
             <img src="{{ defaultUserImage }}?updates={{ updates }}" height="20" width="20" style="border-radius: 100%;" />
           </ng-container>
           <ng-container *ngIf="!loadingUser && errorUser">
-            <img [src]="user.image" height="20" width="20" style="border-radius: 100%;" />
+            <img src="{{ user.image }}?updates={{ updates }}" height="20" width="20" style="border-radius: 100%;" />
           </ng-container>
           <ng-container *ngIf="!loadingUser && !errorUser">
-            <img [src]="user.image" height="20" width="20" style="border-radius: 100%;" />
+            <img src="{{ user.image }}?updates={{ updates }}" height="20" width="20" style="border-radius: 100%;" />
           </ng-container> Profile
           <span class="sr-only">(current)</span></a>
       </li>
