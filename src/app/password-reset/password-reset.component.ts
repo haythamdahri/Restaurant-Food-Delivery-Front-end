@@ -1,17 +1,17 @@
-import { ActivatedRoute } from '@angular/router';
-import { Title } from '@angular/platform-browser';
-import Swal from 'sweetalert2';
-import { UserService } from './../shared/user.service';
-import { AuthService } from './../shared/auth/auth.service';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ActivatedRoute } from "@angular/router";
+import { Title } from "@angular/platform-browser";
+import Swal from "sweetalert2";
+import { UserService } from "./../shared/user.service";
+import { AuthService } from "./../shared/auth/auth.service";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
 import {
   Component,
   OnInit,
   OnDestroy,
   ViewChild,
   ElementRef
-} from '@angular/core';
-import { Subscription } from 'rxjs';
+} from "@angular/core";
+import { Subscription } from "rxjs";
 
 export enum PageMode {
   RESET,
@@ -19,25 +19,25 @@ export enum PageMode {
 }
 
 @Component({
-  selector: 'app-password-reset',
-  templateUrl: './password-reset.component.html',
-  styleUrls: ['./password-reset.component.css']
+  selector: "app-password-reset",
+  templateUrl: "./password-reset.component.html",
+  styleUrls: ["./password-reset.component.css"]
 })
 export class PasswordResetComponent implements OnInit, OnDestroy {
   form: FormGroup;
   sendTokenSUbscription: Subscription;
-  @ViewChild('passwordResetBtn', { static: false })
+  @ViewChild("passwordResetBtn", { static: false })
   passwordResetBtn: ElementRef;
   passwordResetError = false;
   passwordResetSuccess = false;
-  message = '';
+  message = "";
   routeSubscription: Subscription;
   tokenCheckSubscription: Subscription;
   pageMode = PageMode.SEND_TOKEN;
   resetMode = PageMode.RESET;
   sendTokenMode = PageMode.SEND_TOKEN;
   invalidToken = false;
-  token = '';
+  token = "";
   loading = true;
 
   constructor(
@@ -48,18 +48,18 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.titleService.setTitle('Password reset');
+    this.titleService.setTitle("Password reset");
     this.routeSubscription = this.route.params.subscribe(params => {
       this.token = params.token;
       if (this.token) {
         this.pageMode = PageMode.RESET;
         this.form = new FormGroup({
-          password: new FormControl('', [
+          password: new FormControl("", [
             Validators.minLength(4),
             Validators.maxLength(150),
             Validators.required
           ]),
-          passwordConfirm: new FormControl('', [
+          passwordConfirm: new FormControl("", [
             Validators.minLength(4),
             Validators.maxLength(150),
             Validators.required,
@@ -86,7 +86,7 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
         this.pageMode = PageMode.SEND_TOKEN;
         this.form = new FormGroup({
           email: new FormControl(
-            '',
+            "",
             [Validators.required],
             [this.checkEmail.bind(this)]
           )
@@ -102,10 +102,10 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
     this.passwordResetBtn = null;
     this.passwordResetError = false;
     this.passwordResetSuccess = false;
-    this.message = '';
+    this.message = "";
     this.routeSubscription.unsubscribe();
     this.pageMode = PageMode.SEND_TOKEN;
-    this.token = '';
+    this.token = "";
     this.loading = true;
   }
 
@@ -130,21 +130,21 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
     if (this.form.invalid) {
       const Toast = Swal.mixin({
         toast: true,
-        position: 'bottom-left',
+        position: "bottom-left",
         showConfirmButton: false,
         timer: 3000
       });
 
       Toast.fire({
-        type: 'error',
-        title: 'Invalid Email'
+        type: "error",
+        title: "Invalid Email"
       });
     } else {
       (<HTMLButtonElement>this.passwordResetBtn.nativeElement).innerHTML =
         '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending ...';
       (<HTMLButtonElement>this.passwordResetBtn.nativeElement).setAttribute(
-        'disabled',
-        'true'
+        "disabled",
+        "true"
       );
       this.sendTokenSUbscription = this.userService
         .sendPasswordResetToken(this.form.controls.email.value)
@@ -154,7 +154,7 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
               '<i class="fas fa-share-square"></i> Reset';
             (<HTMLButtonElement>(
               this.passwordResetBtn.nativeElement
-            )).setAttribute('disabled', 'true');
+            )).setAttribute("disabled", "true");
             this.message = data.message;
             if (data.status) {
               this.passwordResetSuccess = true;
@@ -165,12 +165,12 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
             }
           },
           err => {
-            this.message = 'An error occurred, please try again';
+            this.message = "An error occurred, please try again";
             (<HTMLButtonElement>this.passwordResetBtn.nativeElement).innerHTML =
               '<i class="fas fa-share-square"></i> Reset';
             (<HTMLButtonElement>(
               this.passwordResetBtn.nativeElement
-            )).setAttribute('disabled', 'true');
+            )).setAttribute("disabled", "true");
           }
         );
     }
@@ -180,21 +180,21 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
     if (this.form.invalid) {
       const Toast = Swal.mixin({
         toast: true,
-        position: 'bottom-left',
+        position: "bottom-left",
         showConfirmButton: false,
         timer: 3000
       });
 
       Toast.fire({
-        type: 'error',
-        title: 'Invalid Password'
+        type: "error",
+        title: "Invalid Password"
       });
     } else {
       (<HTMLButtonElement>this.passwordResetBtn.nativeElement).innerHTML =
         '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Setting new password ...';
       (<HTMLButtonElement>this.passwordResetBtn.nativeElement).setAttribute(
-        'disabled',
-        'true'
+        "disabled",
+        "true"
       );
       this.sendTokenSUbscription = this.userService
         .resetPassword(this.token, this.form.controls.password.value)
@@ -204,7 +204,7 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
               '<i class="fas fa-share-square"></i> Reset';
             (<HTMLButtonElement>(
               this.passwordResetBtn.nativeElement
-            )).setAttribute('disabled', 'true');
+            )).setAttribute("disabled", "true");
             this.message = data.message;
             if (data.status) {
               this.passwordResetSuccess = true;
@@ -215,12 +215,12 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
             }
           },
           err => {
-            this.message = 'An error occurred, please try again';
+            this.message = "An error occurred, please try again";
             (<HTMLButtonElement>this.passwordResetBtn.nativeElement).innerHTML =
               '<i class="fas fa-share-square"></i> Reset';
             (<HTMLButtonElement>(
               this.passwordResetBtn.nativeElement
-            )).setAttribute('disabled', 'true');
+            )).setAttribute("disabled", "true");
           }
         );
     }

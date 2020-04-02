@@ -29,8 +29,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   orderSubscription: Subscription;
   errorMode = false;
   form;
-  @ViewChild('saveMealnBtn', { static: false }) saveBtn: ElementRef;
-  @ViewChild('closeBtn', { static: false }) closeBtn: ElementRef;
+  @ViewChild('saveMealnBtn', {static: false}) saveBtn: ElementRef;
+  @ViewChild('closeBtn', {static: false}) closeBtn: ElementRef;
 
   constructor(private mealService: MealService, private authService: AuthService, private titleService: Title) {}
 

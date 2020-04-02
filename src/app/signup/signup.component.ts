@@ -23,7 +23,7 @@ export class SignupComponent implements OnInit, OnDestroy {
   signUpSubscription: Subscription;
   signUpError = false;
   registered = false;
-  @ViewChild('signupBtn', { static: false }) signUpBtn: ElementRef;
+  @ViewChild('signupBtn', {static: false}) signUpBtn: ElementRef;
 
   constructor(
     private titleService: Title,

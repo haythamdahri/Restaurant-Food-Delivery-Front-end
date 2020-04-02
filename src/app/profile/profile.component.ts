@@ -29,8 +29,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   loadingOrders = false;
   loadingImage = "../../assets/img/loading.gif";
   imageSubscription: Subscription;
-  @ViewChild("fileUpload", { static: false }) fileBtn: ElementRef;
-  @ViewChild("resetPasswordBtn", { static: false })
+  @ViewChild("fileUpload", {static: false}) fileBtn: ElementRef;
+  @ViewChild("resetPasswordBtn", {static: false})
   resetPasswordBtn: ElementRef;
   uploadingImage = false;
   uploadProgress = 0;

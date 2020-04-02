@@ -16,7 +16,7 @@ export class EditEmailComponent implements OnInit {
   @Input() email: string = null;
   @Output() emailUpdate: EventEmitter<any> = new EventEmitter<any>();
   form: FormGroup;
-  @ViewChild('saveBtn', { 'static': false }) saveBtn: ElementRef;
+  @ViewChild('saveBtn', {static: false}) saveBtn: ElementRef;
   updateEmailSubscription: Subscription;
 
   constructor(private authService: AuthService, private userService: UserService, private router: Router) { }

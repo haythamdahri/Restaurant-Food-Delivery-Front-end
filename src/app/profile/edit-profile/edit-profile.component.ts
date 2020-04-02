@@ -20,7 +20,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   @Output() userUpdate: EventEmitter<User> = new EventEmitter<User>();
   editProfileSubscription: Subscription;
   form: FormGroup;
-  @ViewChild('saveBtn', { 'static': false }) saveBtn: ElementRef;
+  @ViewChild('saveBtn', {static: false}) saveBtn: ElementRef;
 
   constructor(private authService: AuthService, private userService: UserService) { }
 

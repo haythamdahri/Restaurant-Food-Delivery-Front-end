@@ -2,11 +2,9 @@ import { AuthService } from "./auth/auth.service";
 import { catchError, retry } from "rxjs/operators";
 import { User } from "./../models/user.model";
 import { HttpClient, HttpParams, HttpEventType } from "@angular/common/http";
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { throwError, pipe } from 'rxjs';
-import { stringify } from '@angular/compiler/src/util';
-import { EventEmitter } from 'events';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +22,8 @@ export class UserService {
   private static USER_ORDERS_API_ENDPOINT = 'http://localhost:8080/api/orders/search/findByUserEmail';
   private static USER_DETAILS_API_ENDPOINT = 'http://localhost:8080/api/users/search/findByEmail';
   public static USERS_IMAGE_PREFIX = "http://localhost:8080/uploads/users/images";
+
+  public userImageChangedEvent: EventEmitter<any> = new EventEmitter<any>();
 
 
   constructor(private http: HttpClient, private authService: AuthService) { }
@@ -102,6 +102,8 @@ export class UserService {
             return { status: 'progress', message: progress };
 
           case HttpEventType.Response:
+            // Emit user image event
+            this.userImageChangedEvent.emit(true); 
             event.body.user.image = UserService.USERS_IMAGE_PREFIX + '/' + event.body.user.image;
             return event.body;
           default:
