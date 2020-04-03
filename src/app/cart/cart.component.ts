@@ -32,6 +32,8 @@ export class CartComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    // Init indicators
+    this.errorMode = false;
     // Set page title
     this.titleService.setTitle("Cart");
     this.form = new FormGroup({
@@ -41,6 +43,23 @@ export class CartComponent implements OnInit, OnDestroy {
         Validators.max(500),
       ]),
     });
+    // fetch Data
+    this.fetchData();
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+    this.errorMode = false;
+    this.activeOrder = null;
+    if (this.mealSaveSubscription != null) {
+      this.mealSaveSubscription.unsubscribe();
+    }
+    if (this.mealOrderSubscription != null) {
+      this.mealOrderSubscription.unsubscribe();
+    }
+  }
+
+  fetchData() {
     this.subscription = this.cartService.getUserCartOrders().subscribe(
       (data) => {
         if (data["noActiveOrder"]) {
@@ -54,18 +73,6 @@ export class CartComponent implements OnInit, OnDestroy {
         this.errorMode = true;
       }
     );
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-    this.errorMode = false;
-    this.activeOrder = null;
-    if (this.mealSaveSubscription != null) {
-      this.mealSaveSubscription.unsubscribe();
-    }
-    if (this.mealOrderSubscription != null) {
-      this.mealOrderSubscription.unsubscribe();
-    }
   }
 
   onDeleteMealOrder(id: number) {
@@ -89,15 +96,22 @@ export class CartComponent implements OnInit, OnDestroy {
               showConfirmButton: false,
               timer: 3000,
             });
-
-            Toast.fire({
-              type: "success",
-              title: "Meal has been deleted from your cart successfully",
-            });
+            if( data.status == true ) {
+              Toast.fire({
+                type: "success",
+                title: data.message,
+              });
+            } else {
+              Toast.fire({
+                type: "error",
+                title: data.message,
+              });
+            }
             this.subscription.unsubscribe();
             this.errorMode = false;
             this.activeOrder = null;
-            this.ngOnInit();
+            // Fetch data
+            this.fetchData();
           },
           (err) => {
             const Toast = Swal.mixin({
@@ -148,56 +162,8 @@ export class CartComponent implements OnInit, OnDestroy {
         '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...'
       );
       $("#updateBtn").attr("disabled", true);
-      // Check availabe quantity
-      this.mealOrderSubscription = this.mealService
-        .getMeal(
-          this.activeOrder.mealOrders.filter(
-            (mealOrder) => mealOrder.id == mealOrderId
-          )[0].meal.id
-        )
-        .subscribe(
-          (meal) => {
-            if (meal.stock >= newQuantity) {
-              this.performMealOrderQuantityUpdate(mealOrderId, newQuantity);
-            } else {
-              const Toast = Swal.mixin({
-                toast: true,
-                position: "bottom-left",
-                showConfirmButton: false,
-                timer: 3000,
-              });
-
-              Toast.fire({
-                type: "error",
-                title: "Unavailable quantity",
-              });
-              // Init data
-              this.ngOnInit();
-            }
-          },
-          () => {
-            const Toast = Swal.mixin({
-              toast: true,
-              position: "bottom-left",
-              showConfirmButton: false,
-              timer: 3000,
-            });
-
-            Toast.fire({
-              type: "error",
-              title: "An error occurred",
-            });
-            // Init data
-            this.ngOnInit();
-          },
-          () => {
-            // After completing request
-            $("#updateBtn" + mealOrderId).html(
-              '<i class="fas fa-redo-alt"></i> Update'
-            );
-            $("#updateBtn").attr("disabled", false);
-          }
-        );
+      // Perform mealOrder quantity update
+      this.performMealOrderQuantityUpdate(mealOrderId, newQuantity);
     }
   }
 
@@ -205,20 +171,19 @@ export class CartComponent implements OnInit, OnDestroy {
     this.mealSaveSubscription = this.mealOrderService
       .updateQuantity(mealOrderId, newQuantity)
       .subscribe(
-        (newMealOrder: MealOrder) => {
+        (data) => {
           const Toast = Swal.mixin({
             toast: true,
             position: "bottom-left",
             showConfirmButton: false,
             timer: 3000,
           });
-
           Toast.fire({
-            type: "success",
-            title: "Ordered quantity has been updated successfully",
+            type: data.status == true ? 'success' : 'error',
+            title: data.message,
           });
           // Init data
-          this.ngOnInit();
+          this.fetchData();
         },
         (err) => {
           const Toast = Swal.mixin({
@@ -233,7 +198,7 @@ export class CartComponent implements OnInit, OnDestroy {
             title: "An error occurred",
           });
           // Init data
-          this.ngOnInit();
+          this.fetchData();
         }
       );
   }

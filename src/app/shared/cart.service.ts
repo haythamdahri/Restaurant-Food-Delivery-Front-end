@@ -36,6 +36,6 @@ export class CartService {
   }
 
   deleteMealOrder(id: number) {
-    return this.http.delete(`${this.API}/mealOrders/${id}`);
+    return this.http.delete<{status: boolean, message: string}>(`${this.API_V1}/mealorders/${id}`);
   }
 }

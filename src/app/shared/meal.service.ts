@@ -35,15 +35,6 @@ export class MealService {
     return this.http.get<Meal>(`${this.API}/meals/${id}`);
   }
 
-  addMealOrder(meal: Meal, quantity: number) {
-    const mealOrder = new MealOrder();
-    mealOrder.id = null;
-    mealOrder.meal = meal;
-    mealOrder.quantity = quantity;
-    console.log(mealOrder);
-    return this.http.post(`${this.API_V1}/`, mealOrder);
-  }
-
   saveMeal(meal: Meal) {
     return this.http.post<Meal>(`${this.API}/meals`, meal);
   }
