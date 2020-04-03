@@ -30,7 +30,7 @@ export class ContactUsComponent implements OnInit, OnDestroy {
       lastName: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
       email: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(60)]),
       phone: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(14)]),
-      message: new FormControl('', [Validators.required, Validators.minLength(60), Validators.maxLength(600)]),
+      message: new FormControl('', [Validators.required, Validators.minLength(100), Validators.maxLength(15000)]),
     });
   }
 
@@ -69,7 +69,6 @@ export class ContactUsComponent implements OnInit, OnDestroy {
           (<HTMLElement>this.sendBtn.nativeElement).attributes['disabled'] = false;
           this.errorMode = true;
           this.formSubmitted = false;
-          console.log(err.getMessage());
         })
     }
   }

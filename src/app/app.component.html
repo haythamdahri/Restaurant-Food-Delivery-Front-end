@@ -1,6 +1,9 @@
 <!-- Navbar -->
 <app-navbar></app-navbar>
 
+<!-- Header -->
+<app-header *ngIf="router.url == '/'"></app-header>
+
 <div class="container-fluid">
   <!-- Content rendering -->
   <router-outlet></router-outlet>

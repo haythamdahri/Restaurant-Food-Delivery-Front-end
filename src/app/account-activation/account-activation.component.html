@@ -1,37 +1,46 @@
 <div class="row">
 
-  <div class="col-12 col-sm-12 col-md-8 col-lg-8 col-xl-8 mx-auto mt-4">
+  <div class="col-12 col-sm-12 col-md-10 col-lg-10 col-xl-10 mx-auto mt-4">
 
-    <div class="card">
-      <div class="card-header">
+    <div class="card shadow-sm mb-5 bg-white rounded">
+      <div class="card-header shadow-sm p-3 rounded">
         Account activation
       </div>
       <div class="card-body">
-        <h5 class="card-title">
+        <h5 class="card-title text-center text-monospace font-weight-bold">
           Account status
         </h5>
         <div class="card-text">
 
           <!-- Loading bar -->
-          <div class="text-center" *ngIf="loading">
+          <div
+            *ngIf="loading"
+            class="shadow p-3 rounded bg-light text-dark text-center font-weight-bold mb-3 fade show"
+          >
             <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
-              <span class="sr-only">Loading...</span>
+            <span class="sr-only">Loading...</span>
             </div>
           </div>
 
           <!-- Success activation message -->
-          <div class="alert alert-success font-weight-bold" *ngIf="activationDone">
-            <i class="far fa-check-circle"></i> Your account has been activated successfully, {{ message }}.
+          <div
+            *ngIf="activationDone"
+            class="shadow p-3 rounded bg-success text-white text-center font-weight-bold mb-3 fade show"
+          >
+          <i class="far fa-check-circle"></i> Your account has been activated successfully, {{ message }}.
           </div>
 
-          <!-- Failed activation message -->
-          <div class="alert alert-danger font-weight-bold" *ngIf="activationFail">
-            <i class="far fa-times-circle"></i> Activation failed, {{ message }}!
-          </div>
-
-          <!-- Error message -->
-          <div class="alert alert-danger font-weight-bold" *ngIf="error">
-            <i class="far fa-times-circle"></i> An error occurred, please try again!
+          <!-- Failed activation or error message -->
+          <div
+            *ngIf="activationFail || error"
+            class="shadow p-3 rounded bg-danger text-white text-center font-weight-bold mb-3 fade show"
+          >
+            <ng-container *ngIf="activationFail">
+              <i class="far fa-times-circle"></i> Activation failed, {{ message }}!
+            </ng-container>
+            <ng-container *ngIf="error">
+              <i class="far fa-times-circle"></i> An error occurred!
+            </ng-container>
           </div>
 
         </div>

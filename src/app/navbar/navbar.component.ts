@@ -25,8 +25,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService, private router: Router, private userService: UserService) { }
 
   ngOnInit() {
-    // Fetch user
-    this.retrieveCurrentUserData();
+    // Fetch user if authenticated
+    if( this.authService.isAuthenticated() ) {
+      this.retrieveCurrentUserData();
+    }
     // Listen to user update events
     this.userUpdateSubscription = this.userService.userUpdateEvent.subscribe(
       () => {
@@ -38,7 +40,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     // Listen to user auth events
     this.userAuthSubscription = this.authService.userAuthEvent.subscribe(
       () => {
-        console.log("Auth changed");
         this.retrieveCurrentUserData();
         // Change updates value to refresh image
         this.updates = Date.now();

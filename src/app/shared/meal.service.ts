@@ -47,15 +47,4 @@ export class MealService {
   saveMeal(meal: Meal) {
     return this.http.post<Meal>(`${this.API}/meals`, meal);
   }
-
-  saveMealOrder(mealOrder: MealOrder) {
-    return this.http.post<MealOrder>(`${this.API}/mealOrders`, mealOrder);
-  }
-
-  updateQuantity(mealOrderId: number, newQuantity: number) {
-    return this.http.patch<MealOrder>(`${this.API}/mealOrders/${mealOrderId}`, {
-      id: mealOrderId,
-      quantity: newQuantity
-    });
-  }
 }

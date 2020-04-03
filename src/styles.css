@@ -1,1 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
+body {
+  padding-top: 50px;
+}
+@media (max-width: 979px) {
+  body {
+    padding-top: 0px;
+  }
+}
+button, .btn {
+  box-shadow: 0 .125rem .25rem rgba(32, 23, 23, 0.075) !important;
+  border-radius: .25rem!important;
+}

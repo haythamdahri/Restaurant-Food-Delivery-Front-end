@@ -1,103 +1,223 @@
 <div class="row">
-
   <!-- Add new meal icon -->
-  <div class="col-12 mt-2 font-weight-bold" *ngIf="authService.isAuthenticated() && authService.isAdmin()">
-    <button (click)="initForm()" class="btn btn-warning btn-sm btn-block w-25 mx-auto" data-toggle="modal" data-target="#meal-form-modal"><i
-        class="fas fa-plus-circle"></i> Add new meal</button>
+  <div
+    class="col-12 mt-2 font-weight-bold"
+    *ngIf="authService.isAuthenticated() && authService.isAdmin()"
+  >
+    <button
+      (click)="initForm()"
+      class="btn btn-warning btn-sm btn-block w-25 mx-auto"
+      data-toggle="modal"
+      data-target="#meal-form-modal"
+    >
+      <i class="fas fa-plus-circle"></i> Add new meal
+    </button>
   </div>
 
   <!-- Laoding icon -->
-  <div class="col-12 text-center mt-4" *ngIf="!meals && !errorMode">
+  <div class="col-12 mx-auto mt-5" *ngIf="!errorMode && !meals">
     <div class="spinner-border" role="status">
       <span class="sr-only">Loading...</span>
     </div>
   </div>
 
   <!-- Error mode message -->
-  <div class="col-12 mt-2" *ngIf="errorMode">
-    <div class="alert alert-danger font-weight-bold text-center">
-      <i class="fas fa-exclamation-triangle"></i> An error occurred, please try again!
+  <div
+    class="col-12 mx-auto mt-5"
+    *ngIf="errorMode"
+  >
+    <div
+      class="shadow p-3 mb-5 rounded bg-danger text-white text-center"
+    >
+      <i class="fas fa-exclamation"></i> An error occurred, please try again later!
     </div>
   </div>
 
-  <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 mx-auto mt-3" *ngFor="let meal of meals">
+  <!-- No meals found message -->
+  <div
+    class="col-12 mx-auto mt-5"
+    *ngIf="!errorMode && meals && meals.length == 0"
+  >
+    <div
+      class="shadow p-3 mb-5 rounded bg-light text-primary text-center font-weight-bold text-monospace h4"
+    >
+      <i class="fas fa-exclamation"></i> No meals to shop
+    </div>
+  </div>
 
+  <!-- Loop over meals retrieved from server -->
+  <div
+    class="col-sm-12 col-md-4 col-lg-4 col-xl-4 mx-auto mt-3"
+    *ngFor="let meal of meals"
+  >
     <div class="card shadow p-3 mb-5 bg-white rounded" style="padding: 2rem;">
-      <button class="btn btn-debug btn-lg text-center" (click)="onMealFetch(meal.id)" *ngIf="authService.isAuthenticated() && authService.isAdmin()">
+      <button
+        class="btn btn-debug btn-lg text-center"
+        (click)="onMealFetch(meal.id)"
+        *ngIf="authService.isAuthenticated() && authService.isAdmin()"
+      >
         <i class="fas fa-edit"></i>
       </button>
-      <img [src]="meal.image" class="card-img-top shadow-sm p-3 mb-5 rounded" alt="{{ meal.name }}">
+      <img
+        [src]="meal.image"
+        class="card-img-top shadow-sm p-3 mb-5 rounded"
+        alt="{{ meal.name }}"
+      />
       <div class="card-body">
         <h5 class="card-title">{{ meal.name }}</h5>
         <p class="card-text">{{ meal.price }} Dhs</p>
-        <button class="btn btn-primary shadow-lg btn-block" (click)="onAddMealOrder(meal)"><i
-            class="fas fa-cart-plus"></i> Add To Cart</button>
-      </div>
-    </div>
-
-  </div>
-
-</div>
-
-
-
-<!-- Modals -->
-<div class="modal fade" id="meal-form-modal" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
-  aria-hidden="true" *ngIf="authService.isAuthenticated() && authService.isAdmin()">
-  <div class="modal-dialog modal-xl">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Meal Form</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+        <button
+          class="btn btn-primary shadow-lg btn-block"
+          (click)="onAddMealOrder(meal)"
+        >
+          <i class="fas fa-cart-plus"></i> Add To Cart
         </button>
       </div>
-      <form [formGroup]="form" (ngSubmit)="onSaveMeal()">
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="Name">Name</label>
-            <input type="text" class="form-control"
-              [ngClass]="{'is-invalid': form.controls.name.touched && form.controls.name.invalid, 'is-valid': form.controls.name.touched && form.controls.name.valid}"
-              id="Name" placeholder="Meal name" formControlName="name" />
-            <div class="invalid-feedback" *ngIf="form.controls.name.touched && form.controls.name.invalid">
-              Invalid meal name
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="Image">Image Url</label>
-            <input type="url" class="form-control" id="Image"
-              [ngClass]="{'is-invalid': form.controls.image.touched && form.controls.image.invalid, 'is-valid': form.controls.image.touched && form.controls.image.valid}"
-              id="Price" placeholder="Meal image url" formControlName="image" />
-            <div class="invalid-feedback" *ngIf="form.controls.image.touched && form.controls.image.invalid">
-              Invalid meal image
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="Price">Price</label>
-            <input type="number" class="form-control" id="Price"
-              [ngClass]="{'is-invalid': form.controls.price.touched && form.controls.price.invalid, 'is-valid': form.controls.price.touched && form.controls.price.valid}"
-              id="Price" placeholder="Meal price" formControlName="price" />
-            <div class="invalid-feedback" *ngIf="form.controls.price.touched && form.controls.price.invalid">
-              Invalid meal price
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="Stock">Available Stock</label>
-            <input type="number" class="form-control"
-              [ngClass]="{'is-invalid': form.controls.stock.touched && form.controls.stock.invalid, 'is-valid': form.controls.stock.touched && form.controls.stock.valid}"
-              id="Stock" placeholder="Meal available stock" formControlName="stock" />
-            <div class="invalid-feedback" *ngIf="form.controls.stock.touched && form.controls.stock.invalid">
-              Invalid meal stock
-            </div>
-          </div>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <div
+    class="modal fade"
+    id="meal-form-modal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="myExtraLargeModalLabel"
+    aria-hidden="true"
+    *ngIf="authService.isAuthenticated() && authService.isAdmin()"
+  >
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Meal Form</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary btn-sm" #closeBtn data-dismiss="modal"><i
-              class="far fa-times-circle"></i> Close</button>
-          <button type="submit" class="btn btn-success btn-sm" [disabled]="form.invalid" #saveMealnBtn><i
-              class="fas fa-save"></i> Save</button>
-        </div>
-      </form>
+        <form [formGroup]="form" (ngSubmit)="onSaveMeal()">
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="Name">Name</label>
+              <input
+                type="text"
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid':
+                    form.controls.name.touched && form.controls.name.invalid,
+                  'is-valid':
+                    form.controls.name.touched && form.controls.name.valid
+                }"
+                id="Name"
+                placeholder="Meal name"
+                formControlName="name"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="form.controls.name.touched && form.controls.name.invalid"
+              >
+                Invalid meal name
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="Image">Image Url</label>
+              <input
+                type="url"
+                class="form-control"
+                id="Image"
+                [ngClass]="{
+                  'is-invalid':
+                    form.controls.image.touched && form.controls.image.invalid,
+                  'is-valid':
+                    form.controls.image.touched && form.controls.image.valid
+                }"
+                id="Price"
+                placeholder="Meal image url"
+                formControlName="image"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  form.controls.image.touched && form.controls.image.invalid
+                "
+              >
+                Invalid meal image
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="Price">Price</label>
+              <input
+                type="number"
+                class="form-control"
+                id="Price"
+                [ngClass]="{
+                  'is-invalid':
+                    form.controls.price.touched && form.controls.price.invalid,
+                  'is-valid':
+                    form.controls.price.touched && form.controls.price.valid
+                }"
+                id="Price"
+                placeholder="Meal price"
+                formControlName="price"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  form.controls.price.touched && form.controls.price.invalid
+                "
+              >
+                Invalid meal price
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="Stock">Available Stock</label>
+              <input
+                type="number"
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid':
+                    form.controls.stock.touched && form.controls.stock.invalid,
+                  'is-valid':
+                    form.controls.stock.touched && form.controls.stock.valid
+                }"
+                id="Stock"
+                placeholder="Meal available stock"
+                formControlName="stock"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  form.controls.stock.touched && form.controls.stock.invalid
+                "
+              >
+                Invalid meal stock
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary btn-sm"
+              #closeBtn
+              data-dismiss="modal"
+            >
+              <i class="far fa-times-circle"></i> Close
+            </button>
+            <button
+              type="submit"
+              class="btn btn-success btn-sm"
+              [disabled]="form.invalid"
+              #saveMealnBtn
+            >
+              <i class="fas fa-save"></i> Save
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>

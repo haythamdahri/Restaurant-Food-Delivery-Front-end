@@ -13,6 +13,7 @@ export class ContactService {
   constructor(private http: HttpClient) { }
 
   sendContactMessage(contactMessage: ContactMessage) {
+    console.log(contactMessage);
     return this.http.post<ContactMessage>(`${this.API}/messages`, contactMessage);
   }
 

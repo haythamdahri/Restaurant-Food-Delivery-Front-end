@@ -7,11 +7,12 @@ import { LoginComponent } from "./login/login.component";
 import { AuthGuard } from "./shared/auth/auth-guard.service";
 import { CartComponent } from "./cart/cart.component";
 import { ContactUsComponent } from "./contact-us/contact-us.component";
-import { HomeComponent } from "./home/home.component";
+import { MainComponent } from "./main/main.component";
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { SignupComponent } from './signup/signup.component';
+import { HomeComponent } from './home/home.component';
 
 const routes: Routes = [
   {

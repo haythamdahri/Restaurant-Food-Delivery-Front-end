@@ -1,50 +1,111 @@
 <div class="row">
-
   <div class="col-12 col-sm-12 col-md-8 col-lg-8 col-xl-8 mx-auto mt-4">
-
-    <div class="card">
-      <div class="card-header">
+    <div class="card shadow-sm mb-5 bg-white rounded">
+      <div class="card-header shadow-sm p-3 rounded">
         Sing in
       </div>
       <div class="card-body">
-        <h5 class="card-title">
-          <div class="alert alert-danger text-center font-weight-bold" *ngIf="loginError">
-            <i class="fas fa-exclamation-triangle"></i> Email or password is incorrect, please check if your account is
-            enabled!
-          </div>
+        <div
+          *ngIf="loginError"
+          class="shadow p-3 rounded bg-danger text-white text-center alert font-weight-bold mb-3 alert-dismissible fade show"
+          role="alert"
+        >
+          <i class="fas fa-exclamation-triangle"></i> Email or password is
+          incorrect, please check if your account is enabled!
+          <button
+            type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Close"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <h5 class="card-title text-center text-monospace font-weight-bold">
           Login with email and password
         </h5>
         <div class="card-text">
           <form [formGroup]="form" (ngSubmit)="onLogin()">
             <div class="form-group">
               <label for="Email">Email address</label>
-              <input type="email" formControlName="email"
-                [ngClass]="{'is-invalid': form.controls.email.touched && form.controls.email.invalid, 'is-valid': form.controls.email.tuched && form.controls.email.valid}"
-                class="form-control" id="Email" placeholder="Enter email" />
-              <div class="invalid-feedback" *ngIf="form.controls.email.touched && form.controls.email.invalid">
+              <input
+                type="email"
+                formControlName="email"
+                [ngClass]="{
+                  'is-invalid':
+                    form.controls.email.touched && form.controls.email.invalid,
+                  'is-valid':
+                    form.controls.email.tuched && form.controls.email.valid
+                }"
+                class="form-control"
+                id="Email"
+                placeholder="Enter email"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  form.controls.email.touched && form.controls.email.invalid
+                "
+              >
                 Invalid email
               </div>
             </div>
             <div class="form-group">
               <label for="Password">Password</label>
-              <input type="password" formControlName="password"
-                [ngClass]="{'is-invalid': form.controls.password.touched && form.controls.password.invalid, 'is-valid': form.controls.password.tuched && form.controls.password.valid}"
-                class="form-control" id="Password" placeholder="Password">
-              <div class="invalid-feedback" *ngIf="form.controls.password.touched && form.controls.password.invalid">
+              <input
+                type="password"
+                formControlName="password"
+                [ngClass]="{
+                  'is-invalid':
+                    form.controls.password.touched &&
+                    form.controls.password.invalid,
+                  'is-valid':
+                    form.controls.password.tuched &&
+                    form.controls.password.valid
+                }"
+                class="form-control"
+                id="Password"
+                placeholder="Password"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  form.controls.password.touched &&
+                  form.controls.password.invalid
+                "
+              >
                 Invalid password
               </div>
             </div>
-            <button type="submit" #loginBtn [disabled]="form.invalid" class="btn btn-warning btn-sm btn-block"><i
-                class="fas fa-sign-in-alt"></i> Login</button>
+            <button
+              type="submit"
+              #loginBtn
+              [disabled]="form.invalid"
+              class="btn btn-warning btn-sm btn-block"
+            >
+              <i class="fas fa-sign-in-alt"></i> Login
+            </button>
           </form>
           <!-- Password reset | Sign up links -->
-          <div class="col-12 mt-3">
-            <a routerLink="/reset-password">Reset password</a> | <a routerLink="/signup">Sign Up</a>
+          <div class="row">
+            <div class="col-6 mx-auto mt-3 text-center">
+              <a routerLink="/reset-password"
+                ><button type="button" class="btn btn-outline-info shadow rounded">
+                  <i class="fas fa-unlock-alt"></i> Reset password
+                </button></a
+              >
+            </div>
+            <div class="col-6 mx-auto mt-3 text-center">
+              <a routerLink="/signup"
+                ><button type="button" class="btn btn-outline-dark shadow rounded">
+                  <i class="fas fa-user-plus"></i> Sign Up
+                </button></a
+              >
+            </div>
           </div>
         </div>
       </div>
     </div>
-
   </div>
-
 </div>

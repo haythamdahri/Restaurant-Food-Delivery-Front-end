@@ -5,6 +5,7 @@ import { HttpClient, HttpParams, HttpEventType } from "@angular/common/http";
 import { Injectable, EventEmitter } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { throwError, pipe } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,7 @@ export class UserService {
   public userUpdateEvent: EventEmitter<any> = new EventEmitter<any>();
 
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
+  constructor(private http: HttpClient, private authService: AuthService, private router: Router) { }
 
   register(user: User) {
     return this.http.post<User>(UserService.SIGN_UP_ENDPOINT, user).pipe(
@@ -83,7 +84,14 @@ export class UserService {
         return data['_embedded']['orders'];
       }),
       retry(5),
-      catchError(this.handleHttpError)
+      catchError((error) => {
+        // Logout user
+        this.authService.logout();
+        // Redirect user to login page
+        this.router.navigateByUrl('/login');
+        // Handle error
+        return this.handleHttpError(error);
+      })
     );
   }
 
@@ -125,6 +133,14 @@ export class UserService {
   }
 
   handleHttpError(error) {
-    return throwError(error);
+    let errorMessage = '';
+    if (error.error instanceof ErrorEvent) {
+      // client-side error
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // server-side error
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    return throwError(errorMessage);
   }
 }

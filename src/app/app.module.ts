@@ -20,6 +20,8 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
 import { ProfileComponent } from './profile/profile.component';
 import { EditProfileComponent } from './profile/edit-profile/edit-profile.component';
 import { EditEmailComponent } from './profile/edit-email/edit-email.component';
+import { MainComponent } from './main/main.component';
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,9 @@ import { EditEmailComponent } from './profile/edit-email/edit-email.component';
     PasswordResetComponent,
     ProfileComponent,
     EditProfileComponent,
-    EditEmailComponent
+    EditEmailComponent,
+    MainComponent,
+    HeaderComponent
   ],
   imports: [BrowserModule, AppRoutingModule, CustomModule, LayoutModule],
   providers: [

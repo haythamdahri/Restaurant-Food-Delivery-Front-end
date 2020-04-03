@@ -1,79 +1,208 @@
 <div class="row">
-
-  <div class="col-12 col-sm-12 col-md-8 col-lg-8 col-xl-8 mx-auto mt-4" >
-
-    <div class="card" *ngIf="!registered">
-      <div class="card-header">
+  <div class="col-12 col-sm-12 col-md-8 col-lg-8 col-xl-8 mx-auto mt-4">
+    <div class="card shadow-sm mb-5 bg-white rounded" *ngIf="!registered">
+      <div class="card-header shadow-sm p-3 rounded">
         Create new account
       </div>
       <div class="card-body">
-        <h5 class="card-title">
-          <div class="alert alert-danger text-center font-weight-bold" *ngIf="signUpError">
-            <i class="fas fa-exclamation-triangle"></i> Your information are not correct, please review it then try again!
-          </div>
+        <div
+          *ngIf="signUpError"
+          class="shadow p-3 rounded bg-danger text-white text-center alert font-weight-bold mb-3 alert-dismissible fade show"
+          role="alert"
+        >
+          <i class="fas fa-exclamation-triangle"></i> Your information are not
+          correct, please review it then try again!
+          <button
+            type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Close"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <h5 class="card-title text-center text-monospace font-weight-bold">
           Fill your information
         </h5>
+
         <div class="card-text">
           <form [formGroup]="form" (ngSubmit)="onSingUp()">
             <div class="form-group">
               <label for="Email">Email address</label>
-              <input type="email" formControlName="email"
-                [ngClass]="{'is-invalid': form.controls.email.touched && form.controls.email.invalid, 'is-valid': form.controls.email.touched && form.controls.email.valid}"
-                class="form-control" id="Email" placeholder="Enter email" />
-              <div class="invalid-feedback"
-                *ngIf="form.controls.email.touched && form.controls.email.invalid && !form.controls.email.errors.isEmailAlreadyUsed">
+              <input
+                type="email"
+                formControlName="email"
+                [ngClass]="{
+                  'is-invalid':
+                    form.controls.email.touched && form.controls.email.invalid,
+                  'is-valid':
+                    form.controls.email.touched && form.controls.email.valid
+                }"
+                class="form-control"
+                id="Email"
+                placeholder="Enter email"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  form.controls.email.touched &&
+                  form.controls.email.invalid &&
+                  !form.controls.email.errors.isEmailAlreadyUsed
+                "
+              >
                 Invalid email
               </div>
-              <div class="invalid-feedback"
-                *ngIf="form.controls.email.touched && form.controls.email.invalid && form.controls.email.errors.isEmailAlreadyUsed">
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  form.controls.email.touched &&
+                  form.controls.email.invalid &&
+                  form.controls.email.errors.isEmailAlreadyUsed
+                "
+              >
                 Email is already used
               </div>
             </div>
             <div class="form-group">
               <label for="Username">Username</label>
-              <input type="text" formControlName="username"
-                [ngClass]="{'is-invalid': form.controls.username.touched && form.controls.username.invalid, 'is-valid': form.controls.username.touched && form.controls.username.valid}"
-                class="form-control" id="Username" placeholder="Enter username" />
-              <div class="invalid-feedback"
-                *ngIf="form.controls.username.touched && form.controls.username.invalid">
+              <input
+                type="text"
+                formControlName="username"
+                [ngClass]="{
+                  'is-invalid':
+                    form.controls.username.touched &&
+                    form.controls.username.invalid,
+                  'is-valid':
+                    form.controls.username.touched &&
+                    form.controls.username.valid
+                }"
+                class="form-control"
+                id="Username"
+                placeholder="Enter username"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  form.controls.username.touched &&
+                  form.controls.username.invalid
+                "
+              >
                 Invalid username
               </div>
             </div>
             <div class="form-group">
               <label for="Location">Location</label>
-              <input type="text" formControlName="location"
-                [ngClass]="{'is-invalid': form.controls.location.touched && form.controls.location.invalid, 'is-valid': form.controls.location.touched && form.controls.location.valid}"
-                class="form-control" id="Location" placeholder="Enter location" />
-              <div class="invalid-feedback"
-                *ngIf="form.controls.location.touched && form.controls.location.invalid">
+              <input
+                type="text"
+                formControlName="location"
+                [ngClass]="{
+                  'is-invalid':
+                    form.controls.location.touched &&
+                    form.controls.location.invalid,
+                  'is-valid':
+                    form.controls.location.touched &&
+                    form.controls.location.valid
+                }"
+                class="form-control"
+                id="Location"
+                placeholder="Enter location"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  form.controls.location.touched &&
+                  form.controls.location.invalid
+                "
+              >
                 Invalid location
               </div>
             </div>
             <div class="form-group">
               <label for="Password">Password</label>
-              <input type="password" formControlName="password"
-                [ngClass]="{'is-invalid': form.controls.password.touched && form.controls.password.invalid, 'is-valid': form.controls.password.tuched && form.controls.password.valid}"
-                class="form-control" id="Password" placeholder="Password">
-              <div class="invalid-feedback" *ngIf="form.controls.password.touched && form.controls.password.invalid">
+              <input
+                type="password"
+                formControlName="password"
+                [ngClass]="{
+                  'is-invalid':
+                    form.controls.password.touched &&
+                    form.controls.password.invalid,
+                  'is-valid':
+                    form.controls.password.tuched &&
+                    form.controls.password.valid
+                }"
+                class="form-control"
+                id="Password"
+                placeholder="Password"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  form.controls.password.touched &&
+                  form.controls.password.invalid
+                "
+              >
                 Invalid password
               </div>
             </div>
             <div class="form-group">
               <label for="PasswordConfirm">Confirm Password</label>
-              <input type="password" formControlName="passwordConfirm"
-                [ngClass]="{'is-invalid': form.controls.passwordConfirm.touched && form.controls.passwordConfirm.invalid, 'is-valid': form.controls.passwordConfirm.tuched && form.controls.passwordConfirm.valid}"
-                class="form-control" id="PasswordConfirm" placeholder="Confirm Password">
-              <div class="invalid-feedback"
-                *ngIf="form.controls.passwordConfirm.touched && form.controls.passwordConfirm.invalid">
+              <input
+                type="password"
+                formControlName="passwordConfirm"
+                [ngClass]="{
+                  'is-invalid':
+                    form.controls.passwordConfirm.touched &&
+                    form.controls.passwordConfirm.invalid,
+                  'is-valid':
+                    form.controls.passwordConfirm.tuched &&
+                    form.controls.passwordConfirm.valid
+                }"
+                class="form-control"
+                id="PasswordConfirm"
+                placeholder="Confirm Password"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  form.controls.passwordConfirm.touched &&
+                  form.controls.passwordConfirm.invalid
+                "
+              >
                 Unconfirmed password or invalid
               </div>
             </div>
-            <button type="submit" #signupBtn [disabled]="form.invalid" class="btn btn-warning btn-sm btn-block"><i
-                class="far fa-save"></i> Sign Up</button>
+            <button
+              type="submit"
+              #signupBtn
+              [disabled]="form.invalid"
+              class="btn btn-warning btn-sm btn-block"
+            >
+              <i class="far fa-save"></i> Sign Up
+            </button>
           </form>
           <!-- Password reset | Sign up links -->
-          <div class="col-12 mt-3">
-            <a routerLink="/reset-password">Reset password</a> | <a routerLink="/login">Sign In</a>
+          <div class="row">
+            <div class="col-6 mx-auto mt-3 text-center">
+              <a routerLink="/reset-password"
+                ><button
+                  type="button"
+                  class="btn btn-outline-info shadow rounded"
+                >
+                  <i class="fas fa-unlock-alt"></i> Reset password
+                </button></a
+              >
+            </div>
+            <div class="col-6 mx-auto mt-3 text-center">
+              <a routerLink="/signup"
+                ><button
+                  type="button"
+                  class="btn btn-outline-dark shadow rounded"
+                >
+                  <i class="fas fa-user-plus"></i> Sign Up
+                </button></a
+              >
+            </div>
           </div>
         </div>
       </div>
@@ -84,15 +213,16 @@
         Create new account
       </div>
       <div class="card-body">
-        <h5 class="card-title">
+        <h5 class="card-title text-center font-weight-bold text-monospace">
           Account has been registered successfully
         </h5>
-        <div class="card-text alert alert-success">
-          <i class="fas fa-check-circle"></i> Please activate your account via the received email.
+
+        <div
+          class="shadow p-3 rounded bg-success text-white text-center font-weight-bold mb-3 fade show"
+        >
+          <i class="fas fa-check-circle"></i>  Please activate your account via the received email.
         </div>
       </div>
     </div>
-
   </div>
-
 </div>

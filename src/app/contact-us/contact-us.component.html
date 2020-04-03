@@ -1,37 +1,70 @@
-<div class="row">
-
-  <div class="col-lg-8 col-lg-offset-2 mx-auto mt-4">
-
-
-    <div class="alert alert-primary" role="alert" *ngIf="!errorMode && !formSubmitted">
-      <i class="fas fa-info-circle"></i> Please fill information
+<div class="row mb-5">
+  <div class="col-sm-12 col-md-10 col-lg-10 col-xl-10 mx-auto mt-4">
+    <!-- User messages -->
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mx-auto mb-5">
+      <div
+        *ngIf="!errorMode && !formSubmitted"
+        class="shadow p-3 rounded bg-light text-primary text-center font-weight-bold"
+      >
+        <i class="fas fa-paperclip"></i> Please fill information
+      </div>
+      <div
+        *ngIf="errorMode"
+        class="shadow p-3 rounded bg-danger text-white text-center font-weight-bold"
+      >
+        <i class="fas fa-exclamation-triangle"></i> An error occurred, please
+        try again later!
+      </div>
+      <div
+        *ngIf="formSubmitted"
+        class="shadow p-3 rounded bg-success text-white text-center font-weight-bold"
+      >
+        <i class="fas fa-clipboard-check"></i> Your message has been sent
+        successfully, we will contact you soon!
+      </div>
     </div>
 
-    <div class="alert alert-danger" role="alert" *ngIf="errorMode">
-      <i class="fas fa-exclamation-circle"></i> An error occurred, please try again!
-    </div>
-
-    <div class="alert alert-success" role="alert" *ngIf="formSubmitted">
-      <i class="fas fa-exclamation-circle"></i> Your message has been sent successfully, we will contact you soon!
-    </div>
-
-    <form *ngIf="!formSubmitted" [formGroup]="form" (ngSubmit)="onSendMessage()">
-
-
+    <form
+      *ngIf="!formSubmitted"
+      [formGroup]="form"
+      (ngSubmit)="onSendMessage()"
+    >
       <div class="controls">
-
         <div class="row">
           <div class="col-md-6">
             <div class="form-group">
               <label for="form_name">Firstname *</label>
-              <input formControlName="firstName"
-                [ngClass]="{'is-invalid': form.controls.firstName.touched && form.controls.firstName.invalid, 'is-valid': form.controls.firstName.touched && form.controls.firstName.valid }"
-                type="text" name="firstName" class="form-control" placeholder="Please enter your firstname *" />
-              <div class="invalid-feedback" *ngIf="form.controls.firstName.touched && form.controls.firstName.invalid">
+              <input
+                formControlName="firstName"
+                [ngClass]="{
+                  'is-invalid':
+                    form.controls.firstName.touched &&
+                    form.controls.firstName.invalid,
+                  'is-valid':
+                    form.controls.firstName.touched &&
+                    form.controls.firstName.valid
+                }"
+                type="text"
+                name="firstName"
+                class="form-control"
+                placeholder="Please enter your firstname *"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  form.controls.firstName.touched &&
+                  form.controls.firstName.invalid
+                "
+              >
                 <ng-container *ngIf="form.controls.firstName.errors.required">
                   First name is required
                 </ng-container>
-                <ng-container *ngIf="form.controls.firstName.errors.minlength || form.controls.firstName.errors.maxlength">
+                <ng-container
+                  *ngIf="
+                    form.controls.firstName.errors.minlength ||
+                    form.controls.firstName.errors.maxlength
+                  "
+                >
                   First name must be valid
                 </ng-container>
               </div>
@@ -40,14 +73,37 @@
           <div class="col-md-6">
             <div class="form-group">
               <label for="form_lastname">Lastname *</label>
-              <input formControlName="lastName" type="text" name="lastName" class="form-control"
-                [ngClass]="{'is-invalid': form.controls.lastName.touched && form.controls.lastName.invalid, 'is-valid': form.controls.lastName.touched && form.controls.lastName.valid }"
-                placeholder="Please enter your lastname *" />
-              <div class="invalid-feedback" *ngIf="form.controls.lastName.touched && form.controls.lastName.invalid">
+              <input
+                formControlName="lastName"
+                type="text"
+                name="lastName"
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid':
+                    form.controls.lastName.touched &&
+                    form.controls.lastName.invalid,
+                  'is-valid':
+                    form.controls.lastName.touched &&
+                    form.controls.lastName.valid
+                }"
+                placeholder="Please enter your lastname *"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  form.controls.lastName.touched &&
+                  form.controls.lastName.invalid
+                "
+              >
                 <ng-container *ngIf="form.controls.lastName.errors.required">
                   Last name is required
                 </ng-container>
-                <ng-container *ngIf="form.controls.lastName.errors.minlength || form.controls.lastName.errors.maxlength">
+                <ng-container
+                  *ngIf="
+                    form.controls.lastName.errors.minlength ||
+                    form.controls.lastName.errors.maxlength
+                  "
+                >
                   Last name must be valid
                 </ng-container>
               </div>
@@ -58,14 +114,34 @@
           <div class="col-md-6">
             <div class="form-group">
               <label for="form_email">Email *</label>
-              <input formControlName="email" type="email" name="email" class="form-control"
-                [ngClass]="{'is-invalid': form.controls.email.touched && form.controls.email.invalid, 'is-valid': form.controls.email.touched && form.controls.email.valid }"
-                placeholder="Please enter your email *" />
-              <div class="invalid-feedback" *ngIf="form.controls.email.touched && form.controls.email.invalid">
+              <input
+                formControlName="email"
+                type="email"
+                name="email"
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid':
+                    form.controls.email.touched && form.controls.email.invalid,
+                  'is-valid':
+                    form.controls.email.touched && form.controls.email.valid
+                }"
+                placeholder="Please enter your email *"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  form.controls.email.touched && form.controls.email.invalid
+                "
+              >
                 <ng-container *ngIf="form.controls.email.errors.required">
                   Email is required
                 </ng-container>
-                <ng-container *ngIf="form.controls.email.errors && !form.controls.email.errors.required">
+                <ng-container
+                  *ngIf="
+                    form.controls.email.errors &&
+                    !form.controls.email.errors.required
+                  "
+                >
                   Email must be valid
                 </ng-container>
               </div>
@@ -74,14 +150,34 @@
           <div class="col-md-6">
             <div class="form-group">
               <label for="form_phone">Phone *</label>
-              <input formControlName="phone" type="tel" placeholder="Please enter your phone *"
-                [ngClass]="{'is-invalid': form.controls.phone.touched && form.controls.phone.invalid, 'is-valid': form.controls.phone.touched && form.controls.phone.valid }"
-                name="phone" class="form-control" />
-              <div class="invalid-feedback" *ngIf="form.controls.phone.touched && form.controls.phone.invalid">
+              <input
+                formControlName="phone"
+                type="tel"
+                placeholder="Please enter your phone *"
+                [ngClass]="{
+                  'is-invalid':
+                    form.controls.phone.touched && form.controls.phone.invalid,
+                  'is-valid':
+                    form.controls.phone.touched && form.controls.phone.valid
+                }"
+                name="phone"
+                class="form-control"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  form.controls.phone.touched && form.controls.phone.invalid
+                "
+              >
                 <ng-container *ngIf="form.controls.phone.errors.required">
                   Phone is required
                 </ng-container>
-                <ng-container *ngIf="form.controls.phone.errors.minlength || form.controls.phone.errors.maxlength">
+                <ng-container
+                  *ngIf="
+                    form.controls.phone.errors.minlength ||
+                    form.controls.phone.errors.maxlength
+                  "
+                >
                   Phone must be valid
                 </ng-container>
               </div>
@@ -92,28 +188,51 @@
           <div class="col-md-12">
             <div class="form-group">
               <label for="form_message">Message *</label>
-              <textarea formControlName="message" class="form-control"
-                [ngClass]="{'is-invalid': form.controls.message.touched && form.controls.message.invalid, 'is-valid': form.controls.message.touched && form.controls.message.valid }"
-                placeholder="Message for me *" rows="4"></textarea>
-              <div class="invalid-feedback" *ngIf="form.controls.message.touched && form.controls.message.invalid">
+              <textarea
+                formControlName="message"
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid':
+                    form.controls.message.touched &&
+                    form.controls.message.invalid,
+                  'is-valid':
+                    form.controls.message.touched && form.controls.message.valid
+                }"
+                placeholder="Message for me *"
+                rows="10"
+              ></textarea>
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  form.controls.message.touched && form.controls.message.invalid
+                "
+              >
                 <ng-container *ngIf="form.controls.message.errors.required">
                   Message is required
                 </ng-container>
-                <ng-container *ngIf="form.controls.message.errors.minlength || form.controls.message.errors.maxlength">
+                <ng-container
+                  *ngIf="
+                    form.controls.message.errors.minlength ||
+                    form.controls.message.errors.maxlength
+                  "
+                >
                   Message must be valid
                 </ng-container>
               </div>
             </div>
           </div>
           <div class="col-md-12">
-            <button type="submit" #sendBtn [disabled]="!form.valid" class="btn btn-success btn-send"><i class="far fa-paper-plane"></i> Send message</button>
+            <button
+              type="submit"
+              #sendBtn
+              [disabled]="!form.valid"
+              class="btn btn-outline-success btn-send btn-block"
+            >
+              <i class="far fa-paper-plane"></i> Send message
+            </button>
           </div>
         </div>
-
       </div>
-
     </form>
-
   </div>
-
 </div>
