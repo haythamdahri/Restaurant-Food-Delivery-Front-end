@@ -197,8 +197,6 @@ export class CartComponent implements OnInit, OnDestroy {
             type: "error",
             title: "An error occurred",
           });
-          // Init data
-          this.fetchData();
         }
       );
   }

@@ -29,14 +29,12 @@ export class EditProfileComponent implements OnInit, OnDestroy {
       username: new FormControl('', [
         Validators.required,
         Validators.minLength(2),
-        Validators.maxLength(150),
-        Validators.pattern('[a-zA-Z]*')
+        Validators.maxLength(150)
       ]),
       location: new FormControl('', [
         Validators.required,
         Validators.minLength(2),
-        Validators.maxLength(150),
-        Validators.pattern('[a-zA-Z]*')
+        Validators.maxLength(150)
       ])
     });
   }

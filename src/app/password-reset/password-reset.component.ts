@@ -79,6 +79,8 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
             err => {
               this.loading = false;
               this.invalidToken = true;
+              this.passwordResetError = true;
+              this.message = 'An error occurred, please try again!'
             }
           );
       } else {
@@ -171,6 +173,8 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
             (<HTMLButtonElement>(
               this.passwordResetBtn.nativeElement
             )).setAttribute("disabled", "true");
+            // set error mode
+            this.passwordResetError = true;
           }
         );
     }

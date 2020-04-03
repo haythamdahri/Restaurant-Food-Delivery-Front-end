@@ -58,6 +58,16 @@
                 *ngIf="
                   form.controls.email.touched &&
                   form.controls.email.invalid &&
+                  !form.controls.email.errors.isServerUnracheable
+                "
+              >
+                An error occurred while reacing server
+              </div>
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  form.controls.email.touched &&
+                  form.controls.email.invalid &&
                   form.controls.email.errors.isEmailAlreadyUsed
                 "
               >
@@ -128,7 +138,7 @@
                     form.controls.password.touched &&
                     form.controls.password.invalid,
                   'is-valid':
-                    form.controls.password.tuched &&
+                    form.controls.password.touched &&
                     form.controls.password.valid
                 }"
                 class="form-control"
@@ -155,7 +165,7 @@
                     form.controls.passwordConfirm.touched &&
                     form.controls.passwordConfirm.invalid,
                   'is-valid':
-                    form.controls.passwordConfirm.tuched &&
+                    form.controls.passwordConfirm.touched &&
                     form.controls.passwordConfirm.valid
                 }"
                 class="form-control"
@@ -199,7 +209,7 @@
                   type="button"
                   class="btn btn-outline-dark shadow rounded"
                 >
-                  <i class="fas fa-user-plus"></i> Sign Up
+                <i class="fas fa-sign-in-alt"></i> Sign in
                 </button></a
               >
             </div>

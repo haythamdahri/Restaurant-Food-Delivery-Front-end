@@ -115,7 +115,9 @@ export class AuthService {
         }
       }),
       retry(3),
-      catchError(this.handleEmailValidityError)
+      catchError((error) => {
+        return throwError({isServerUnracheable: true});
+      })
     );
   }
 

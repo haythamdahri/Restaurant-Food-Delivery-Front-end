@@ -7,7 +7,26 @@ body {
     padding-top: 0px;
   }
 }
-button, .btn {
+button, .btn, button.btn {
   box-shadow: 0 .125rem .25rem rgba(32, 23, 23, 0.075) !important;
   border-radius: .25rem!important;
+}
+input, textarea, .form-control {
+  display: block;
+  width: 100%;
+  border-radius: 2px;
+  color: #686868;
+  line-height: 1.2;
+  -webkit-transition: all 0.4s;
+  -o-transition: all 0.4s;
+  -moz-transition: all 0.4s;
+  transition: all 0.4s;
+  margin-top: 10px;
+  height: 42px;
+  outline: none;
+  margin: 0;
+  border-radius: 0%;
+}
+textarea {
+  height: auto;
 }
