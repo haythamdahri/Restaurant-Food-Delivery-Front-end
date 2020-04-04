@@ -51,6 +51,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.loadingUser = true;
     this.ordersSubscription = this.userService.getUserOrdersHistory().subscribe(
       data => {
+        console.log(data);
         this.userOrders = data;
         this.loadingOrders = false;
       },

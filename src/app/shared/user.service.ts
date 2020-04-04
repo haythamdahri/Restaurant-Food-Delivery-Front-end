@@ -6,6 +6,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { throwError, pipe } from 'rxjs';
 import { Router } from '@angular/router';
+import { Order } from '../models/order.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,7 @@ export class UserService {
   private static UPDATE_EMAIL_ENDPOINT = 'http://localhost:8080/api/v1/users/email';
   private static UPDATE_IMAGE_ENDPOINT = 'http://localhost:8080/api/v1/users/image';
   private static TOKEN_ENDPOINT = 'http://localhost:8080/api/v1/users/tokens';
+  private static AUTHENTICATED_USER_ORDERS_HISTORY = 'http://localhost:8080/api/v1/orders/authuser';
   private static USER_ORDERS_API_ENDPOINT = 'http://localhost:8080/api/orders/search/findByUserEmail';
   private static USER_DETAILS_API_ENDPOINT = 'http://localhost:8080/api/users/search/findByEmail';
   public static USERS_IMAGE_PREFIX = "http://localhost:8080/uploads/users/images";
@@ -74,16 +76,6 @@ export class UserService {
         return data;
       }),
       retry(5),
-      catchError(this.handleHttpError)
-    );
-  }
-
-  getUserOrdersHistory() {
-    return this.http.get(`${UserService.USER_ORDERS_API_ENDPOINT}`, { params: new HttpParams().append('email', this.authService.getAuthenticatedUser().email) }).pipe(
-      map((data) => {
-        return data['_embedded']['orders'];
-      }),
-      retry(5),
       catchError((error) => {
         // Logout user
         this.authService.logout();
@@ -92,6 +84,13 @@ export class UserService {
         // Handle error
         return this.handleHttpError(error);
       })
+    );
+  }
+
+  getUserOrdersHistory() {
+    return this.http.get<Array<Order>>(`${UserService.AUTHENTICATED_USER_ORDERS_HISTORY}`).pipe(
+      retry(5),
+      catchError(this.handleHttpError)
     );
   }
 
