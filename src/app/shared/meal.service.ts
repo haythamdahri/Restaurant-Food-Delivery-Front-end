@@ -10,23 +10,14 @@ import { throwError } from "rxjs";
 })
 export class MealService {
   private API = "http://localhost:8080/api";
-  private API_V1 = "http://localhost:8080/api/v1/mealorders";
+  private API_V1 = "http://localhost:8080/api/v1/meals";
 
   constructor(private http: HttpClient) {}
 
   getMeals() {
     return this.http.get<Array<Meal>>(`${this.API}/meals?sort=id,desc`).pipe(
       map(data => {
-        const meals = new Array<Meal>();
-        for (let meal of data["_embedded"]["meals"]) {
-          const tempMeal = new Meal();
-          tempMeal.id = meal.id;
-          tempMeal.image = meal.image;
-          tempMeal.name = meal.name;
-          tempMeal.price = meal.price;
-          meals.push(tempMeal);
-        }
-        return meals;
+        return data["_embedded"]["meals"];
       })
     );
   }

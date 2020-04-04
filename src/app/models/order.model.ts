@@ -5,6 +5,7 @@ export class Order {
     user: User;
     mealOrders: Array<MealOrder>;
     totalPrice: number;
+    shippingFees: number;
     deliveryAddress: string;
     time: Date;
     delivered: boolean;

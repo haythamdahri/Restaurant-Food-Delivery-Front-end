@@ -71,7 +71,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       },
       (err) => {
         this.errorMode = true;
-        console.log(err);
       }
     );
   }

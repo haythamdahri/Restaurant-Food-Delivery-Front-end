@@ -5,5 +5,5 @@ export class MealOrder {
     public meal: Meal;
     public order: Order;
     public quantity: number;
-    public price: number;
+    public totalPrice: number;
 }

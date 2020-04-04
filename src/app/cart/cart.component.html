@@ -82,7 +82,7 @@
                 />
               </td>
               <td class="text-right">
-                {{ mealOrder.price * mealOrder.quantity }} Dhs
+                {{ mealOrder.totalPrice }} Dhs
               </td>
               <td class="text-right">
                 <button
@@ -112,16 +112,16 @@
             >
               <tr>
                 <td colspan="6">Sub-Total</td>
-                <td class="text-right">{{ activeOrder?.totalPrice }} Dhs</td>
+                <td class="text-right">{{ activeOrder?.totalPrice - activeOrder?.shippingFees }} Dhs</td>
               </tr>
               <tr>
                 <td colspan="6">Shipping</td>
-                <td class="text-right">{{ 20 }} Dhs</td>
+                <td class="text-right">{{ activeOrder?.shippingFees }} Dhs</td>
               </tr>
               <tr>
                 <td colspan="6"><strong>Total</strong></td>
                 <td class="text-right">
-                  <strong>{{ activeOrder?.totalPrice + 20 }} Dhs</strong>
+                  <strong>{{ activeOrder?.totalPrice }} Dhs</strong>
                 </td>
               </tr>
             </ng-container>
