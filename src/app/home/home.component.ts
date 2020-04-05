@@ -13,8 +13,8 @@ import { Subscription } from "rxjs";
 import Swal from "sweetalert2";
 import { Title } from "@angular/platform-browser";
 import { MealOrderService } from "../shared/meal-order.service";
-import { ActivatedRoute, Params } from '@angular/router';
-import MealsPage from '../models/meals-page.model';
+import { Page } from "../pagination/page";
+import { CustomPaginationService } from "../pagination/services/custom-pagination.service";
 
 declare var $: any;
 
@@ -24,25 +24,26 @@ declare var $: any;
   styleUrls: ["./home.component.css"],
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  mealsPage: MealsPage;
   mealsPageSubscription: Subscription;
   mealSubscription: Subscription;
   orderSubscription: Subscription;
-  routeSubscription: Subscription;
   errorMode = false;
+  loadingMode: boolean = true;
   form;
   @ViewChild("saveMealnBtn", { static: false }) saveBtn: ElementRef;
   @ViewChild("closeBtn", { static: false }) closeBtn: ElementRef;
+
+  page: Page<Meal> = new Page();
 
   constructor(
     private mealService: MealService,
     private authService: AuthService,
     private mealOrderService: MealOrderService,
     private titleService: Title,
-    private route: ActivatedRoute
+    private paginationService: CustomPaginationService
   ) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     // Set page title
     this.titleService.setTitle("Home");
     this.form = new FormGroup({
@@ -69,37 +70,49 @@ export class HomeComponent implements OnInit, OnDestroy {
       ]),
     });
     // Listen to route params
-    this.routeSubscription = this.route.queryParams.subscribe(
-      (params: Params) => {
-        console.log('Page: ' +  params['page']);
-        // Check page query param and Fetch meals using MealService
-        if( params['page'] != null ) {
-          this.fetchMeals(params['page']);
-        } else {
-          this.fetchMeals();
-        }
-      }
-    );
+    this.getData();
   }
 
-  fetchMeals(page = 0) {
+  public getData() {
     // Set init values
     this.errorMode = false;
-    this.mealsPage = null;
-    this.mealsPageSubscription = this.mealService.getMeals(page).subscribe(
-      (data) => {
-        this.mealsPage = data
-        console.log(data);
+    this.loadingMode = true;
+    this.page.content = [];
+    this.mealsPageSubscription = this.mealService.getMealsPage(this.page.pageable)
+    .subscribe(
+      (page) => {
+        this.page = page
       },
       (err) => {
         this.errorMode = true;
+      },
+      () => {
+        this.loadingMode = false
       }
     );
   }
 
-  ngOnDestroy() {
+  public getNextPage(): void {
+    this.page.pageable = this.paginationService.getNextPage(this.page);
+    this.getData();
+  }
+
+  public getPreviousPage(): void {
+    this.page.pageable = this.paginationService.getPreviousPage(this.page);
+    this.getData();
+  }
+
+  public getPageInNewSize(pageSize: number): void {
+    this.page.pageable = this.paginationService.getPageInNewSize(
+      this.page,
+      pageSize
+    );
+    this.getData();
+  }
+
+  public ngOnDestroy() {
     this.errorMode = false;
-    if( this.mealsPageSubscription != null ) {
+    if (this.mealsPageSubscription != null) {
       this.mealsPageSubscription.unsubscribe();
     }
     if (this.orderSubscription) {
@@ -108,13 +121,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.mealSubscription) {
       this.mealSubscription.unsubscribe();
     }
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
-    this.mealsPage = null;
+    this.page = null;
   }
 
-  setButtonState(mode: number) {
+  public setButtonState(mode: number) {
     if (mode == 1) {
       (<HTMLInputElement>this.saveBtn.nativeElement).innerHTML =
         '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
@@ -133,7 +143,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  async onSaveMeal() {
+  public async onSaveMeal() {
     if (this.form.valid) {
       // Set button for loading mode
       this.setButtonState(1);
@@ -141,7 +151,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       await this.mealService.saveMeal(meal).subscribe(
         (newMeal) => {
           // Refetch data
-          this.fetchMeals();
+          this.getData();
           // Set button to normal mode
           this.setButtonState(0);
           // Success message
@@ -177,7 +187,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  onAddMealOrder(meal: Meal) {
+  public onAddMealOrder(meal: Meal) {
     if (this.authService.isAuthenticated()) {
       this.orderSubscription = this.mealOrderService
         .addMealOrder(meal, 1)
@@ -229,7 +239,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  onMealFetch(id: number) {
+  public onMealFetch(id: number) {
     this.mealSubscription = this.mealService.getMeal(id).subscribe(
       (meal: Meal) => {
         this.form.setValue({
@@ -257,7 +267,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     );
   }
 
-  initForm() {
+  public initForm() {
     this.form.reset();
   }
 }

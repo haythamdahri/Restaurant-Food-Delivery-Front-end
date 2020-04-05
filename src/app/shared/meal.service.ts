@@ -1,40 +1,48 @@
 import { Meal } from "./../models/meal.model";
-import { MealOrder } from "./../models/meal-order.model";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { map, retry, catchError } from "rxjs/operators";
-import { throwError } from "rxjs";
-import MealPage from '../models/meals-page.model';
+import {retry, catchError } from "rxjs/operators";
+import { throwError, Observable } from "rxjs";
+import { Page } from '../pagination/page';
+import { Pageable } from '../pagination/pageable';
+
+ 
+const httpOptions = {
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+};
+const API = "http://localhost:8080/api";
+const API_V1 = "http://localhost:8080/api/v1/meals";
 
 @Injectable({
   providedIn: "root"
 })
 export class MealService {
-  private API = "http://localhost:8080/api";
-  private API_V1 = "http://localhost:8080/api/v1/meals";
 
   constructor(private http: HttpClient) {}
 
-  getMeals(page = 0) {
-    return this.http.get<MealPage>(`${this.API_V1}/`, {params: new HttpParams().append('page', page.toString())}).pipe(
+  getMealsPage(pageable: Pageable): Observable<Page<Meal>> {
+    let url = API_V1 + '/'
+    + '?page=' + pageable.pageNumber
+    + '&size=' + pageable.pageSize;
+    return this.http.get<Page<Meal>>(url, httpOptions).pipe(
       retry(5),
       catchError(this.handleHttpError)
     );
   }
 
   getPopularMeals() {
-    return this.http.get<Array<Meal>>(`${this.API_V1}/popular`).pipe(
+    return this.http.get<Array<Meal>>(`${API_V1}/popular`).pipe(
       retry(5),
       catchError(this.handleHttpError)
     );
   }
 
   getMeal(id) {
-    return this.http.get<Meal>(`${this.API}/meals/${id}`);
+    return this.http.get<Meal>(`${API}/meals/${id}`);
   }
 
   saveMeal(meal: Meal) {
-    return this.http.post<Meal>(`${this.API}/meals`, meal);
+    return this.http.post<Meal>(`${API}/meals`, meal);
   }
 
   handleHttpError(error) {

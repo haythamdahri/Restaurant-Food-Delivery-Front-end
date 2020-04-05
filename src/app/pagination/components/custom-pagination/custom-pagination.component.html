@@ -1,0 +1,29 @@
+<div *ngIf="page" class="card-actions align-items-center d-flex justify-content-center">
+    <span class="align-self-center mb-1 mx-1 text-muted">Elements per page:</span>
+    <div class="dropdown">
+      <button aria-expanded="false" aria-haspopup="true"
+        class="btn btn-outline dropdown-toggle" data-toggle="dropdown"
+        type="button"
+        [ngClass]="{disabled: loading}">
+        {{page.size}}
+      </button>
+      <div class="dropdown-menu dropdown-menu-right menu">
+        <a class="dropdown-item active" [routerLink]="" (click)="updatePageSize(5)">3</a>
+        <a class="dropdown-item" [routerLink]="" (click)="updatePageSize(20)">20</a>
+        <a class="dropdown-item" [routerLink]="" (click)="updatePageSize(100)">100</a>
+      </div>
+    </div>
+    <span class="align-self-center mb-1 mr-2 text-muted">
+      Shows {{page.numberOfElements}} of {{page.totalElements}}
+    </span>
+    <a [routerLink]=""
+      class="btn btn-outline" [ngClass]="{'disabled': page.first || loading }"
+      (click)="previousPage()">
+      <i class="fas fa-angle-left"></i>
+    </a>
+    <a [routerLink]=""
+      class="btn btn-outline" [ngClass]="{'disabled': page.last || loading }"
+      (click)="nextPage()">
+      <i class="fas fa-angle-right"></i>
+    </a>
+  </div>
