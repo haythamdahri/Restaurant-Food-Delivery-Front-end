@@ -1,0 +1,10 @@
+button {
+    font-size: 12.5px;
+}
+.card-title, .card-text {
+    font-size: 15px;
+}
+.myImg {
+    height: 175px;
+    width: 100%;
+}

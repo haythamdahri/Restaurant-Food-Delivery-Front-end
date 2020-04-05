@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow fixed-top">
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow">
   <a class="navbar-brand" routerLink="" routerLinkActive="'active'" routerLinkActiveOptions="{exact: true}"><i class="fas fa-utensils"></i> Restaurant Food</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,7 +27,7 @@
           </ng-container>
           <ng-container *ngIf="!loadingUser && !errorUser">
             <img src="{{ user.image }}?updates={{ updates }}" height="20" width="20" style="border-radius: 100%;" />
-          </ng-container> Profile
+          </ng-container> {{ user?.username }}
           <span class="sr-only">(current)</span></a>
       </li>
       <ng-container *ngIf="!authService.isAuthenticated()">

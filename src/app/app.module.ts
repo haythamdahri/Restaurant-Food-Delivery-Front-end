@@ -22,6 +22,7 @@ import { EditProfileComponent } from './profile/edit-profile/edit-profile.compon
 import { EditEmailComponent } from './profile/edit-email/edit-email.component';
 import { MainComponent } from './main/main.component';
 import { HeaderComponent } from './header/header.component';
+import { LeftSidebarComponent } from './home/left-sidebar/left-sidebar.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { HeaderComponent } from './header/header.component';
     EditProfileComponent,
     EditEmailComponent,
     MainComponent,
-    HeaderComponent
+    HeaderComponent,
+    LeftSidebarComponent
   ],
   imports: [BrowserModule, AppRoutingModule, CustomModule, LayoutModule],
   providers: [

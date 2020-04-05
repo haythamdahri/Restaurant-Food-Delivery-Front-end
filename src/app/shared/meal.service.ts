@@ -2,7 +2,7 @@ import { Meal } from "./../models/meal.model";
 import { MealOrder } from "./../models/meal-order.model";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { map } from "rxjs/operators";
+import { map, retry, catchError } from "rxjs/operators";
 import { throwError } from "rxjs";
 
 @Injectable({
@@ -15,10 +15,16 @@ export class MealService {
   constructor(private http: HttpClient) {}
 
   getMeals() {
-    return this.http.get<Array<Meal>>(`${this.API}/meals?sort=id,desc`).pipe(
-      map(data => {
-        return data["_embedded"]["meals"];
-      })
+    return this.http.get<Array<Meal>>(`${this.API_V1}/`).pipe(
+      retry(5),
+      catchError(this.handleHttpError)
+    );
+  }
+
+  getPopularMeals() {
+    return this.http.get<Array<Meal>>(`${this.API_V1}/popular`).pipe(
+      retry(5),
+      catchError(this.handleHttpError)
     );
   }
 
@@ -28,5 +34,17 @@ export class MealService {
 
   saveMeal(meal: Meal) {
     return this.http.post<Meal>(`${this.API}/meals`, meal);
+  }
+
+  handleHttpError(error) {
+    let errorMessage = '';
+    if (error.error instanceof ErrorEvent) {
+      // client-side error
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // server-side error
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    return throwError(errorMessage);
   }
 }

@@ -108,7 +108,7 @@
             <!-- Uploading user image progress bar -->
             <div class="progress" *ngIf="uploadingImage">
               <div
-                class="progress-bar"
+                class="progress-bar progress-bar-striped"
                 role="progressbar"
                 [ngStyle]="{ 'width.%': uploadProgress }"
                 attr.aria-valuenow="{{ uploadProgress }}"

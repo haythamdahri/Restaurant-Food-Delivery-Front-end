@@ -1,0 +1,59 @@
+<div class="row">
+
+  <div class="col-12 mt-3">
+    <div class="shadow-sm p-3 bg-white rounded text-center h2 display-5 font-weight-bold text-secondary"><i class="fas fa-fire-alt"></i> Popular Meals</div>
+  </div>
+
+
+  <!-- Laoding icon -->
+  <div class="col-12 mx-auto mt-5 text-center" *ngIf="!isError && isLoading">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Error mode message -->
+  <div class="col-12 mx-auto mt-5" *ngIf="isError">
+    <div class="shadow p-3 mb-5 rounded bg-danger text-white text-center">
+      <i class="fas fa-exclamation"></i> An error occurred, please try again
+      later!
+    </div>
+  </div>
+
+  <!-- Loop over meals retrieved from server -->
+  <div
+    class="col-sm-12 col-md-12 col-lg-12 col-xl-12 p-1 px-5"
+    *ngFor="let meal of popularMeals"
+  >
+    <div class="card shadow bg-light rounded" style="padding: 0.5rem;">
+      <img
+        [src]="meal.image"
+        class="card-img-top shadow-sm rounded myImg img-fluid"
+        alt="{{ meal.name }}"
+      />
+      <div class="card-body">
+        <h5 class="card-title">{{ meal.name }}</h5>
+        <!-- Check sale price -->
+        <p class="card-text" *ngIf="meal.salePrice == null">
+          {{ meal.price }} Dhs
+        </p>
+        <ng-container class="card-text" *ngIf="meal.salePrice != null">
+          <p>
+            {{ meal.salePrice }} Dhs
+            <i class="text-danger"
+              ><del>{{ meal.price }} Dhs</del></i
+            >
+          </p>
+        </ng-container>
+        <!-- Views -->
+        <p>{{ meal.views }} <i class="fas fa-eye"></i></p>
+        <button
+          class="btn btn-outline-primary btn-sm shadow-lg btn-block"
+          (click)="onAddMealOrder(meal)"
+        >
+          <i class="fas fa-cart-plus"></i> Add To Cart
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

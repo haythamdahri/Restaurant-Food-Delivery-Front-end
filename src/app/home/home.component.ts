@@ -68,6 +68,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.subscription = this.mealService.getMeals().subscribe(
       (data) => {
         this.meals = data;
+        console.log(data);
       },
       (err) => {
         this.errorMode = true;

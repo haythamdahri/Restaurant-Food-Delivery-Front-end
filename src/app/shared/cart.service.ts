@@ -27,15 +27,23 @@ export class CartService {
       map((data) => {
         return data;
       }),
-      catchError(this.handleError)
+      catchError(this.handleHttpError)
     );
-  }
-
-  handleError(err: HttpErrorResponse) {
-    return throwError(err);
   }
 
   deleteMealOrder(id: number) {
     return this.http.delete<{status: boolean, message: string}>(`${this.API_V1}/mealorders/${id}`);
+  }
+
+  handleHttpError(error) {
+    let errorMessage = '';
+    if (error.error instanceof ErrorEvent) {
+      // client-side error
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // server-side error
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    return throwError(errorMessage);
   }
 }

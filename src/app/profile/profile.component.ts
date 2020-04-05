@@ -5,7 +5,7 @@ import {
   OnInit,
   OnDestroy,
   ViewChild,
-  ElementRef
+  ElementRef,
 } from "@angular/core";
 import { User } from "../models/user.model";
 import { Subscription } from "rxjs";
@@ -15,7 +15,7 @@ import { Title } from "@angular/platform-browser";
 @Component({
   selector: "app-profile",
   templateUrl: "./profile.component.html",
-  styleUrls: ["./profile.component.css"]
+  styleUrls: ["./profile.component.css"],
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   user: User = new User();
@@ -29,8 +29,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   loadingOrders = false;
   loadingImage = "../../assets/img/loading.gif";
   imageSubscription: Subscription;
-  @ViewChild("fileUpload", {static: false}) fileBtn: ElementRef;
-  @ViewChild("resetPasswordBtn", {static: false})
+  @ViewChild("fileUpload", { static: false }) fileBtn: ElementRef;
+  @ViewChild("resetPasswordBtn", { static: false })
   resetPasswordBtn: ElementRef;
   uploadingImage = false;
   uploadProgress = 0;
@@ -50,25 +50,25 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.loadingOrders = true;
     this.loadingUser = true;
     this.ordersSubscription = this.userService.getUserOrdersHistory().subscribe(
-      data => {
+      (data) => {
         console.log(data);
         this.userOrders = data;
         this.loadingOrders = false;
       },
-      err => {
+      (err) => {
         this.errorOrders = true;
       }
     );
     this.userSubscription = this.userService
       .getAuthenticatedUserDetails()
       .subscribe(
-        data => {
+        (data) => {
           this.user = data;
           // Update page title
           this.titleService.setTitle(this.user.username);
           this.loadingUser = false;
         },
-        err => {
+        (err) => {
           this.errorUser = true;
         }
       );
@@ -84,17 +84,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.imageSubscription = this.userService
       .updateUserImage(formData)
       .subscribe(
-        response => {
-          console.log(response);
+        (response) => {
           if (
             typeof response["status"] === "string" ||
             response["status"] instanceof String
           ) {
             this.uploadProgress = response["message"];
           } else {
-            // Hide uploading progress bar
-            this.uploadingImage = false;
-            this.uploadProgress = 0;
             // Update user is status true
             if (response["status"] == true && response["user"]) {
               this.user = response["user"];
@@ -104,16 +100,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
                 toast: true,
                 position: "bottom-left",
                 showConfirmButton: false,
-                timer: 3000
+                timer: 3000,
               });
               Toast.fire({
                 type: response["status"] == true ? "success" : "error",
-                title: response["message"].toString()
+                title: response["message"].toString(),
               });
             }
           }
         },
-        err => {
+        (err) => {
           // Hide uploading progress bar
           this.uploadingImage = false;
           this.uploadProgress = 0;
@@ -122,12 +118,17 @@ export class ProfileComponent implements OnInit, OnDestroy {
             toast: true,
             position: "bottom-left",
             showConfirmButton: false,
-            timer: 3000
+            timer: 3000,
           });
           Toast.fire({
             type: "error",
-            title: "An error occurred, please try again"
+            title: "An error occurred, please try again",
           });
+        },
+        () => {
+          // Hide uploading progress bar
+          this.uploadingImage = false;
+          this.uploadProgress = 0;
         }
       );
   }
@@ -172,7 +173,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       "true"
     );
     this.userService.sendPasswordResetToken(this.user.email).subscribe(
-      data => {
+      (data) => {
         Swal.fire(
           "Reset password",
           data.message,
@@ -184,16 +185,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.resetPasswordBtn.nativeElement
         )).removeAttribute("disabled");
       },
-      err => {
+      (err) => {
         const Toast = Swal.mixin({
           toast: true,
           position: "bottom-left",
           showConfirmButton: false,
-          timer: 3000
+          timer: 3000,
         });
         Toast.fire({
           type: "error",
-          title: "An error occurred, please try again"
+          title: "An error occurred, please try again",
         });
         (<HTMLButtonElement>this.resetPasswordBtn.nativeElement).innerHTML =
           '<i class="fas fa-key"></i> Send Password Reset Email';

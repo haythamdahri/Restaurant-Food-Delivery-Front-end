@@ -53,6 +53,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     .subscribe(
       data => {
         this.user = data;
+        console.log(data.username)
         // Update page title
         this.loadingUser = false;
       },
