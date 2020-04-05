@@ -8,3 +8,8 @@ button {
     height: 175px;
     width: 100%;
 }
+
+.nopadding {
+    padding: 0 !important;
+    margin: 0 !important;
+ }

@@ -1,9 +1,10 @@
 import { Meal } from "./../models/meal.model";
 import { MealOrder } from "./../models/meal-order.model";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map, retry, catchError } from "rxjs/operators";
 import { throwError } from "rxjs";
+import MealPage from '../models/meals-page.model';
 
 @Injectable({
   providedIn: "root"
@@ -14,8 +15,8 @@ export class MealService {
 
   constructor(private http: HttpClient) {}
 
-  getMeals() {
-    return this.http.get<Array<Meal>>(`${this.API_V1}/`).pipe(
+  getMeals(page = 0) {
+    return this.http.get<MealPage>(`${this.API_V1}/`, {params: new HttpParams().append('page', page.toString())}).pipe(
       retry(5),
       catchError(this.handleHttpError)
     );

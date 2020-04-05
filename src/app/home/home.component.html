@@ -1,16 +1,9 @@
+<!-- Header -->
 <div class="row">
-  <!-- No meals found message -->
-  <div
-    class="col-12 mx-auto mt-5"
-    *ngIf="!errorMode && meals && meals.length == 0"
-  >
-    <div
-      class="shadow p-3 mb-5 rounded bg-light text-primary text-center font-weight-bold text-monospace h4"
-    >
-      <i class="fas fa-exclamation"></i> No meals to shop
-    </div>
-  </div>
+  <app-header class="nopadding col-12"></app-header>
+</div>
 
+<div class="row">
   <!-- Left sidebar -->
   <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3">
     <app-left-sidebar
@@ -36,9 +29,24 @@
     </div>
 
     <!-- Laoding icon -->
-    <div class="col-12 mx-auto mt-5 text-center" *ngIf="!errorMode && !meals">
+    <div
+      class="col-12 mx-auto mt-5 text-center"
+      *ngIf="!errorMode && !mealsPage"
+    >
       <div class="spinner-border" role="status">
         <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+
+    <!-- No meals found message -->
+    <div
+      class="col-12 mx-auto mt-5"
+      *ngIf="!errorMode && mealsPage && mealsPage.empty"
+    >
+      <div
+        class="shadow-sm p-3 bg-white rounded text-center font-weight-bold text-primary"
+      >
+        <i class="fas fa-exclamation"></i> No meals to shop
       </div>
     </div>
 
@@ -54,7 +62,7 @@
       <!-- Loop over meals retrieved from server -->
       <div
         class="col-sm-12 col-md-6 col-lg-4 col-xl-3 mx-auto mt-3 d-flex align-items-stretch"
-        *ngFor="let meal of meals"
+        *ngFor="let meal of mealsPage?.content"
       >
         <div
           class="card shadow p-3 mb-5 bg-white rounded"

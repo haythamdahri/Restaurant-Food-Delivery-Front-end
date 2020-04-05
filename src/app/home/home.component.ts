@@ -13,6 +13,8 @@ import { Subscription } from "rxjs";
 import Swal from "sweetalert2";
 import { Title } from "@angular/platform-browser";
 import { MealOrderService } from "../shared/meal-order.service";
+import { ActivatedRoute, Params } from '@angular/router';
+import MealsPage from '../models/meals-page.model';
 
 declare var $: any;
 
@@ -22,10 +24,11 @@ declare var $: any;
   styleUrls: ["./home.component.css"],
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  meals: Array<Meal>;
-  subscription: Subscription;
+  mealsPage: MealsPage;
+  mealsPageSubscription: Subscription;
   mealSubscription: Subscription;
   orderSubscription: Subscription;
+  routeSubscription: Subscription;
   errorMode = false;
   form;
   @ViewChild("saveMealnBtn", { static: false }) saveBtn: ElementRef;
@@ -35,7 +38,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private mealService: MealService,
     private authService: AuthService,
     private mealOrderService: MealOrderService,
-    private titleService: Title
+    private titleService: Title,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
@@ -64,10 +68,27 @@ export class HomeComponent implements OnInit, OnDestroy {
         Validators.min(0),
       ]),
     });
+    // Listen to route params
+    this.routeSubscription = this.route.queryParams.subscribe(
+      (params: Params) => {
+        console.log('Page: ' +  params['page']);
+        // Check page query param and Fetch meals using MealService
+        if( params['page'] != null ) {
+          this.fetchMeals(params['page']);
+        } else {
+          this.fetchMeals();
+        }
+      }
+    );
+  }
 
-    this.subscription = this.mealService.getMeals().subscribe(
+  fetchMeals(page = 0) {
+    // Set init values
+    this.errorMode = false;
+    this.mealsPage = null;
+    this.mealsPageSubscription = this.mealService.getMeals(page).subscribe(
       (data) => {
-        this.meals = data;
+        this.mealsPage = data
         console.log(data);
       },
       (err) => {
@@ -78,13 +99,19 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.errorMode = false;
-    this.subscription.unsubscribe();
+    if( this.mealsPageSubscription != null ) {
+      this.mealsPageSubscription.unsubscribe();
+    }
     if (this.orderSubscription) {
       this.orderSubscription.unsubscribe();
     }
     if (this.mealSubscription) {
       this.mealSubscription.unsubscribe();
     }
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
+    this.mealsPage = null;
   }
 
   setButtonState(mode: number) {
@@ -113,24 +140,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       const meal = this.form.value;
       await this.mealService.saveMeal(meal).subscribe(
         (newMeal) => {
-          if (
-            this.meals.filter((tempMeal) => tempMeal.id == newMeal.id).length ==
-            0
-          ) {
-            this.meals = [newMeal, ...this.meals];
-          } else {
-            this.meals.find((tempMeal) => tempMeal.id == newMeal.id).id =
-              newMeal.id;
-            this.meals.find((tempMeal) => tempMeal.id == newMeal.id).name =
-              newMeal.name;
-            this.meals.find((tempMeal) => tempMeal.id == newMeal.id).image =
-              newMeal.image;
-            this.meals.find((tempMeal) => tempMeal.id == newMeal.id).price =
-              newMeal.price;
-            this.meals.find((tempMeal) => tempMeal.id == newMeal.id).stock =
-              newMeal.stock;
-          }
-          // Set button for normal mode
+          // Refetch data
+          this.fetchMeals();
+          // Set button to normal mode
           this.setButtonState(0);
           // Success message
           const Toast = Swal.mixin({
@@ -145,7 +157,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           });
         },
         (err) => {
-          // Set button for normal mode
+          // Set button to normal mode
           this.setButtonState(0);
           // Error message
           const Toast = Swal.mixin({
@@ -154,7 +166,6 @@ export class HomeComponent implements OnInit, OnDestroy {
             showConfirmButton: false,
             timer: 3000,
           });
-
           Toast.fire({
             type: "success",
             title: "An error occurred!",

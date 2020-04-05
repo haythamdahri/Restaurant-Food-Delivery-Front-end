@@ -27,7 +27,7 @@
           </ng-container>
           <ng-container *ngIf="!loadingUser && !errorUser">
             <img src="{{ user.image }}?updates={{ updates }}" height="20" width="20" style="border-radius: 100%;" />
-          </ng-container> {{ user?.username }}
+          </ng-container> {{ user ? user?.username : 'Profile' }}
           <span class="sr-only">(current)</span></a>
       </li>
       <ng-container *ngIf="!authService.isAuthenticated()">
