@@ -159,10 +159,10 @@ export class CartComponent implements OnInit, OnDestroy {
         title: "Invalid quantity, please set a value between 1 and 1500 unit",
       });
     } else {
-      $("#updateBtn" + mealOrderId).html(
+      document.getElementById("updateBtn" + mealOrderId).innerHTML = (
         '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...'
       );
-      $("#updateBtn").attr("disabled", true);
+      document.getElementById("updateBtn" + mealOrderId).setAttribute("disabled", "true");
       // Perform mealOrder quantity update
       this.performMealOrderQuantityUpdate(mealOrderId, newQuantity);
     }
@@ -198,6 +198,13 @@ export class CartComponent implements OnInit, OnDestroy {
             type: "error",
             title: "An error occurred",
           });
+          // Update button state
+          document.getElementById("updateBtn" + mealOrderId).innerHTML = (
+            '<i class="fas fa-redo-alt"></i> Update'
+          );
+          document.getElementById("updateBtn" + mealOrderId).removeAttribute("disabled");
+        },
+        () => {
         }
       );
   }
