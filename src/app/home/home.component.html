@@ -5,14 +5,14 @@
 
 <div class="row">
   <!-- Left sidebar -->
-  <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3">
+  <div class="col-sm-12 col-md-12 col-lg-3 col-xl-3">
     <app-left-sidebar
       (addMealToCartEvent)="onAddMealOrder($event)"
     ></app-left-sidebar>
   </div>
 
   <!-- Meals -->
-  <div class="col-sm-12 col-md-9 col-lg-9 col-xl-9">
+  <div class="col-sm-12 col-md-12 col-lg-9 col-xl-9">
     <!-- Add new meal icon -->
     <div
       class="col-12 mt-2 font-weight-bold"
@@ -81,7 +81,7 @@
             alt="{{ meal.name }}"
           />
           <div class="card-body">
-            <h5 class="card-title">{{ meal.name }}</h5>
+            <h5 class="card-title font-weight-bold">{{ meal.name }}</h5>
             <!-- Check sale price -->
             <p class="card-text" *ngIf="meal.salePrice == null">
               {{ meal.price }} Dhs
@@ -96,10 +96,11 @@
             </ng-container>
             <!-- Views -->
             <p>{{ meal.views }} <i class="fas fa-eye"></i></p>
+            <!-- Meal action buttons -->
             <div class="row">
               <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center">
                 <button
-                  class="btn btn-outline-primary shadow-lg btn-block"
+                  class="btn btn-outline-primary shadow-lg"
                   (click)="onAddMealOrder(meal)"
                 >
                   <i class="fas fa-cart-plus"></i> Add To Cart
@@ -110,7 +111,7 @@
                   id="btnPreffer{{ meal.id }}"
                   (click)="onMealPreference($event, meal.id)"
                   class="btn"
-                  style="background-color:transparent" 
+                  style="background-color: transparent;"
                 >
                   <i
                     class="fas fa-heart"
@@ -121,6 +122,21 @@
                     *ngIf="checkMealPreferred(meal.id) === false"
                   ></i>
                 </button>
+              </div>
+            </div>
+            <!-- Meal rating -->
+            <div class="row">
+              <div
+                class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center text-warning" 
+              >
+                <!-- Stared reviews -->
+                <ng-container *ngFor="let rate of mealService.getRating(meal.reviews).filledStars">
+                  <i class="fas fa-star"></i>
+                </ng-container>
+                <!-- Remaining non stared reviews -->
+                <ng-container *ngFor="let rate of mealService.getRating(meal.reviews).unfilledStars">
+                  <i class="far fa-star"></i>
+                </ng-container>
               </div>
             </div>
           </div>

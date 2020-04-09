@@ -1,4 +1,6 @@
 import { Role } from './role.model';
+import { Meal } from './meal.model';
+import { Review } from './review.model';
 
 export class User {
     public id: number;
@@ -9,4 +11,6 @@ export class User {
     public image: string;
     public location: string;
     public roles: Array<Role>;
+    public preferredMeals: Array<Meal>;
+    private reviews: Array<Review>;
 }

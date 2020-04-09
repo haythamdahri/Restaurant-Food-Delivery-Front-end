@@ -1,9 +1,11 @@
 <div class="row">
-
   <div class="col-12 mt-3">
-    <div class="shadow-sm p-3 bg-white rounded text-center h2 display-5 font-weight-bold text-secondary"><i class="fas fa-fire-alt"></i> Popular Meals</div>
+    <div
+      class="shadow-sm p-3 bg-white rounded text-center h2 display-5 font-weight-bold text-secondary"
+    >
+      <i class="fas fa-fire-alt"></i> Popular Meals
+    </div>
   </div>
-
 
   <!-- Laoding icon -->
   <div class="col-12 mx-auto mt-5 text-center" *ngIf="!isError && isLoading">
@@ -22,37 +24,48 @@
 
   <!-- Loop over meals retrieved from server -->
   <div
-    class="col-sm-12 col-md-12 col-lg-12 col-xl-12 p-1 px-5"
+    class="col-sm-12 col-md-12 col-lg-12 col-xl-12"
     *ngFor="let meal of popularMeals"
   >
-    <div class="card shadow bg-light rounded" style="padding: 0.5rem;">
-      <img
-        [src]="meal.image"
-        class="card-img-top shadow-sm rounded myImg img-fluid"
-        alt="{{ meal.name }}"
-      />
-      <div class="card-body">
-        <h5 class="card-title">{{ meal.name }}</h5>
-        <!-- Check sale price -->
-        <p class="card-text" *ngIf="meal.salePrice == null">
-          {{ meal.price }} Dhs
-        </p>
-        <ng-container class="card-text" *ngIf="meal.salePrice != null">
-          <p>
-            {{ meal.salePrice }} Dhs
-            <i class="text-danger"
-              ><del>{{ meal.price }} Dhs</del></i
-            >
-          </p>
-        </ng-container>
-        <!-- Views -->
-        <p>{{ meal.views }} <i class="fas fa-eye"></i></p>
-        <button
-          class="btn btn-outline-primary btn-sm shadow-lg btn-block"
-          (click)="onAddMealOrder(meal)"
-        >
-          <i class="fas fa-cart-plus"></i> Add To Cart
-        </button>
+    <div class="card mb-3" style="width: 100%;">
+      <div class="row no-gutters">
+        <div class="col-md-6 align-middle">
+          <img
+            src="{{ meal.image }}"
+            class="card-img img-fluid "
+            alt="{{ meal.name }}"
+          />
+        </div>
+        <div class="col-md-6">
+          <div class="card-body">
+            <h5 class="card-title font-weight-bold">{{ meal.name }}</h5>
+            <!-- Check sale price -->
+            <p class="card-text" *ngIf="meal.salePrice == null">
+              {{ meal.price }} Dhs
+            </p>
+            <ng-container class="card-text" *ngIf="meal.salePrice != null">
+              <p>
+                {{ meal.salePrice }} Dhs
+                <i class="text-danger"
+                  ><del>{{ meal.price }} Dhs</del></i
+                >
+              </p>
+            </ng-container>
+            <p class="card-text">
+              <small class="text-muted"
+                >{{ meal.views }} <i class="fas fa-eye"></i
+              ></small>
+            </p>
+            <p class="card-text">
+              <button
+                class="btn btn-outline-primary btn-sm shadow-lg"
+                (click)="onAddMealOrder(meal)"
+              >
+                <i class="fas fa-cart-plus"></i> Add To Cart
+              </button>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </div>

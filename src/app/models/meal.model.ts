@@ -1,3 +1,5 @@
+import { Review } from './review.model';
+
 export class Meal {
     public id: number;
     public name: string;
@@ -7,4 +9,5 @@ export class Meal {
     public views: number;
     public salePrice: number;
     public preferred: boolean;
+    public reviews: Array<Review>;
 }

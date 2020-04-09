@@ -104,6 +104,7 @@ export class SignupComponent implements OnInit, OnDestroy {
         title: 'Invalid sign up data'
       });
     } else {
+      console.log(this.form.value.password);
       (<HTMLButtonElement>this.signUpBtn.nativeElement).innerHTML =
         '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sign Up';
       (<HTMLButtonElement>this.signUpBtn.nativeElement).setAttribute('disabled', 'true');

@@ -5,6 +5,7 @@ import {retry, catchError } from "rxjs/operators";
 import { throwError, Observable } from "rxjs";
 import { Page } from '../pagination/page';
 import { Pageable } from '../pagination/pageable';
+import { Review } from '../models/review.model';
 
  
 const httpOptions = {
@@ -28,6 +29,17 @@ export class MealService {
       retry(5),
       catchError(this.handleHttpError)
     );
+  }
+
+  getRating(reviews: Array<Review>) {
+    let sum = 0;
+    reviews.forEach(review => {
+      sum += review.rating;
+    });
+    // Return stars as reviews
+    const filledStars = Array.from(Array(Number.parseInt((sum/5).toString())).keys()).map(i => "*");
+    const unfilledStars = Array.from(Array(Number.parseInt((5 - (sum/5)).toString())).keys()).map(i => "*");
+    return {filledStars, unfilledStars}
   }
 
   getPopularMeals() {

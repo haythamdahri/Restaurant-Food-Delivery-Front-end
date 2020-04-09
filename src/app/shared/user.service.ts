@@ -44,7 +44,8 @@ export class UserService {
     private router: Router
   ) {}
 
-  register(user: User) {
+  register(user: any) {
+    console.log("Payload: " + JSON.stringify(user));
     return this.http.post<User>(UserService.SIGN_UP_ENDPOINT, user).pipe(
       map((user) => {
         return user;

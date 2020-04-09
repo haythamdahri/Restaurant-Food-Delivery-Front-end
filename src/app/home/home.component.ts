@@ -99,6 +99,7 @@ export class HomeComponent implements OnInit, OnDestroy {
                 () => {
                   // Set final data
                   this.page = page;
+                  console.log(page);
                 }
               );
           } else {
@@ -147,6 +148,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
     if (this.mealSubscription) {
       this.mealSubscription.unsubscribe();
+    }
+    if( this.preferredMealsSubscription != null ) {
+      this.preferredMealsSubscription.unsubscribe();
+    }
+    if( this.mealPreferencesSubscription != null ) {
+      this.mealPreferencesSubscription.unsubscribe();
     }
     this.page = null;
   }
