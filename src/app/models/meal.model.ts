@@ -6,4 +6,5 @@ export class Meal {
     public stock: number;
     public views: number;
     public salePrice: number;
+    public preferred: boolean;
 }

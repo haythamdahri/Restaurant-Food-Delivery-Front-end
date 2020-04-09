@@ -96,25 +96,47 @@
             </ng-container>
             <!-- Views -->
             <p>{{ meal.views }} <i class="fas fa-eye"></i></p>
-            <button
-              class="btn btn-outline-primary shadow-lg btn-block"
-              (click)="onAddMealOrder(meal)"
-            >
-              <i class="fas fa-cart-plus"></i> Add To Cart
-            </button>
+            <div class="row">
+              <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center">
+                <button
+                  class="btn btn-outline-primary shadow-lg btn-block"
+                  (click)="onAddMealOrder(meal)"
+                >
+                  <i class="fas fa-cart-plus"></i> Add To Cart
+                </button>
+              </div>
+              <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center">
+                <button
+                  id="btnPreffer{{ meal.id }}"
+                  (click)="onMealPreference($event, meal.id)"
+                  class="btn"
+                  style="background-color:transparent" 
+                >
+                  <i
+                    class="fas fa-heart"
+                    *ngIf="checkMealPreferred(meal.id) === true"
+                  ></i>
+                  <i
+                    class="far fa-heart"
+                    *ngIf="checkMealPreferred(meal.id) === false"
+                  ></i>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="col-12" >
-        <hr class="my-no w-100">
-          <app-custom-pagination
-              [page]="page"
-              [loading]="loadingMode"
-              (nextPageEvent)="getNextPage()"
-              (previousPageEvent)="getPreviousPage()"
-              (pageSizeEvent)="getPageInNewSize($event)">
-          </app-custom-pagination>
+      <div class="col-12">
+        <hr class="my-no w-100" />
+        <app-custom-pagination
+          [page]="page"
+          [loading]="loadingMode"
+          (nextPageEvent)="getNextPage()"
+          (previousPageEvent)="getPreviousPage()"
+          (pageSizeEvent)="getPageInNewSize($event)"
+        >
+        </app-custom-pagination>
       </div>
     </div>
   </div>

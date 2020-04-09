@@ -7,6 +7,7 @@ import { map } from "rxjs/operators";
 import { throwError, pipe } from "rxjs";
 import { Router } from "@angular/router";
 import { Order } from "../models/order.model";
+import { Meal } from '../models/meal.model';
 
 @Injectable({
   providedIn: "root",
@@ -26,6 +27,8 @@ export class UserService {
   private static TOKEN_ENDPOINT = "http://localhost:8080/api/v1/users/tokens";
   private static AUTHENTICATED_USER_ORDERS_HISTORY =
     "http://localhost:8080/api/v1/orders/authuser";
+    public static USERS_PREFERRED_MEALS =
+      "http://localhost:8080/api/v1/users/preferences";
   private static USER_ORDERS_API_ENDPOINT =
     "http://localhost:8080/api/orders/search/findByUserEmail";
   private static USER_DETAILS_API_ENDPOINT =
@@ -113,6 +116,18 @@ export class UserService {
       .pipe(retry(5), catchError(this.handleHttpError));
   }
 
+  getUserPreferredMeals() {
+    return this.http
+      .get<Array<Meal>>(`${UserService.USERS_PREFERRED_MEALS}`)
+      .pipe(retry(5), catchError(this.handleHttpError));
+  }
+
+  toggleMealFromPreferrences(id) {
+    return this.http
+      .post<{status: boolean, preferred: boolean, message: string}>(`${UserService.USERS_PREFERRED_MEALS}?id=${id}`, {})
+      .pipe(retry(5), catchError(this.handleHttpError));
+  }
+  
   saveUser(username: string, location: string, userId: number) {
     return this.http
       .patch<User>(`${UserService.API_ENDPOINT}/users/${userId}`, {

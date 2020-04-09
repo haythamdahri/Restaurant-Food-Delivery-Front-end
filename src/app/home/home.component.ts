@@ -15,6 +15,7 @@ import { Title } from "@angular/platform-browser";
 import { MealOrderService } from "../shared/meal-order.service";
 import { Page } from "../pagination/page";
 import { CustomPaginationService } from "../pagination/services/custom-pagination.service";
+import { UserService } from "../shared/user.service";
 
 declare var $: any;
 
@@ -25,7 +26,9 @@ declare var $: any;
 })
 export class HomeComponent implements OnInit, OnDestroy {
   mealsPageSubscription: Subscription;
+  preferredMealsSubscription: Subscription;
   mealSubscription: Subscription;
+  mealPreferencesSubscription: Subscription;
   orderSubscription: Subscription;
   errorMode = false;
   loadingMode: boolean = true;
@@ -34,16 +37,18 @@ export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild("closeBtn", { static: false }) closeBtn: ElementRef;
 
   page: Page<Meal> = new Page();
+  preferredMeals: Array<Meal> = new Array<Meal>();
 
   constructor(
     private mealService: MealService,
     private authService: AuthService,
+    private userService: UserService,
     private mealOrderService: MealOrderService,
     private titleService: Title,
     private paginationService: CustomPaginationService
   ) {}
 
-  public ngOnInit() {
+  ngOnInit() {
     // Set page title
     this.titleService.setTitle("Home");
     this.form = new FormGroup({
@@ -69,40 +74,62 @@ export class HomeComponent implements OnInit, OnDestroy {
         Validators.min(0),
       ]),
     });
-    // Listen to route params
     this.getData();
   }
 
-  public getData() {
+  getData() {
     // Set init values
     this.errorMode = false;
     this.loadingMode = true;
     this.page.content = [];
-    this.mealsPageSubscription = this.mealService.getMealsPage(this.page.pageable)
-    .subscribe(
-      (page) => {
-        this.page = page
-      },
-      (err) => {
-        this.errorMode = true;
-      },
-      () => {
-        this.loadingMode = false
-      }
-    );
+    this.mealsPageSubscription = this.mealService
+      .getMealsPage(this.page.pageable)
+      .subscribe(
+        (page) => {
+          // Check if user is authenticated
+          if( this.authService.isAuthenticated() ) {
+            // Retrieve user preferred meals
+            this.preferredMealsSubscription = this.userService
+              .getUserPreferredMeals()
+              .subscribe(
+                (meals) => {
+                  this.preferredMeals = meals;
+                },
+                () => {},
+                () => {
+                  // Set final data
+                  this.page = page;
+                }
+              );
+          } else {
+            // Set final data
+            this.page = page;
+          }
+        },
+        (err) => {
+          this.errorMode = true;
+        },
+        () => {
+          this.loadingMode = false;
+        }
+      );
   }
 
-  public getNextPage(): void {
+  checkMealPreferred(id) {
+    return this.preferredMeals.filter((m) => m.id === id).length > 0;
+  }
+
+  getNextPage(): void {
     this.page.pageable = this.paginationService.getNextPage(this.page);
     this.getData();
   }
 
-  public getPreviousPage(): void {
+  getPreviousPage(): void {
     this.page.pageable = this.paginationService.getPreviousPage(this.page);
     this.getData();
   }
 
-  public getPageInNewSize(pageSize: number): void {
+  getPageInNewSize(pageSize: number): void {
     this.page.pageable = this.paginationService.getPageInNewSize(
       this.page,
       pageSize
@@ -110,7 +137,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.getData();
   }
 
-  public ngOnDestroy() {
+  ngOnDestroy() {
     this.errorMode = false;
     if (this.mealsPageSubscription != null) {
       this.mealsPageSubscription.unsubscribe();
@@ -124,7 +151,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.page = null;
   }
 
-  public setButtonState(mode: number) {
+  setButtonState(mode: number) {
     if (mode == 1) {
       (<HTMLInputElement>this.saveBtn.nativeElement).innerHTML =
         '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
@@ -143,7 +170,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  public async onSaveMeal() {
+  async onSaveMeal() {
     if (this.form.valid) {
       // Set button for loading mode
       this.setButtonState(1);
@@ -187,7 +214,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onAddMealOrder(meal: Meal) {
+  onAddMealOrder(meal: Meal) {
     if (this.authService.isAuthenticated()) {
       this.orderSubscription = this.mealOrderService
         .addMealOrder(meal, 1)
@@ -239,7 +266,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onMealFetch(id: number) {
+  onMealFetch(id: number) {
     this.mealSubscription = this.mealService.getMeal(id).subscribe(
       (meal: Meal) => {
         this.form.setValue({
@@ -267,7 +294,60 @@ export class HomeComponent implements OnInit, OnDestroy {
     );
   }
 
-  public initForm() {
+  initForm() {
     this.form.reset();
+  }
+
+  onMealPreference(event, id) {
+    // Check if user is authenticated
+    if( this.authService.isAuthenticated() ) {
+    this.mealPreferencesSubscription = this.userService
+      .toggleMealFromPreferrences(id)
+      .subscribe(
+        (response) => {
+          // Response message
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-right",
+            showConfirmButton: false,
+            timer: 3000,
+          });
+
+          Toast.fire({
+            type: response.status ? "success" : "error",
+            title: response.message,
+          });
+          // Set prefer button new state
+          document.getElementById(
+            "btnPreffer" + id
+          ).innerHTML = response.preferred
+            ? `<i class="fas fa-heart"></i>`
+            : `<i class="far fa-heart"></i>`;
+        },
+        (error) => {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-right",
+            showConfirmButton: false,
+            timer: 3000,
+          });
+          Toast.fire({
+            type: "error",
+            title: "An error occurred, please try again",
+          });
+        }
+      );
+    } else {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-right",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+      Toast.fire({
+        type: "error",
+        title: "Please login to add meal to your preferrences",
+      });
+    }
   }
 }
