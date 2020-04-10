@@ -13,7 +13,7 @@ import { MealOrder } from "../models/meal-order.model";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { AuthService } from "../shared/auth/auth.service";
 import { UserService } from "../shared/user.service";
-import { MealOrderService } from '../shared/meal-order.service';
+import { MealOrderService } from "../shared/meal-order.service";
 
 enum ChangeType {
   INCREMENT,
@@ -36,9 +36,12 @@ export class ProductComponent implements OnInit, OnDestroy {
   errorMessage: string = "";
   mealOrder: MealOrder = new MealOrder();
   mealPreferred: boolean;
-  @ViewChild("addMealToCartBtn", { static: false }) addMealToCartBtn: ElementRef;
+  @ViewChild("addMealToCartBtn", { static: false })
+  addMealToCartBtn: ElementRef;
   @ViewChild("btnPrefer", { static: false }) btnPrefer: ElementRef;
   @ViewChild("quantity", { static: false }) quantity: ElementRef;
+
+  USERS_IMAGE_PREFIX = 'http://localhost:8080/uploads/users/images';
 
   constructor(
     private route: ActivatedRoute,
@@ -62,9 +65,10 @@ export class ProductComponent implements OnInit, OnDestroy {
             this.mealOrder.meal = response.meal;
             this.mealPreferred = response.mealPreferred;
             this.mealOrder.quantity = 1;
+            console.log(response);
           },
           (error) => {
-            this.errorMessage = 'No product has been'
+            this.errorMessage = "No product has been";
             this.isError = true;
           },
           () => {
@@ -92,16 +96,22 @@ export class ProductComponent implements OnInit, OnDestroy {
     if (this.orderSubscription != null) {
       this.orderSubscription.unsubscribe();
     }
+    // Unfill values
+    this.mealOrder = null;
   }
 
   onQuantityChange(event) {
-    const newQuantity = parseInt((this.quantity.nativeElement as HTMLInputElement).value);
+    const newQuantity = parseInt(
+      (this.quantity.nativeElement as HTMLInputElement).value
+    );
     if (newQuantity <= 0 || newQuantity > this.mealOrder.meal.stock) {
-      (this.quantity.nativeElement as HTMLInputElement).value = this.mealOrder.quantity.toString();
+      (this.quantity
+        .nativeElement as HTMLInputElement).value = this.mealOrder.quantity.toString();
     } else {
       event.target.classList.add("is-valid");
       event.target.classList.remove("is-invalid");
-      (this.quantity.nativeElement as HTMLInputElement).value = newQuantity.toString();
+      (this.quantity
+        .nativeElement as HTMLInputElement).value = newQuantity.toString();
       this.mealOrder.quantity = newQuantity;
     }
   }
@@ -114,27 +124,33 @@ export class ProductComponent implements OnInit, OnDestroy {
       if (this.mealOrder.quantity < this.mealOrder.meal.stock) {
         this.mealOrder.quantity += 1;
       } else {
-        type = "error";
-        message = `Invalid quantity, only ${this.mealOrder.meal.stock} is available!`;
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        Toast.fire({
+          type: "error",
+          title: `Invalid quantity, only ${this.mealOrder.meal.stock} is available!`,
+        });
       }
     } else {
       if (this.mealOrder.quantity <= 1) {
-        type = "error";
-        message = "Invalid quantity";
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        Toast.fire({
+          type: "error",
+          title: "Invalid quantity",
+        });
       } else {
         this.mealOrder.quantity -= 1;
       }
     }
-    const Toast = Swal.mixin({
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 3000,
-    });
-    Toast.fire({
-      type: type,
-      title: message,
-    });
   }
 
   onMealPreference() {
@@ -192,7 +208,8 @@ export class ProductComponent implements OnInit, OnDestroy {
   onAddMealOrder(meal: Meal) {
     if (this.authService.isAuthenticated()) {
       // Set button on loading state
-      const defaultButton = (this.addMealToCartBtn.nativeElement as HTMLElement).innerHTML;
+      const defaultButton = (this.addMealToCartBtn.nativeElement as HTMLElement)
+        .innerHTML;
       (this.addMealToCartBtn.nativeElement as HTMLElement).innerHTML = `
         Adding meal 
           <div class="spinner-border spinner-border-sm text-success" role="status">
@@ -245,11 +262,20 @@ export class ProductComponent implements OnInit, OnDestroy {
           },
           () => {
             // Reset button
-            (this.addMealToCartBtn.nativeElement as HTMLElement).innerHTML = defaultButton;
+            (this.addMealToCartBtn
+              .nativeElement as HTMLElement).innerHTML = defaultButton;
           }
         );
     } else {
       Swal.fire("Your are not connected", "Please login", "error");
     }
+  }
+
+  // Request filled and unfilled stars for display purposes
+  getRating(rating: number) {
+    return {
+      filledStars: Array(rating).fill("*"),
+      unfilledStars: Array(5 - rating).fill("*"),
+    };
   }
 }
