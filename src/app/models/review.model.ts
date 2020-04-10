@@ -7,4 +7,5 @@ export class Review {
     public meal: Meal;
     public comment: string;
     public rating: number;
+    public timestamp: Date;
 }

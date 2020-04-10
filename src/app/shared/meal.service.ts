@@ -55,7 +55,10 @@ export class MealService {
   }
 
   getMeal(id) {
-    return this.http.get<{meal: Meal, mealPreferred: boolean}>(`${API_V1}/${id}`);
+    return this.http.get<{meal: Meal, mealPreferred: boolean}>(`${API_V1}/${id}`).pipe(
+      retry(5),
+      catchError(this.handleHttpError)
+    );
   }
 
   saveMeal(meal: Meal) {

@@ -99,7 +99,6 @@ export class HomeComponent implements OnInit, OnDestroy {
                 () => {
                   // Set final data
                   this.page = page;
-                  console.log(page);
                 }
               );
           } else {

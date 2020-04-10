@@ -6,7 +6,7 @@ import {
   OnDestroy,
 } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
-import { Subscription } from "rxjs";
+import { Subscription, Subject } from "rxjs";
 import { MealService } from "../shared/meal.service";
 import { Meal } from "../models/meal.model";
 import { MealOrder } from "../models/meal-order.model";
@@ -14,6 +14,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import { AuthService } from "../shared/auth/auth.service";
 import { UserService } from "../shared/user.service";
 import { MealOrderService } from "../shared/meal-order.service";
+import { Title } from '@angular/platform-browser';
 
 enum ChangeType {
   INCREMENT,
@@ -41,14 +42,16 @@ export class ProductComponent implements OnInit, OnDestroy {
   @ViewChild("btnPrefer", { static: false }) btnPrefer: ElementRef;
   @ViewChild("quantity", { static: false }) quantity: ElementRef;
 
-  USERS_IMAGE_PREFIX = 'http://localhost:8080/uploads/users/images';
 
+  eventsSubject: Subject<number> = new Subject<number>();
+  
   constructor(
     private route: ActivatedRoute,
     private mealService: MealService,
     private authService: AuthService,
     private userService: UserService,
-    private mealOrderService: MealOrderService
+    private mealOrderService: MealOrderService,
+    private titleService: Title
   ) {}
 
   ngOnInit() {
@@ -65,11 +68,16 @@ export class ProductComponent implements OnInit, OnDestroy {
             this.mealOrder.meal = response.meal;
             this.mealPreferred = response.mealPreferred;
             this.mealOrder.quantity = 1;
-            console.log(response);
+            // Set page title
+            this.titleService.setTitle(response.meal.name);
+            // Emit event to child reviews child component
+            this.eventsSubject.next(response.meal.id);
           },
           (error) => {
             this.errorMessage = "No product has been";
             this.isError = true;
+            // Set page title
+            this.titleService.setTitle('No product found');
           },
           () => {
             this.isLoading = false;
@@ -271,11 +279,4 @@ export class ProductComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Request filled and unfilled stars for display purposes
-  getRating(rating: number) {
-    return {
-      filledStars: Array(rating).fill("*"),
-      unfilledStars: Array(5 - rating).fill("*"),
-    };
-  }
 }

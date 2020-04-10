@@ -179,73 +179,9 @@
     <h4 class="display-5"><i class="fas fa-file-pdf"></i> Reviews</h4>
   </div>
 
-  <!-- Loading -->
-  <div class="col-12 text-center mt-5 mb-5" *ngIf="isLoading && !isError">
-    <div class="spinner-grow text-primary" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-    <div class="spinner-grow text-secondary" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-    <div class="spinner-grow text-success" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-    <div class="spinner-grow text-danger" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-    <div class="spinner-grow text-warning" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-    <div class="spinner-grow text-info" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-    <div class="spinner-grow text-light" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-    <div class="spinner-grow text-dark" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
+  <div class="col-12">
+    <!-- Reviews list -->
+    <app-reviews [events]="eventsSubject.asObservable()" ></app-reviews>
   </div>
 
-  <!-- Reviews list -->
-  <div class="col-12 mb-5">
-
-    <!-- Loop through reviews -->
-    <div
-      class="media position-relative mb-3"
-      *ngFor="let review of mealOrder.meal.reviews"
-    >
-      <img
-        src="{{ USERS_IMAGE_PREFIX + '/' + review.user.image }}"
-        style="width: 100px; height: 100px"
-        class="mr-3 rounded-circle"
-        alt="{{ review.user.username }}"
-      />
-      <div class="media-body">
-        <h5 class="mt-0 text-dark font-weight-bold">
-          <i class="fas fa-user-tag"></i> {{ review.user.username }}
-        </h5>
-        <p><i class="fas fa-comments"></i> {{ review.comment }}</p>
-        <p>
-          <!-- Stared reviews -->
-          <ng-container
-            *ngFor="let rate of getRating(review.rating).filledStars"
-          >
-            <i class="fas fa-star mx-auto text-warning"></i>
-          </ng-container>
-          <!-- Remaining non stared reviews -->
-          <ng-container
-            *ngFor="let rate of getRating(review.rating).unfilledStars"
-          >
-            <i class="far fa-star mx-auto text-warning"></i>
-          </ng-container>
-        </p>
-        <hr />
-      </div>
-    </div>
-
-    <!-- No review message -->
-    <div *ngIf="mealOrder.meal.reviews != null && mealOrder.meal.reviews.length == 0" class="shadow-sm p-3 mb-5 bg-primary text-center font-weight-bold text-white rounded"><i class="fas fa-info"></i> No review has done</div>
-
-  </div>
 </div>
