@@ -5,14 +5,14 @@
 
 <div class="row">
   <!-- Left sidebar -->
-  <div class="col-sm-12 col-md-12 col-lg-3 col-xl-3">
+  <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
     <app-left-sidebar
       (addMealToCartEvent)="onAddMealOrder($event)"
     ></app-left-sidebar>
   </div>
 
   <!-- Meals -->
-  <div class="col-sm-12 col-md-12 col-lg-9 col-xl-9">
+  <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8 mt-4">
     <!-- Add new meal icon -->
     <div
       class="col-12 mt-2 font-weight-bold"
@@ -81,7 +81,7 @@
             alt="{{ meal.name }}"
           />
           <div class="card-body">
-            <h5 class="card-title font-weight-bold">{{ meal.name }}</h5>
+            <a [routerLink]="['products', meal.id]"><h5 class="card-title font-weight-bold">{{ meal.name }}</h5></a>
             <!-- Check sale price -->
             <p class="card-text" *ngIf="meal.salePrice == null">
               {{ meal.price }} Dhs

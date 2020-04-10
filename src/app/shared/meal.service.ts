@@ -11,7 +11,7 @@ import { Review } from '../models/review.model';
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
-const API = "http://localhost:8080/api";
+const API = "http://localhost:8080/api/meals";
 const API_V1 = "http://localhost:8080/api/v1/meals";
 
 @Injectable({
@@ -33,6 +33,11 @@ export class MealService {
 
   getRating(reviews: Array<Review>) {
     let sum = 0;
+    // Check reviews
+    if( reviews == null ) {
+      return {filledStars: 0, unfilledStars: 0};
+    }
+    // Count reviews
     reviews.forEach(review => {
       sum += review.rating;
     });
@@ -50,11 +55,11 @@ export class MealService {
   }
 
   getMeal(id) {
-    return this.http.get<Meal>(`${API}/meals/${id}`);
+    return this.http.get<{meal: Meal, mealPreferred: boolean}>(`${API_V1}/${id}`);
   }
 
   saveMeal(meal: Meal) {
-    return this.http.post<Meal>(`${API}/meals`, meal);
+    return this.http.post<Meal>(`${API}`, meal);
   }
 
   handleHttpError(error) {

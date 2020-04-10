@@ -27,7 +27,7 @@
     class="col-sm-12 col-md-12 col-lg-12 col-xl-12"
     *ngFor="let meal of popularMeals"
   >
-    <div class="card mb-3" style="width: 100%;">
+    <div class="card mb-3 shadow bg-white rounded" style="width: 100%;">
       <div class="row no-gutters">
         <div class="col-md-6 align-middle">
           <img
@@ -38,7 +38,7 @@
         </div>
         <div class="col-md-6">
           <div class="card-body">
-            <h5 class="card-title font-weight-bold">{{ meal.name }}</h5>
+            <a [routerLink]="['products', meal.id]"><h5 class="card-title font-weight-bold">{{ meal.name }}</h5></a>
             <!-- Check sale price -->
             <p class="card-text" *ngIf="meal.salePrice == null">
               {{ meal.price }} Dhs
@@ -63,6 +63,16 @@
               >
                 <i class="fas fa-cart-plus"></i> Add To Cart
               </button>
+            </p>
+            <p class="cart-text text-warning">
+              <!-- Stared reviews -->
+              <ng-container *ngFor="let rate of mealService.getRating(meal.reviews).filledStars">
+                <i class="fas fa-star"></i>
+              </ng-container>
+              <!-- Remaining non stared reviews -->
+              <ng-container *ngFor="let rate of mealService.getRating(meal.reviews).unfilledStars">
+                <i class="far fa-star"></i>
+              </ng-container>
             </p>
           </div>
         </div>

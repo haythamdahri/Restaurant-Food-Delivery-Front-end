@@ -13,10 +13,14 @@ import { Routes, RouterModule } from '@angular/router';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { SignupComponent } from './signup/signup.component';
 import { HomeComponent } from './home/home.component';
+import { ProductComponent } from './product/product.component';
 
 const routes: Routes = [
   {
     path: '', component: HomeComponent
+  },
+  {
+    path: 'products/:id', component: ProductComponent
   },
   {
     path: 'cart', component: CartComponent, canActivate: [AuthGuard]

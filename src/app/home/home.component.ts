@@ -275,7 +275,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onMealFetch(id: number) {
     this.mealSubscription = this.mealService.getMeal(id).subscribe(
-      (meal: Meal) => {
+      (response) => {
+        const meal = response.meal;
         this.form.setValue({
           id: meal.id,
           name: meal.name,

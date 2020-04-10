@@ -1,0 +1,170 @@
+<div class="row shadow p-3 mb-5 mt-5 mr-2 ml-2 bg-white rounded">
+  <!-- Loading -->
+  <div class="col-12 text-center mt-5 mb-5" *ngIf="isLoading && !isError">
+    <div class="spinner-grow text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="spinner-grow text-secondary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="spinner-grow text-success" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="spinner-grow text-danger" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="spinner-grow text-warning" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="spinner-grow text-info" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="spinner-grow text-light" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="spinner-grow text-dark" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Error message -->
+  <div class="col-12 text-center mt-5 mb-5" *ngIf="isError">
+    <div
+      class="shadow p-3 rounded bg-danger text-white text-center font-weight-bold"
+    >
+      <i class="fas fa-exclamation-triangle"></i> {{ errorMessage }}
+    </div>
+  </div>
+  <!-- Loading -->
+  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+    <img
+      *ngIf="!isLoading && !isError"
+      src="{{ mealOrder?.meal?.image }}"
+      style="width: 100%; height: 100%; object-fit: cover;"
+      class="img-fluid"
+      alt="Responsive image"
+    />
+  </div>
+
+  <div
+    class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-5"
+    *ngIf="!isError && !isLoading"
+  >
+    <h5 class="font-weight-bold text-primary text-center display-4">
+      {{ mealOrder?.meal?.name }}
+    </h5>
+    <div class="col-12">
+      <b class="mr-5">Rating: </b>
+      <!-- Stared reviews -->
+      <ng-container
+        *ngFor="
+          let rate of mealService.getRating(mealOrder?.meal?.reviews)
+            .filledStars
+        "
+      >
+        <i class="fas fa-star mx-auto text-warning"></i>
+      </ng-container>
+      <!-- Remaining non stared reviews -->
+      <ng-container
+        *ngFor="
+          let rate of mealService.getRating(mealOrder?.meal?.reviews)
+            .unfilledStars
+        "
+      >
+        <i class="far fa-star mx-auto text-warning"></i>
+      </ng-container>
+    </div>
+
+    <div class="col-12">
+      <hr />
+    </div>
+
+    <!-- Quantity field -->
+    <div class="col-12 form-group row">
+      <label
+        for="staticEmail"
+        class="col-sm-2 col-form-label font-weight-bold text-dark"
+        >Quantity:
+      </label>
+      <div class="col-sm-10 w-75 btn-group mx-auto">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <button
+              class="input-group-text btn btn-light text-dark shadow bg-white rounded"
+              (click)="onMealQuantityUpDown(changeType.INCREMENT)"
+            >
+              <i class="fas fa-plus-circle rounded-circle"></i>
+            </button>
+          </div>
+          <input
+            [disabled]="isLoading && !isError"
+            class="form-control shadow bg-white rounded"
+            pattern="[0-9]*"
+            (keyup)="onQuantityChange($event)"
+            #quantity
+            required
+            max="650"
+            min="1"
+            type="number"
+            [value]="mealOrder.quantity"
+          />
+          <button
+            class="input-group-text btn btn-light text-dark shadow bg-white rounded"
+            (click)="onMealQuantityUpDown(changeType.DECREMENT)"
+          >
+            <i class="fas fa-minus-circle rounded-circle"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <hr />
+    </div>
+
+    <div class="col-12">
+      <b class="mr-5">Views: </b>
+      <ng-container class="mx-auto"
+        >{{ mealOrder?.meal?.views }} <i class="fas fa-eye"></i
+      ></ng-container>
+    </div>
+
+    <div class="col-12">
+      <hr />
+    </div>
+
+    <div class="col-12">
+      <b class="mr-5">Available: </b>
+      <ng-container class="mx-auto"
+        >{{ mealOrder?.meal?.stock }} <i class="fas fa-store"></i>
+      </ng-container>
+    </div>
+
+    <div class="col-12">
+      <hr />
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center">
+        <button
+          #addMealToCartBtn
+          class="btn btn-outline-success btn-sm btn-block shadow-lg"
+          (click)="onAddMealOrder()"
+        >
+          <i class="fas fa-cart-plus"></i> Add To Cart
+        </button>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center">
+        <button
+          #btnPrefer
+          (click)="onMealPreference()"
+          class="btn"
+          style="background-color: transparent;"
+        >
+          <i class="fas fa-heart" *ngIf="mealPreferred === true"></i>
+          <i class="far fa-heart" *ngIf="mealPreferred === false"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
