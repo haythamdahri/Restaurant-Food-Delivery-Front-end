@@ -32,7 +32,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   orderSubscription: Subscription;
   errorMode = false;
   loadingMode: boolean = true;
-  form;
   @ViewChild("saveMealnBtn", { static: false }) saveBtn: ElementRef;
   @ViewChild("closeBtn", { static: false }) closeBtn: ElementRef;
 
@@ -51,29 +50,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // Set page title
     this.titleService.setTitle("Home");
-    this.form = new FormGroup({
-      id: new FormControl(""),
-      name: new FormControl("", [
-        Validators.required,
-        Validators.minLength(4),
-        Validators.maxLength(80),
-      ]),
-      image: new FormControl("", [
-        Validators.required,
-        Validators.minLength(4),
-        Validators.maxLength(8000),
-      ]),
-      price: new FormControl("", [
-        Validators.required,
-        Validators.min(5),
-        Validators.maxLength(10000),
-      ]),
-      stock: new FormControl("", [
-        Validators.required,
-        Validators.max(1000000),
-        Validators.min(0),
-      ]),
-    });
     this.getData();
   }
 
@@ -157,80 +133,17 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.page = null;
   }
 
-  setButtonState(mode: number) {
-    if (mode == 1) {
-      (<HTMLInputElement>this.saveBtn.nativeElement).innerHTML =
-        '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
-      (<HTMLInputElement>this.saveBtn.nativeElement).attributes[
-        "disabled"
-      ] = true;
-    } else {
-      (<HTMLInputElement>this.saveBtn.nativeElement).innerHTML =
-        '<i class="fas fa-save"></i> Save';
-      (<HTMLInputElement>this.saveBtn.nativeElement).attributes[
-        "disabled"
-      ] = false;
-      $("#meal-form-modal").modal("hide");
-      // Initialize form after saving
-      this.initForm();
-    }
-  }
-
-  async onSaveMeal() {
-    if (this.form.valid) {
-      // Set button for loading mode
-      this.setButtonState(1);
-      const meal = this.form.value;
-      await this.mealService.saveMeal(meal).subscribe(
-        (newMeal) => {
-          // Refetch data
-          this.getData();
-          // Set button to normal mode
-          this.setButtonState(0);
-          // Success message
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "bottom-left",
-            showConfirmButton: false,
-            timer: 3000,
-          });
-          Toast.fire({
-            type: "success",
-            title: "Meal has been saved successfully",
-          });
-        },
-        (err) => {
-          // Set button to normal mode
-          this.setButtonState(0);
-          // Error message
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "bottom-left",
-            showConfirmButton: false,
-            timer: 3000,
-          });
-          Toast.fire({
-            type: "success",
-            title: "An error occurred!",
-          });
-        }
-      );
-    } else {
-      Swal.fire("Invalid data", "Please fill correct data save", "error");
-    }
-  }
-
-  onAddMealOrder(meal: Meal) {
+  onAddMealOrder(id: number) {
     if (this.authService.isAuthenticated()) {
       this.orderSubscription = this.mealOrderService
-        .addMealOrder(meal, 1)
+        .addMealOrder(id, 1)
         .subscribe(
           (data) => {
             // Chek if data contain an error message
             if (data["error"]) {
               const Toast = Swal.mixin({
                 toast: true,
-                position: "bottom-left",
+                position: "top-end",
                 showConfirmButton: false,
                 timer: 3000,
               });
@@ -272,39 +185,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  onMealFetch(id: number) {
-    this.mealSubscription = this.mealService.getMeal(id).subscribe(
-      (response) => {
-        const meal = response.meal;
-        this.form.setValue({
-          id: meal.id,
-          name: meal.name,
-          image: meal.image,
-          price: meal.price,
-          stock: meal.stock,
-        });
-        $("#meal-form-modal").modal("show");
-      },
-      (err) => {
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "bottom-left",
-          showConfirmButton: false,
-          timer: 3000,
-        });
-
-        Toast.fire({
-          type: "error",
-          title: "An error occurred, please try again!",
-        });
-      }
-    );
-  }
-
-  initForm() {
-    this.form.reset();
-  }
-
   onMealPreference(event, id) {
     // Check if user is authenticated
     if( this.authService.isAuthenticated() ) {
@@ -315,7 +195,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           // Response message
           const Toast = Swal.mixin({
             toast: true,
-            position: "top-right",
+            position: "top-end",
             showConfirmButton: false,
             timer: 3000,
           });
@@ -334,7 +214,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         (error) => {
           const Toast = Swal.mixin({
             toast: true,
-            position: "top-right",
+            position: "top-end",
             showConfirmButton: false,
             timer: 3000,
           });
@@ -347,7 +227,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     } else {
       const Toast = Swal.mixin({
         toast: true,
-        position: "top-right",
+        position: "top-end",
         showConfirmButton: false,
         timer: 3000,
       });

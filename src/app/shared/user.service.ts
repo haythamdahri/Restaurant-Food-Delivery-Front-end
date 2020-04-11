@@ -1,40 +1,42 @@
-import { AuthService } from "./auth/auth.service";
-import { catchError, retry } from "rxjs/operators";
-import { User } from "./../models/user.model";
-import { HttpClient, HttpParams, HttpEventType } from "@angular/common/http";
-import { Injectable, EventEmitter } from "@angular/core";
-import { map } from "rxjs/operators";
-import { throwError, pipe } from "rxjs";
-import { Router } from "@angular/router";
-import { Order } from "../models/order.model";
+import { AuthService } from './auth/auth.service';
+import { catchError, retry } from 'rxjs/operators';
+import { User } from './../models/user.model';
+import { HttpClient, HttpParams, HttpEventType } from '@angular/common/http';
+import { Injectable, EventEmitter } from '@angular/core';
+import { map } from 'rxjs/operators';
+import { throwError, pipe } from 'rxjs';
+import { Router } from '@angular/router';
+import { Order } from '../models/order.model';
 import { Meal } from '../models/meal.model';
+import { ConstantsService } from './constants.service';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class UserService {
-  private static API_ENDPOINT = "http://localhost:8080/api";
-  private static API_V1_ENDPOINT = "http://localhost:8080/api/v1/users/";
-  private static SIGN_UP_ENDPOINT = "http://localhost:8080/api/v1/users/";
-  private static ACTIVATION_ACCOUNT_ENDPOINT =
+ 
+  public static API_ENDPOINT = "http://localhost:8080/api";
+  public static API_V1_ENDPOINT = "http://localhost:8080/api/v1/users/";
+  public static SIGN_UP_ENDPOINT = "http://localhost:8080/api/v1/users/";
+  public static ACTIVATION_ACCOUNT_ENDPOINT =
     "http://localhost:8080/api/v1/users/activation";
-  private static PASSWORD_RESET_ENDPOINT =
+  public static PASSWORD_RESET_ENDPOINT =
     "http://localhost:8080/api/v1/users/passwordreset";
-  private static UPDATE_EMAIL_ENDPOINT =
+  public static UPDATE_EMAIL_ENDPOINT =
     "http://localhost:8080/api/v1/users/email";
-  private static UPDATE_IMAGE_ENDPOINT =
+  public static UPDATE_IMAGE_ENDPOINT =
     "http://localhost:8080/api/v1/users/image";
-  private static TOKEN_ENDPOINT = "http://localhost:8080/api/v1/users/tokens";
-  private static AUTHENTICATED_USER_ORDERS_HISTORY =
+  public static TOKEN_ENDPOINT = "http://localhost:8080/api/v1/users/tokens";
+  public static AUTHENTICATED_USER_ORDERS_HISTORY =
     "http://localhost:8080/api/v1/orders/authuser";
-    public static USERS_PREFERRED_MEALS =
-      "http://localhost:8080/api/v1/users/preferences";
-  private static USER_ORDERS_API_ENDPOINT =
+  public static USERS_PREFERRED_MEALS =
+    "http://localhost:8080/api/v1/users/preferences";
+  public static USER_ORDERS_API_ENDPOINT =
     "http://localhost:8080/api/orders/search/findByUserEmail";
-  private static USER_DETAILS_API_ENDPOINT =
-    "http://localhost:8080/api/users/search/findByEmail";
-  public static USERS_IMAGE_PREFIX =
-    "http://localhost:8080/uploads/users/images";
+  public static USER_DETAILS_API_ENDPOINT =
+    "http://localhost:8080/api/v1/users/current";
+  public static FILES_ENDOINT =
+    "http://localhost:8080/api/v1/restaurantfiles/file";
 
   public userUpdateEvent: EventEmitter<any> = new EventEmitter<any>();
 
@@ -44,8 +46,7 @@ export class UserService {
     private router: Router
   ) {}
 
-  register(user: any) {
-    console.log("Payload: " + JSON.stringify(user));
+  register(user: User) {
     return this.http.post<User>(UserService.SIGN_UP_ENDPOINT, user).pipe(
       map((user) => {
         return user;
@@ -90,21 +91,23 @@ export class UserService {
     return this.http
       .get<User>(`${UserService.USER_DETAILS_API_ENDPOINT}`, {
         params: new HttpParams().append(
-          "email",
+          'email',
           this.authService.getAuthenticatedUser().email
         ),
       })
       .pipe(
         map((data) => {
-          data.image = UserService.USERS_IMAGE_PREFIX + "/" + data.image;
+          console.log(data);
+          data.image.file = ConstantsService.FILES_ENDOINT + '/' + data.image.id;
           return data;
         }),
         retry(5),
         catchError((error) => {
+          console.log(error);
           // Logout user
-          this.authService.logout();
+          // this.authService.logout();
           // Redirect user to login page
-          this.router.navigateByUrl("/login");
+          // this.router.navigateByUrl('/login');
           // Handle error
           return this.handleHttpError(error);
         })
@@ -150,20 +153,19 @@ export class UserService {
       .post<{ status: boolean; message: string; user: User }>(
         UserService.UPDATE_IMAGE_ENDPOINT,
         formData,
-        { reportProgress: true, observe: "events" }
+        { reportProgress: true, observe: 'events' }
       )
       .pipe(
         map((event) => {
           switch (event.type) {
             case HttpEventType.UploadProgress:
               const progress = Math.round((100 * event.loaded) / event.total);
-              return { status: "progress", message: progress };
+              return { status: 'progress', message: progress };
 
             case HttpEventType.Response:
               // Emit user update event
               this.userUpdateEvent.emit(true);
-              event.body.user.image =
-                UserService.USERS_IMAGE_PREFIX + "/" + event.body.user.image;
+              event.body.user.image.file = ConstantsService.FILES_ENDOINT + '/' + event.body.user.image.id;
               return event.body;
             default:
               return `Unhandled event: ${event.type}`;
@@ -178,7 +180,7 @@ export class UserService {
     return this.http
       .post<{ status: boolean; message: string }>(
         `${UserService.UPDATE_EMAIL_ENDPOINT}`,
-        new HttpParams().append("email", email)
+        new HttpParams().append('email', email)
       )
       .pipe(
         map((data) => {
@@ -191,7 +193,7 @@ export class UserService {
   }
 
   handleHttpError(error) {
-    let errorMessage = "";
+    let errorMessage = '';
     if (error.error instanceof ErrorEvent) {
       // client-side error
       errorMessage = `Error: ${error.error.message}`;

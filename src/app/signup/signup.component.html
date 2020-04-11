@@ -58,10 +58,10 @@
                 *ngIf="
                   form.controls.email.touched &&
                   form.controls.email.invalid &&
-                  !form.controls.email.errors.isServerUnracheable
+                  form.controls.email.errors.isServerUnracheable
                 "
               >
-                An error occurred while reacing server
+                An error occurred while reaching server
               </div>
               <div
                 class="invalid-feedback"

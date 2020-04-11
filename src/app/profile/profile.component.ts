@@ -46,12 +46,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.editedEmail = null;
     this.editedUser = null;
     this.ts = Date.now();
-    this.user.image = this.loadingImage;
+    this.user.image.file = this.loadingImage;
     this.loadingOrders = true;
     this.loadingUser = true;
     this.ordersSubscription = this.userService.getUserOrdersHistory().subscribe(
       (data) => {
-        console.log(data);
         this.userOrders = data;
         this.loadingOrders = false;
       },
@@ -78,7 +77,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.uploadProgress = 0;
     this.uploadingImage = true;
     const oldImage = this.user.image;
-    this.user.image = this.loadingImage;
+    this.user.image.file = this.loadingImage;
     const formData = new FormData();
     formData.append("image", event.target.files[0], event.target.files[0].name);
     this.imageSubscription = this.userService
@@ -139,8 +138,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.userSubscription.unsubscribe();
-    this.ordersSubscription.unsubscribe();
+    if( this.userSubscription != null ) {
+      this.userSubscription.unsubscribe();
+    }
+    if( this.ordersSubscription != null ) {
+      this.ordersSubscription.unsubscribe();
+    }
     this.user = null;
     this.userOrders = null;
     this.errorOrders = false;

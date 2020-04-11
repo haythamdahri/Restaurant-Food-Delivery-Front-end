@@ -44,10 +44,9 @@ export class LeftSidebarComponent implements OnInit, OnDestroy {
     }
   }
 
-  onAddMealOrder(meal) {
-    console.log(meal);
+  onAddMealOrder(id) {
     // Emit data on event emitter
-    this.addMealToCartEvent.emit(meal);
+    this.addMealToCartEvent.emit(id);
   }
 
 }

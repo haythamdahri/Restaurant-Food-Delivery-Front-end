@@ -44,6 +44,8 @@ export class ProductComponent implements OnInit, OnDestroy {
 
 
   eventsSubject: Subject<number> = new Subject<number>();
+
+  transferedData: {meal: Meal} = null;
   
   constructor(
     private route: ActivatedRoute,
@@ -57,13 +59,14 @@ export class ProductComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // Set meal loading image
     this.mealOrder.meal = new Meal();
-    this.mealOrder.meal.image = "../../assets/img/loading.gif";
+    this.mealOrder.meal.image.file = "../../assets/img/loading.gif";
     // Subscribe to activated route
     this.routeSubscription = this.route.params.subscribe((params: Params) => {
       if (params["id"] != null) {
         const mealId = params.id;
         this.mealSubscription = this.mealService.getMeal(mealId).subscribe(
           (response) => {
+            console.log(response);
             // Check if meal exists
             this.mealOrder.meal = response.meal;
             this.mealPreferred = response.mealPreferred;
@@ -213,7 +216,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     }
   }
 
-  onAddMealOrder(meal: Meal) {
+  onAddMealOrder() {
     if (this.authService.isAuthenticated()) {
       // Set button on loading state
       const defaultButton = (this.addMealToCartBtn.nativeElement as HTMLElement)
@@ -225,7 +228,7 @@ export class ProductComponent implements OnInit, OnDestroy {
           </div>
       `;
       this.orderSubscription = this.mealOrderService
-        .addMealOrder(this.mealOrder.meal, this.mealOrder.quantity)
+        .addMealOrder(this.mealOrder.meal.id, this.mealOrder.quantity)
         .subscribe(
           (data) => {
             // Chek if data contain an error message
@@ -277,6 +280,29 @@ export class ProductComponent implements OnInit, OnDestroy {
     } else {
       Swal.fire("Your are not connected", "Please login", "error");
     }
+  }
+
+  onToggleReviewForm() {
+    console.log(this.transferedData)
+    if( this.transferedData == null ) {
+      this.transferedData = {meal: this.mealOrder.meal};
+      console.log(this.transferedData)
+    } else {
+      this.transferedData = null;
+    }
+  }
+
+  onMealFormEnd() {
+    // End meal edition form
+    this.transferedData = null;
+  }
+
+  // Request filled and unfilled stars for display purposes
+  getRating(rating: number) {
+    return {
+      filledStars: Array(rating).fill("*"),
+      unfilledStars: Array(5 - rating).fill("*"),
+    };
   }
 
 }

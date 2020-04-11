@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (this.form.invalid) {
       const Toast = Swal.mixin({
         toast: true,
-        position: 'bottom-left',
+        position: 'top-end',
         showConfirmButton: false,
         timer: 3000
       });
@@ -72,7 +72,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             // User success message
             const Toast = Swal.mixin({
               toast: true,
-              position: 'bottom-left',
+              position: 'top-end',
               showConfirmButton: false,
               timer: 3000
             });

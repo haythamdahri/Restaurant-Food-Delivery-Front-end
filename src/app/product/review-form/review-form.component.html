@@ -1,0 +1,43 @@
+<div class="col-12 shadow p-3 mb-5 bg-white rounded">
+  <form [formGroup]="form">
+    <div class="row">
+      <div class="col-12 mx-auto">
+        <div class="form-group">
+          <label for="comment">Comment *</label>
+          <textarea
+            formControlName="comment"
+            [ngClass]="{
+              'is-invalid':
+                form.controls.comment.touched && form.controls.comment.invalid,
+              'is-valid':
+                form.controls.comment.touched && form.controls.comment.valid
+            }"
+            type="text"
+            name="comment"
+            class="form-control shadow-sm p-1 bg-white rounded"
+            placeholder="Please enter your comment *"
+            rows="15"
+          ></textarea>
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              form.controls.comment.touched && form.controls.comment.invalid
+            "
+          >
+            <ng-container *ngIf="form.controls.comment.errors.required">
+              Comment is required
+            </ng-container>
+            <ng-container
+              *ngIf="
+                form.controls.comment.errors.minlength ||
+                form.controls.comment.errors.maxlength
+              "
+            >
+              Comment must be valid
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

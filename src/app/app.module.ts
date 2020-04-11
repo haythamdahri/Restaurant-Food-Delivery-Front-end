@@ -26,6 +26,7 @@ import { LeftSidebarComponent } from './home/left-sidebar/left-sidebar.component
 import { CustomPaginationComponent } from './pagination/components/custom-pagination/custom-pagination.component';
 import { ProductComponent } from './product/product.component';
 import { ReviewsComponent } from './product/reviews/reviews.component';
+import { ReviewFormComponent } from './product/review-form/review-form.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { ReviewsComponent } from './product/reviews/reviews.component';
     LeftSidebarComponent,
     CustomPaginationComponent,
     ProductComponent,
-    ReviewsComponent
+    ReviewsComponent,
+    ReviewFormComponent
   ],
   imports: [BrowserModule, AppRoutingModule, CustomModule, LayoutModule],
   providers: [

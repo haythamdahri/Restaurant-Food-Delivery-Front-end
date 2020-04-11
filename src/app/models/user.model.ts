@@ -1,6 +1,7 @@
 import { Role } from './role.model';
 import { Meal } from './meal.model';
 import { Review } from './review.model';
+import { RestaurantFile } from './restaurant-file.model';
 
 export class User {
     public id: number;
@@ -8,7 +9,7 @@ export class User {
     public password: string;
     public username: string;
     public enabled: boolean;
-    public image: string;
+    public image: RestaurantFile = new RestaurantFile();
     public location: string;
     public roles: Array<Role>;
     public preferredMeals: Array<Meal>;

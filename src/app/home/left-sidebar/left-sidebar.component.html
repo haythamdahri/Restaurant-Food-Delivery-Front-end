@@ -22,6 +22,19 @@
     </div>
   </div>
 
+
+    <!-- No meals found message -->
+    <div
+      class="col-12 mx-auto mt-5"
+      *ngIf="!isError && !isError && popularMeals && popularMeals?.length == 0"
+    >
+      <div
+        class="shadow-sm p-3 bg-white rounded text-center font-weight-bold text-primary"
+      >
+        <i class="fas fa-exclamation"></i> No meals to shop
+      </div>
+    </div>
+
   <!-- Loop over meals retrieved from server -->
   <div
     class="col-sm-12 col-md-12 col-lg-12 col-xl-12"
@@ -31,7 +44,7 @@
       <div class="row no-gutters">
         <div class="col-md-6 align-middle">
           <img
-            src="{{ meal.image }}"
+            src="{{ meal.image.file }}"
             class="card-img img-fluid "
             alt="{{ meal.name }}"
           />
@@ -59,7 +72,7 @@
             <p class="card-text">
               <button
                 class="btn btn-outline-primary btn-sm shadow-lg"
-                (click)="onAddMealOrder(meal)"
+                (click)="onAddMealOrder(meal.id)"
               >
                 <i class="fas fa-cart-plus"></i> Add To Cart
               </button>

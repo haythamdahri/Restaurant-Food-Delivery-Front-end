@@ -6,12 +6,12 @@
         <div class="media align-items-end profile-header">
           <div class="profile mr-3" style="height: 8rem; width: 8rem;">
             <a
-              href="{{ user?.image }}"
+              href="{{ user?.image?.file }}"
               data-lightbox="roadtrip"
               attr.data-title="{{ user.username }}"
-              attr.data-alt="{{ user.username }}"
+              attr.data-alt="{{ user?.username }}"
               ><img
-                src="{{ user?.image }}?ts={{ ts }}"
+                src="{{ user?.image?.file }}?ts={{ ts }}"
                 alt="{{ user?.username }}"
                 style="height: 100%; width: 100%; max-height: 100%; max-width: 100%;"
                 class="rounded mb-2 img-thumbnail"
@@ -245,7 +245,7 @@
                 <!-- Error orders -->
                 <tr align="center" *ngIf="errorOrders">
                   <td
-                    colspan="3"
+                    colspan="4"
                     class="alert alert-danger font-weight-bold text-center"
                   >
                     <i class="fas fa-exclamation-triangle"></i> An error
