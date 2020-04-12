@@ -37,44 +37,38 @@
   </div>
 
   <!-- Product image -->
-  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
-    <img
-      *ngIf="!isLoading && !isError"
-      src="{{ mealOrder?.meal?.image.file }}"
-      style="width: 100%; height: 100%; object-fit: cover;"
-      class="img-fluid"
-      alt="Responsive image"
-    />
+  <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+    
+
+    <a
+        href="{{ mealOrder?.meal?.image.file }}"
+        data-lightbox="roadtrip"
+        attr.data-title="{{  mealOrder?.meal?.name }}"
+        attr.data-alt="{{  mealOrder?.meal?.name }}"
+        ><img
+        *ngIf="!isLoading && !isError"
+        src="{{ mealOrder?.meal?.image.file }}"
+        style="width: 100%; height: 100%; object-fit: cover;"
+        class="img-fluid"
+        alt="Responsive image"
+      />
+    </a>
+
+
   </div>
 
   <!-- Product -->
   <div
-    class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-5"
+    class="col-sm-12 col-md-8 col-lg-8 col-xl-8 mt-5"
     *ngIf="!isError && !isLoading"
   >
     <h5 class="font-weight-bold text-primary text-center display-4">
       {{ mealOrder?.meal?.name }}
     </h5>
     <div class="col-12">
-      <b class="mr-5">Rating: </b>
-      <!-- Stared reviews -->
-      <ng-container
-        *ngFor="
-          let rate of mealService.getRating(mealOrder?.meal?.reviews)
-            .filledStars
-        "
-      >
-        <i class="fas fa-star mx-auto text-warning"></i>
-      </ng-container>
-      <!-- Remaining non stared reviews -->
-      <ng-container
-        *ngFor="
-          let rate of mealService.getRating(mealOrder?.meal?.reviews)
-            .unfilledStars
-        "
-      >
-        <i class="far fa-star mx-auto text-warning"></i>
-      </ng-container>
+      <b>Rating: </b>
+      <!-- Rating -->
+      <star-rating [starType]="'svg'" [rating]="mealService.getRating(mealOrder?.meal?.reviews)" [readOnly]="true" labelPosition="top" size="medium"></star-rating>
     </div>
 
     <div class="col-12">
@@ -161,7 +155,7 @@
           #btnPrefer
           (click)="onMealPreference()"
           class="btn"
-          style="background-color: transparent;"
+          style="background-color: transparent; color: red;"
         >
           <i class="fas fa-heart" *ngIf="mealPreferred === true"></i>
           <i class="far fa-heart" *ngIf="mealPreferred === false"></i>
@@ -171,10 +165,11 @@
   </div>
 
   <!-- Review form -->
-  <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center">
+  <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center" *ngIf="authService.isAuthenticated()">
     <hr />
     <button
       class="btn btn-light font-weight-bold btn-sm btn-block"
+      [ngClass]="{'invisible': (mealOrder == null || mealOrder?.meal == null || isLoading || isError)}"
       type="button"
       data-toggle="collapse"
       data-target="#reviewFormCollapse"
@@ -193,10 +188,9 @@
       (onMealFormEnd)="onMealFormEnd()"
     ></app-review-form>
   </div>
-</div>
 
 <!-- Reviews -->
-<div class="row shadow p-3 mb-5 mr-2 ml-2 bg-white rounded">
+<div class="col-12 shadow p-3 mb-5 mt-3 mr-2 ml-2 bg-white rounded">
   <div
     class="col-12 shadow-sm p-3 mb-2 bg-white rounded text-center text-danger font-weight-bold font-weight-bold"
   >
@@ -207,4 +201,5 @@
     <!-- Reviews list -->
     <app-reviews [events]="eventsSubject.asObservable()"></app-reviews>
   </div>
+</div>
 </div>

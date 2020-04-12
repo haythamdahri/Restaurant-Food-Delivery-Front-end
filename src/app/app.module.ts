@@ -27,6 +27,7 @@ import { CustomPaginationComponent } from './pagination/components/custom-pagina
 import { ProductComponent } from './product/product.component';
 import { ReviewsComponent } from './product/reviews/reviews.component';
 import { ReviewFormComponent } from './product/review-form/review-form.component';
+import { StarRatingModule } from 'angular-star-rating';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,7 @@ import { ReviewFormComponent } from './product/review-form/review-form.component
     ReviewsComponent,
     ReviewFormComponent
   ],
-  imports: [BrowserModule, AppRoutingModule, CustomModule, LayoutModule],
+  imports: [BrowserModule, AppRoutingModule, CustomModule, LayoutModule, StarRatingModule.forRoot()],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

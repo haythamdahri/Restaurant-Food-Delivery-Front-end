@@ -79,13 +79,7 @@
             </p>
             <p class="cart-text text-warning">
               <!-- Stared reviews -->
-              <ng-container *ngFor="let rate of mealService.getRating(meal.reviews).filledStars">
-                <i class="fas fa-star"></i>
-              </ng-container>
-              <!-- Remaining non stared reviews -->
-              <ng-container *ngFor="let rate of mealService.getRating(meal.reviews).unfilledStars">
-                <i class="far fa-star"></i>
-              </ng-container>
+              <star-rating [starType]="'svg'" [rating]="mealService.getRating(meal.reviews)" [readOnly]="true" labelPosition="top" size="medium"></star-rating>
             </p>
           </div>
         </div>

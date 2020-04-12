@@ -28,9 +28,16 @@ export class ReviewsComponent implements OnInit, OnDestroy {
     // Subscribe to events from parent component
     this.eventSubscription = this.events.subscribe(
       (mealId) => {
-        this.mealId = mealId;
-        // Fetch data
-        this.fetchData();
+        // Check if mealId is null
+        if( mealId != null ) {
+          this.mealId = mealId;
+          // Fetch data
+          this.fetchData();
+        } else {
+          // Set error
+          this.isError = true;
+          this.errorMessage = 'No product exists for reviews';
+        }
       }
     );
   }

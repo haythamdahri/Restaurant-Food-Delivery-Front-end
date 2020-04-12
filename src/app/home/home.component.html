@@ -92,7 +92,7 @@
                   id="btnPreffer{{ meal.id }}"
                   (click)="onMealPreference($event, meal.id)"
                   class="btn"
-                  style="background-color: transparent;"
+                  style="background-color: transparent; color: red;"
                 >
                   <i
                     class="fas fa-heart"
@@ -110,23 +110,8 @@
               <div
                 class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center text-warning"
               >
-                <!-- Stared reviews -->
-                <ng-container
-                  *ngFor="
-                    let rate of mealService.getRating(meal.reviews).filledStars
-                  "
-                >
-                  <i class="fas fa-star"></i>
-                </ng-container>
-                <!-- Remaining non stared reviews -->
-                <ng-container
-                  *ngFor="
-                    let rate of mealService.getRating(meal.reviews)
-                      .unfilledStars
-                  "
-                >
-                  <i class="far fa-star"></i>
-                </ng-container>
+                <!-- Rating -->
+                <star-rating [starType]="'svg'" [rating]="mealService.getRating(meal.reviews)" [readOnly]="true" labelPosition="top" size="medium"></star-rating>
               </div>
             </div>
           </div>

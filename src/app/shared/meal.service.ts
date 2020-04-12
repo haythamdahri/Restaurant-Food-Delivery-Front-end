@@ -43,20 +43,10 @@ export class MealService {
     );
   }
 
-  getRating(reviews: Array<Review>) {
-    let sum = 0;
-    // Check reviews
-    if( reviews == null ) {
-      return {filledStars: 0, unfilledStars: 0};
-    }
-    // Count reviews
-    reviews.forEach(review => {
-      sum += review.rating;
-    });
-    // Return stars as reviews
-    const filledStars = Array.from(Array(Number.parseInt((sum/5).toString())).keys()).map(i => "*");
-    const unfilledStars = Array.from(Array(Number.parseInt((5 - (sum/5)).toString())).keys()).map(i => "*");
-    return {filledStars, unfilledStars}
+  getRating(reviews: Array<Review>): number {
+    return reviews.map((review) => {
+          return review.rating;
+        }).reduce((rate1,rate2) => rate1 + rate2, 0) / reviews.length;
   }
 
   getPopularMeals() {

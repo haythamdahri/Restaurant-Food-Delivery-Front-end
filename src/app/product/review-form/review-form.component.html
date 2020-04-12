@@ -1,9 +1,11 @@
 <div class="col-12 shadow p-3 mb-5 bg-white rounded">
-  <form [formGroup]="form">
+  <!-- Review Form -->
+  <form (ngSubmit)="onReviewSubmit()" [formGroup]="form" *ngIf="!transferedData.reviewed && !isDone">
     <div class="row">
       <div class="col-12 mx-auto">
+        <!-- COMMENT -->
         <div class="form-group">
-          <label for="comment">Comment *</label>
+          <label for="comment" class="font-weight-bold">Comment *</label>
           <textarea
             formControlName="comment"
             [ngClass]="{
@@ -37,7 +39,40 @@
             </ng-container>
           </div>
         </div>
+        <!-- RATE -->
+        <div class="form-group">
+          <!-- COMMENT -->
+          <label for="rating" class="font-weight-bold">Rating *</label>
+          <star-rating-control
+            [starType]="'svg'"
+            formControlName="rating"
+            name="rating"
+            labelPosition="top"
+            size="large"
+            id="rating"
+          ></star-rating-control>
+        </div>
+        <!-- Submit review -->
+        <button
+          #submitBtn
+          [disabled]="form.invalid"
+          type="submit"
+          class="btn btn-success btn-sm btn-block mt-2"
+        >
+        <i class="fas fa-location-arrow"></i> Submit review
+        </button>
       </div>
     </div>
   </form>
+
+  <!-- Already product reviewed -->
+  <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mx-auto mb-5" *ngIf="transferedData.reviewed || isDone">
+    <div
+      class="shadow p-3 rounded bg-success text-white text-center font-weight-bold"
+    >
+      <i class="fas fa-clipboard-check"></i> 
+      {{ transferedData.reviewed ? 'You have already submitted a review!' : 'Your review has been submitted successfully' }}
+    </div>
+  </div>
+
 </div>

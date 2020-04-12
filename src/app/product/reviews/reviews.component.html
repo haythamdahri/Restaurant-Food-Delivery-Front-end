@@ -29,14 +29,14 @@
   </div>
 </div>
 
-<div class="col-12 mb-5">
+<div class="col-12 mx-auto mb-5">
   <!-- Loop through reviews -->
   <div
     class="media position-relative mb-3"
     *ngFor="let review of page.content"
   >
     <img
-      src="{{ USERS_IMAGE_PREFIX + '/' + review.user.image }}"
+      src="{{ review.user.image.file }}"
       style="width: 100px; height: 100px;"
       class="mr-3 rounded-circle"
       alt="{{ review.user.username }}"

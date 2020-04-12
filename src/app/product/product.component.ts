@@ -45,7 +45,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   eventsSubject: Subject<number> = new Subject<number>();
 
-  transferedData: {meal: Meal} = null;
+  transferedData: {meal: Meal, reviewed: Boolean} = {meal: null, reviewed: false};
   
   constructor(
     private route: ActivatedRoute,
@@ -66,7 +66,6 @@ export class ProductComponent implements OnInit, OnDestroy {
         const mealId = params.id;
         this.mealSubscription = this.mealService.getMeal(mealId).subscribe(
           (response) => {
-            console.log(response);
             // Check if meal exists
             this.mealOrder.meal = response.meal;
             this.mealPreferred = response.mealPreferred;
@@ -75,10 +74,20 @@ export class ProductComponent implements OnInit, OnDestroy {
             this.titleService.setTitle(response.meal.name);
             // Emit event to child reviews child component
             this.eventsSubject.next(response.meal.id);
+            // Set if meal is reviewed by current user
+            const currentUser = this.userService.getAuthenticatedUserDetails().subscribe(
+              (user) => {
+                this.transferedData.reviewed = response.meal.reviews.filter((review) => review.user.id == user.id).length > 0;
+              }
+            );
           },
           (error) => {
-            this.errorMessage = "No product has been";
+            this.errorMessage = "No product has been found";
             this.isError = true;
+            // Emit event to child reviews child component to null
+            this.eventsSubject.next(null);
+            // Set null to Transfered Data
+            this.transferedData = null;
             // Set page title
             this.titleService.setTitle('No product found');
           },
@@ -222,10 +231,10 @@ export class ProductComponent implements OnInit, OnDestroy {
       const defaultButton = (this.addMealToCartBtn.nativeElement as HTMLElement)
         .innerHTML;
       (this.addMealToCartBtn.nativeElement as HTMLElement).innerHTML = `
-        Adding meal 
           <div class="spinner-border spinner-border-sm text-success" role="status">
             <span class="sr-only">Loading...</span>
           </div>
+          Adding meal 
       `;
       this.orderSubscription = this.mealOrderService
         .addMealOrder(this.mealOrder.meal.id, this.mealOrder.quantity)
@@ -283,12 +292,10 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   onToggleReviewForm() {
-    console.log(this.transferedData)
-    if( this.transferedData == null ) {
-      this.transferedData = {meal: this.mealOrder.meal};
-      console.log(this.transferedData)
+    if( this.transferedData.meal == null ) {
+      this.transferedData.meal = this.mealOrder.meal;
     } else {
-      this.transferedData = null;
+      this.transferedData.meal = null;
     }
   }
 

@@ -155,7 +155,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             } else {
               const Toast = Swal.mixin({
                 toast: true,
-                position: "bottom-left",
+                position: "top-end",
                 showConfirmButton: false,
                 timer: 3000,
               });
@@ -169,7 +169,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           (err) => {
             const Toast = Swal.mixin({
               toast: true,
-              position: "bottom-left",
+              position: "top-end",
               showConfirmButton: false,
               timer: 3000,
             });
