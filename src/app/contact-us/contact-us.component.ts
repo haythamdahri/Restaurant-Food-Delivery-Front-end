@@ -15,12 +15,12 @@ export class ContactUsComponent implements OnInit, OnDestroy {
 
   form;
   contactMessage: ContactMessage = new ContactMessage();
-  @ViewChild('sendBtn', {static: false}) sendBtn: ElementRef;
+  @ViewChild('sendBtn') sendBtn: ElementRef;
   formSubmitted = false;
   errorMode = false;
   subscription: Subscription;
 
-  constructor(private contactService: ContactService, private titleService: Title) { }
+  constructor(public contactService: ContactService, public titleService: Title) { }
 
   ngOnInit() {
     // Set page title

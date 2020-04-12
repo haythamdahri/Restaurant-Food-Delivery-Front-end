@@ -15,7 +15,7 @@
 
       <div class="table-responsive" *ngIf="!errorMode">
         <table class="table table-striped">
-          <thead>
+          <thead align="center">
             <tr>
               <th scope="col"></th>
               <th scope="col">Product</th>
@@ -40,7 +40,7 @@
                 colspan="7"
                 class="alert alert-warning font-weight-bold text-center"
               >
-                <i class="fas fa-exclamation-circle"></i> No order has been done
+                <i class="fas fa-exclamation-circle"></i> Your cart is empty, no order in progress!
                 yet!
               </td>
             </tr>
@@ -57,14 +57,14 @@
             </tr>
 
             <!-- Orders display -->
-            <tr *ngFor="let mealOrder of activeOrder?.mealOrders">
+            <tr align="center" *ngFor="let mealOrder of activeOrder?.mealOrders">
               <td>
                 <img
                   src="{{ mealOrder.meal.image.file }}"
                   style="height: 50px; width: 50px;"
                 />
               </td>
-              <td>{{ mealOrder.meal.name }}</td>
+              <td><a [routerLink]="['products', mealOrder.meal.id]" class="font-weight-bold">{{ mealOrder.meal.name }}</a></td>
               <td>
                 {{ mealOrder.meal.stock > 0 ? "In Stock" : "Not available" }}
               </td>

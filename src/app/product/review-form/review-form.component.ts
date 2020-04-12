@@ -17,7 +17,7 @@ export class ReviewFormComponent implements OnInit, OnDestroy {
   form: FormGroup;
   isDone: boolean = false;
   reviewSubscription: Subscription;
-  @ViewChild('submitBtn', {static: false}) submitBtn: ElementRef;
+  @ViewChild('submitBtn') submitBtn: ElementRef;
   
   constructor(private reviewService: ReviewService) { }
 

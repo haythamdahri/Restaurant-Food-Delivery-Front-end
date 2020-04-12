@@ -25,10 +25,9 @@ export class CartComponent implements OnInit, OnDestroy {
   form;
 
   constructor(
-    private cartService: CartService,
-    private mealService: MealService,
-    private mealOrderService: MealOrderService,
-    private titleService: Title
+    public cartService: CartService,
+    public mealOrderService: MealOrderService,
+    public titleService: Title
   ) {}
 
   ngOnInit() {

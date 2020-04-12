@@ -22,7 +22,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   defaultUserImage = "../../assets/img/default.png";
   updates: number;
 
-  constructor(private authService: AuthService, private router: Router, private userService: UserService) { }
+  constructor(public authService: AuthService, private router: Router, private userService: UserService) { }
 
   ngOnInit() {
     // Fetch user if authenticated

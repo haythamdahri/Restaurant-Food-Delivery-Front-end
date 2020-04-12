@@ -37,10 +37,10 @@ export class ProductComponent implements OnInit, OnDestroy {
   errorMessage: string = "";
   mealOrder: MealOrder = new MealOrder();
   mealPreferred: boolean;
-  @ViewChild("addMealToCartBtn", { static: false })
+  @ViewChild("addMealToCartBtn")
   addMealToCartBtn: ElementRef;
-  @ViewChild("btnPrefer", { static: false }) btnPrefer: ElementRef;
-  @ViewChild("quantity", { static: false }) quantity: ElementRef;
+  @ViewChild("btnPrefer") btnPrefer: ElementRef;
+  @ViewChild("quantity") quantity: ElementRef;
 
 
   eventsSubject: Subject<number> = new Subject<number>();
@@ -50,7 +50,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private mealService: MealService,
-    private authService: AuthService,
+    public authService: AuthService,
     private userService: UserService,
     private mealOrderService: MealOrderService,
     private titleService: Title

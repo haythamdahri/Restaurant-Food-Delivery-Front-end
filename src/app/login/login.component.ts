@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   form: FormGroup;
   loginSubscription: Subscription;
   loginError = false;
-  @ViewChild('loginBtn', {static: false}) loginBtn: ElementRef;
+  @ViewChild('loginBtn') loginBtn: ElementRef;
 
   constructor(private authService: AuthService, private router: Router, private titleService: Title) {}
 

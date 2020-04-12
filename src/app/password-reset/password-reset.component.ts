@@ -26,7 +26,7 @@ export enum PageMode {
 export class PasswordResetComponent implements OnInit, OnDestroy {
   form: FormGroup;
   sendTokenSUbscription: Subscription;
-  @ViewChild("passwordResetBtn", { static: false })
+  @ViewChild("passwordResetBtn")
   passwordResetBtn: ElementRef;
   passwordResetError = false;
   passwordResetSuccess = false;

@@ -19,9 +19,9 @@ export class AccountActivationComponent implements OnInit, OnDestroy {
   activationSubscription: Subscription;
 
   constructor(
-    private route: ActivatedRoute,
-    private userService: UserService,
-    private titleService: Title
+    public route: ActivatedRoute,
+    public userService: UserService,
+    public titleService: Title
   ) {}
 
   ngOnInit() {

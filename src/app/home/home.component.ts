@@ -32,8 +32,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   orderSubscription: Subscription;
   errorMode = false;
   loadingMode: boolean = true;
-  @ViewChild("saveMealnBtn", { static: false }) saveBtn: ElementRef;
-  @ViewChild("closeBtn", { static: false }) closeBtn: ElementRef;
+  @ViewChild("saveMealnBtn") saveBtn: ElementRef;
+  @ViewChild("closeBtn") closeBtn: ElementRef;
 
   page: Page<Meal> = new Page();
   preferredMeals: Array<Meal> = new Array<Meal>();
