@@ -1,7 +1,6 @@
 <div class="container-fluid mt-5 mb-4">
   <div class="row">
     <div class="col-12">
-
       <!-- Error message -->
       <div
         *ngIf="errorMode"
@@ -11,7 +10,13 @@
       </div>
 
       <!-- Reload button in case of error -->
-      <button *ngIf="errorMode" (click)="ngOnInit()" class="btn btn-outline-dark btn-block font-weight-light"><i class="fas fa-sync-alt"></i> Reload</button>
+      <button
+        *ngIf="errorMode"
+        (click)="ngOnInit()"
+        class="btn btn-outline-dark btn-block font-weight-light"
+      >
+        <i class="fas fa-sync-alt"></i> Reload
+      </button>
 
       <div class="table-responsive" *ngIf="!errorMode">
         <table class="table table-striped">
@@ -33,15 +38,14 @@
                 activeOrder &&
                 !errorMode &&
                 (activeOrder.mealOrders == null ||
-                  activeOrder.mealOrders?.length == 0)
-              "
+                  activeOrder.mealOrders?.length == 0)"
             >
               <td
                 colspan="7"
                 class="alert alert-warning font-weight-bold text-center"
               >
-                <i class="fas fa-exclamation-circle"></i> Your cart is empty, no order in progress!
-                yet!
+                <i class="fas fa-exclamation-circle"></i> Your cart is empty, no
+                order in progress yet!
               </td>
             </tr>
 
@@ -57,14 +61,23 @@
             </tr>
 
             <!-- Orders display -->
-            <tr align="center" *ngFor="let mealOrder of activeOrder?.mealOrders">
+            <tr
+              align="center"
+              *ngFor="let mealOrder of activeOrder?.mealOrders"
+            >
               <td>
                 <img
                   src="{{ mealOrder.meal.image.file }}"
                   style="height: 50px; width: 50px;"
                 />
               </td>
-              <td><a [routerLink]="['products', mealOrder.meal.id]" class="font-weight-bold">{{ mealOrder.meal.name }}</a></td>
+              <td>
+                <a
+                  [routerLink]="['/products', mealOrder.meal.id]"
+                  class="font-weight-bold"
+                  >{{ mealOrder.meal.name }}</a
+                >
+              </td>
               <td>
                 {{ mealOrder.meal.stock > 0 ? "In Stock" : "Not available" }}
               </td>
@@ -81,9 +94,7 @@
                   value="{{ mealOrder.quantity }}"
                 />
               </td>
-              <td class="text-right">
-                {{ mealOrder.totalPrice }} Dhs
-              </td>
+              <td class="text-right">{{ mealOrder.totalPrice }} Dhs</td>
               <td class="text-right">
                 <button
                   id="updateBtn{{ mealOrder.id }}"
@@ -134,21 +145,22 @@
       *ngIf="
         activeOrder &&
         !errorMode &&
-        (activeOrder.mealOrders == null || activeOrder.mealOrders?.length != 0)
+        (activeOrder.mealOrders != null && activeOrder.mealOrders?.length != 0)
       "
     >
       <div class="row">
         <div class="col-sm-12 col-md-6">
-          <a [routerLink]="['']"
-            ><button class="btn btn-block btn-light">
-              <i class="fas fa-home"></i> Continue Shopping
-            </button></a
-          >
+          <a [routerLink]="['']" class="btn btn-block btn-light" role="button">
+            <i class="fas fa-home"></i> Continue Shopping
+          </a>
         </div>
         <div class="col-sm-12 col-md-6 text-right">
-          <button class="btn btn-lg btn-block btn-success text-uppercase">
-            <i class="fas fa-shopping-cart"></i> Checkout
-          </button>
+          <a
+            routerLink="/checkout"
+            class="btn btn-lg btn-block btn-success text-uppercase"
+            role="button"
+            ><i class="fas fa-shopping-cart"></i> Checkout
+          </a>
         </div>
       </div>
     </div>

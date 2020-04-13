@@ -14,6 +14,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { SignupComponent } from './signup/signup.component';
 import { HomeComponent } from './home/home.component';
 import { ProductComponent } from './product/product.component';
+import { CheckoutComponent } from './checkout/checkout.component';
 
 const routes: Routes = [
   {
@@ -24,6 +25,9 @@ const routes: Routes = [
   },
   {
     path: 'cart', component: CartComponent, canActivate: [AuthGuard]
+  },
+  {
+    path: 'checkout', component: CheckoutComponent, canActivate: [AuthGuard]
   },
   {
     path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]

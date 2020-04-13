@@ -65,7 +65,6 @@ export class CartComponent implements OnInit, OnDestroy {
           this.activeOrder = new Order();
         } else {
           this.activeOrder = data["activeOrder"];
-          console.log(data["activeOrder"])
         }
       },
       (err) => {

@@ -28,6 +28,7 @@ import { ProductComponent } from './product/product.component';
 import { ReviewsComponent } from './product/reviews/reviews.component';
 import { ReviewFormComponent } from './product/review-form/review-form.component';
 import { StarRatingModule } from 'angular-star-rating';
+import { CheckoutComponent } from './checkout/checkout.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { StarRatingModule } from 'angular-star-rating';
     CustomPaginationComponent,
     ProductComponent,
     ReviewsComponent,
-    ReviewFormComponent
+    ReviewFormComponent,
+    CheckoutComponent
   ],
   imports: [BrowserModule, AppRoutingModule, CustomModule, LayoutModule, StarRatingModule.forRoot()],
   providers: [
