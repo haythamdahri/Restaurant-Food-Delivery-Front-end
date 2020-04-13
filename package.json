@@ -29,6 +29,7 @@
     "jquery": "^3.4.1",
     "jwt-decode": "^2.2.0",
     "lightbox2": "^2.11.1",
+    "ngx-stripe": "^9.0.2",
     "popper.js": "^1.15.0",
     "rxjs": "~6.5.5",
     "sweetalert2": "^8.19.0",

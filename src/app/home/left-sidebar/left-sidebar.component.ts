@@ -16,7 +16,7 @@ export class LeftSidebarComponent implements OnInit, OnDestroy {
   isError: boolean = false;
   isLoading: boolean = true;
   message: string = "";
-  @Output('addMealToCartEvent') addMealToCartEvent : EventEmitter<Meal> = new EventEmitter<Meal>();
+  @Output('addMealToCartEvent') addMealToCartEvent : EventEmitter<{id: number, event: any}> = new EventEmitter<{id: number, event: any}>();
 
   constructor(private mealService: MealService, private authService: AuthService) { }
 
@@ -44,9 +44,9 @@ export class LeftSidebarComponent implements OnInit, OnDestroy {
     }
   }
 
-  onAddMealOrder(id) {
+  onAddMealOrder(id: number, event: any) {
     // Emit data on event emitter
-    this.addMealToCartEvent.emit(id);
+    this.addMealToCartEvent.emit({id, event});
   }
 
 }

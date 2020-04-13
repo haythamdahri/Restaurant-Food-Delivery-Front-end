@@ -1,41 +1,47 @@
-<div class="row">
-
-    <!-- Loading -->
-    <div class="col-12 text-center mt-5 mb-5" *ngIf="isLoading && !isError && !isNoOrder">
-      <h3 class="text-primary display-4 font-weight-bold text-center mb-5">
-        Loading Checkout Data ... 
-        <div class="text-center">
-          <div class="spinner-border" role="status"  style="width: 3rem; height: 3rem;">
-            <span class="sr-only">Loading...</span>
-          </div>
+<div class="row page payment-page">
+  <!-- Loading -->
+  <div
+    class="col-12 text-center mt-5 mb-5"
+    *ngIf="isLoading && !isError && !isNoOrder"
+  >
+    <h3 class="text-primary display-4 font-weight-bold text-center mb-5">
+      Loading Checkout Data ...
+      <div class="text-center">
+        <div
+          class="spinner-border"
+          role="status"
+          style="width: 3rem; height: 3rem;"
+        >
+          <span class="sr-only">Loading...</span>
         </div>
-      </h3>
-      
-      <div class="spinner-grow text-primary" role="status">
-        <span class="sr-only">Loading...</span>
       </div>
-      <div class="spinner-grow text-secondary" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
-      <div class="spinner-grow text-success" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
-      <div class="spinner-grow text-danger" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
-      <div class="spinner-grow text-warning" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
-      <div class="spinner-grow text-info" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
-      <div class="spinner-grow text-light" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
-      <div class="spinner-grow text-dark" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
+    </h3>
+
+    <div class="spinner-grow text-primary" role="status">
+      <span class="sr-only">Loading...</span>
     </div>
+    <div class="spinner-grow text-secondary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="spinner-grow text-success" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="spinner-grow text-danger" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="spinner-grow text-warning" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="spinner-grow text-info" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="spinner-grow text-light" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="spinner-grow text-dark" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
 
   <!-- Error or No Order message -->
   <div
@@ -50,17 +56,120 @@
       }"
     >
       <i class="fas fa-exclamation-triangle"></i> {{ message }}
-      <a routerLink="/" class="btn btn-light text-center font-weight-bold btn-block" role="button">
+      <a
+        routerLink="/"
+        class="btn btn-light text-center font-weight-bold btn-block"
+        role="button"
+      >
         <i class="fa fa-home"></i> Home
       </a>
     </div>
   </div>
 
   <!-- Checkout -->
-  <div
-    class="col-sm-12 col-md-10 col-lg-10 col-xl-10 shadow-sm p-3 mb-5 bg-white rounded mx-auto mt-5"
-    *ngIf="!isError && !isNoOrder && !isLoading && checkoutData != null"
+  <main
+    class="page payment-page col-sm-12 col-md-8 col-lg-8 col-xl-8 mx-auto"
+    [ngClass]="{
+      invisible: !(!isError && !isNoOrder && !isLoading && checkoutData != null)
+    }"
   >
-    GREAT {{ checkoutData | json }}
-  </div>
+    <section class="payment-form dark">
+      <div class="block-heading">
+        <h2 class="font-weight-bold display-4 text-center">Payment</h2>
+        <p>
+          Welcome to our checkout system, we provide secured ways of payment
+        </p>
+
+        <!-- stripe-payment.component.html -->
+        <form
+          novalidate
+          (ngSubmit)="buy()"
+          [formGroup]="stripeForm"
+          #f="ngForm"
+          class="shadow p-3 mb-5 bg-white rounded"
+        >
+          <!-- Total amount -->
+          <div class="products">
+            <h2 class="title text-center display-2">Amount</h2>
+            <div class="total">
+              <h2 class="text-dark">
+                Total: <span class="price">{{ checkoutData?.amount }} Dhs</span>
+              </h2>
+            </div>
+          </div>
+
+          <div class="card-details">
+            <h2 class="title text-center display-2">Credit Card Details</h2>
+
+            <!-- Name -->
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <label for="form_name">Name *</label>
+                  <input
+                    formControlName="name"
+                    [ngClass]="{
+                      'is-invalid':
+                      stripeForm.controls.name.touched &&
+                      stripeForm.controls.name.invalid,
+                      'is-valid':
+                      stripeForm.controls.name.touched &&
+                      stripeForm.controls.name.valid
+                    }"
+                    type="text"
+                    name="name"
+                    class="form-control"
+                    placeholder="Please enter your name *"
+                  />
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="
+                    stripeForm.controls.name.touched &&
+                    stripeForm.controls.name.invalid
+                    "
+                  >
+                    <ng-container
+                      *ngIf="stripeForm.controls.name.errors.required"
+                    >
+                      Name is required
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card -->
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <label for="form_name">Card *</label>
+                  <!-- Stripe Form -->
+                  <ngx-stripe-card
+                    [options]="cardOptions"
+                    [elementsOptions]="elementsOptions"
+                    class="field"
+                  ></ngx-stripe-card>
+                  <div *ngIf="error" class="alert alert-danger">
+                    {{ error }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <button
+              class="form-group col-sm-12"
+              [disabled]="!f.valid"
+              type="submit"
+              class="btn btn-primary btn-block"
+              #proceedBtn
+            >
+            <i class="fas fa-money-check-alt"></i> Proceed
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
 </div>

@@ -230,12 +230,13 @@ export class ProductComponent implements OnInit, OnDestroy {
       // Set button on loading state
       const defaultButton = (this.addMealToCartBtn.nativeElement as HTMLElement)
         .innerHTML;
-      (this.addMealToCartBtn.nativeElement as HTMLElement).innerHTML = `
+      (this.addMealToCartBtn.nativeElement as HTMLButtonElement).innerHTML = `
           <div class="spinner-border spinner-border-sm text-success" role="status">
             <span class="sr-only">Loading...</span>
           </div>
           Adding meal 
       `;
+      (this.addMealToCartBtn.nativeElement as HTMLButtonElement).disabled = true;
       this.orderSubscription = this.mealOrderService
         .addMealOrder(this.mealOrder.meal.id, this.mealOrder.quantity)
         .subscribe(
@@ -283,7 +284,10 @@ export class ProductComponent implements OnInit, OnDestroy {
           () => {
             // Reset button
             (this.addMealToCartBtn
-              .nativeElement as HTMLElement).innerHTML = defaultButton;
+              .nativeElement as HTMLButtonElement).innerHTML = defaultButton;
+            // Reset button
+            (this.addMealToCartBtn
+              .nativeElement as HTMLButtonElement).disabled = false;
           }
         );
     } else {

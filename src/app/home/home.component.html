@@ -7,7 +7,7 @@
   <!-- Left sidebar -->
   <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
     <app-left-sidebar
-      (addMealToCartEvent)="onAddMealOrder($event)"
+      (addMealToCartEvent)="onAddMealOrder($event.id, $event.event)"
     ></app-left-sidebar>
   </div>
 
@@ -82,13 +82,14 @@
               <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center">
                 <button
                   class="btn btn-outline-primary shadow-lg"
-                  (click)="onAddMealOrder(meal.id)"
+                  (click)="onAddMealOrder(meal.id, $event)"
                 >
                   <i class="fas fa-cart-plus"></i> Add To Cart
                 </button>
               </div>
               <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center">
                 <button
+                  *ngIf="preferredMeals != null"
                   id="btnPreffer{{ meal.id }}"
                   (click)="onMealPreference($event, meal.id)"
                   class="btn"
@@ -96,11 +97,11 @@
                 >
                   <i
                     class="fas fa-heart"
-                    *ngIf="checkMealPreferred(meal.id) === true"
+                    *ngIf="checkMealPreferred(meal.id)"
                   ></i>
                   <i
                     class="far fa-heart"
-                    *ngIf="checkMealPreferred(meal.id) === false"
+                    *ngIf="!checkMealPreferred(meal.id)"
                   ></i>
                 </button>
               </div>

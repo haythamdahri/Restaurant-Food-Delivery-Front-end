@@ -1,5 +1,4 @@
 import { AuthService } from "./../shared/auth/auth.service";
-import { FormGroup, Validators, FormControl } from "@angular/forms";
 import { Meal } from "./../models/meal.model";
 import { MealService } from "./../shared/meal.service";
 import {
@@ -36,7 +35,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild("closeBtn") closeBtn: ElementRef;
 
   page: Page<Meal> = new Page();
-  preferredMeals: Array<Meal> = new Array<Meal>();
+  preferredMeals: Array<Meal> = null;
 
   constructor(
     private mealService: MealService,
@@ -62,7 +61,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       .getMealsPage(this.page.pageable)
       .subscribe(
         (page) => {
-          // Check if user is authenticated
+          // Set final data
+          this.page = page;
+          // Check if user is authenticated to check its preferences
           if( this.authService.isAuthenticated() ) {
             // Retrieve user preferred meals
             this.preferredMealsSubscription = this.userService
@@ -71,15 +72,8 @@ export class HomeComponent implements OnInit, OnDestroy {
                 (meals) => {
                   this.preferredMeals = meals;
                 },
-                () => {},
-                () => {
-                  // Set final data
-                  this.page = page;
-                }
+                () => {}
               );
-          } else {
-            // Set final data
-            this.page = page;
           }
         },
         (err) => {
@@ -92,7 +86,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   checkMealPreferred(id) {
-    return this.preferredMeals.filter((m) => m.id === id).length > 0;
+    return this.preferredMeals?.filter((m) => m.id === id).length > 0;
   }
 
   getNextPage(): void {
@@ -133,8 +127,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.page = null;
   }
 
-  onAddMealOrder(id: number) {
+  onAddMealOrder(id: number, event) {
     if (this.authService.isAuthenticated()) {
+      const originalContent = event.target.innerHTML;
+      event.target.innerHTML = `
+          <div class="spinner-border spinner-border-sm text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+          </div> 
+          Adding meal
+      `;
+      event.target.disabled = true;
       this.orderSubscription = this.mealOrderService
         .addMealOrder(id, 1)
         .subscribe(
@@ -178,6 +180,11 @@ export class HomeComponent implements OnInit, OnDestroy {
               type: "error",
               title: "An error occurred, please try again!",
             });
+          },
+          () => {
+            // Set button to original state
+            event.target.innerHTML = originalContent;
+            event.target.disabled = false;
           }
         );
     } else {
