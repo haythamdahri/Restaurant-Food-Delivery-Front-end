@@ -64,7 +64,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           // Set final data
           this.page = page;
           // Check if user is authenticated to check its preferences
-          if( this.authService.isAuthenticated() ) {
+          if (this.authService.isAuthenticated()) {
             // Retrieve user preferred meals
             this.preferredMealsSubscription = this.userService
               .getUserPreferredMeals()
@@ -118,10 +118,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.mealSubscription) {
       this.mealSubscription.unsubscribe();
     }
-    if( this.preferredMealsSubscription != null ) {
+    if (this.preferredMealsSubscription != null) {
       this.preferredMealsSubscription.unsubscribe();
     }
-    if( this.mealPreferencesSubscription != null ) {
+    if (this.mealPreferencesSubscription != null) {
       this.mealPreferencesSubscription.unsubscribe();
     }
     this.page = null;
@@ -142,31 +142,17 @@ export class HomeComponent implements OnInit, OnDestroy {
         .subscribe(
           (data) => {
             // Chek if data contain an error message
-            if (data["error"]) {
-              const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-              });
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+            });
 
-              Toast.fire({
-                type: "error",
-                title: data["message"],
-              });
-            } else {
-              const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-              });
-
-              Toast.fire({
-                type: "success",
-                title: "Your order has been added to your cart successfully",
-              });
-            }
+            Toast.fire({
+              type: data.error ? "error" : "success",
+              title: data.message,
+            });
           },
           (err) => {
             const Toast = Swal.mixin({
@@ -194,43 +180,43 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onMealPreference(event, id) {
     // Check if user is authenticated
-    if( this.authService.isAuthenticated() ) {
-    this.mealPreferencesSubscription = this.userService
-      .toggleMealFromPreferrences(id)
-      .subscribe(
-        (response) => {
-          // Response message
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-          });
+    if (this.authService.isAuthenticated()) {
+      this.mealPreferencesSubscription = this.userService
+        .toggleMealFromPreferrences(id)
+        .subscribe(
+          (response) => {
+            // Response message
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+            });
 
-          Toast.fire({
-            type: response.status ? "success" : "error",
-            title: response.message,
-          });
-          // Set prefer button new state
-          document.getElementById(
-            "btnPreffer" + id
-          ).innerHTML = response.preferred
-            ? `<i class="fas fa-heart"></i>`
-            : `<i class="far fa-heart"></i>`;
-        },
-        (error) => {
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-          });
-          Toast.fire({
-            type: "error",
-            title: "An error occurred, please try again",
-          });
-        }
-      );
+            Toast.fire({
+              type: response.status ? "success" : "error",
+              title: response.message,
+            });
+            // Set prefer button new state
+            document.getElementById(
+              "btnPreffer" + id
+            ).innerHTML = response.preferred
+              ? `<i class="fas fa-heart"></i>`
+              : `<i class="far fa-heart"></i>`;
+          },
+          (error) => {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+            });
+            Toast.fire({
+              type: "error",
+              title: "An error occurred, please try again",
+            });
+          }
+        );
     } else {
       const Toast = Swal.mixin({
         toast: true,

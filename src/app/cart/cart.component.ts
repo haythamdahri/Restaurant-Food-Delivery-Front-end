@@ -5,11 +5,9 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import { Order } from "../models/order.model";
 import Swal from "sweetalert2";
 import { FormControl, Validators, FormGroup } from "@angular/forms";
-import { MealOrder } from "../models/meal-order.model";
 import { Title } from "@angular/platform-browser";
 import { MealOrderService } from "../shared/meal-order.service";
 
-declare var $: any;
 
 @Component({
   selector: "app-cart",
@@ -134,16 +132,16 @@ export class CartComponent implements OnInit, OnDestroy {
     const quantity = Number(event.target.value);
     event.target.value = parseInt(event.target.value);
     if (quantity <= 0 || quantity > 1500) {
-      $(event.target).addClass("is-invalid");
-      $(event.target).removeClass("is-valid");
+      event.target.classList.add("is-invalid");
+      event.target.classList.remove("is-valid");
     } else {
-      $(event.target).addClass("is-valid");
-      $(event.target).removeClass("is-invalid");
+      event.target.classList.add("is-valid");
+      event.target.classList.remove("is-invalid");
     }
   }
 
   async onUpdateMealOrderQuantity(mealOrderId: number) {
-    const newQuantity = Number($("#quantity" + mealOrderId).val());
+    const newQuantity = Number((document.getElementById("quantity"+ mealOrderId) as HTMLInputElement).value);
     if (newQuantity <= 0 || newQuantity > 1500) {
       const Toast = Swal.mixin({
         toast: true,
@@ -173,7 +171,7 @@ export class CartComponent implements OnInit, OnDestroy {
         (data) => {
           const Toast = Swal.mixin({
             toast: true,
-            position: "bottom-left",
+            position: "top-end",
             showConfirmButton: false,
             timer: 3000,
           });
@@ -187,7 +185,7 @@ export class CartComponent implements OnInit, OnDestroy {
         (err) => {
           const Toast = Swal.mixin({
             toast: true,
-            position: "bottom-left",
+            position: "top-end",
             showConfirmButton: false,
             timer: 3000,
           });

@@ -8,7 +8,7 @@ import {
 } from "@angular/core";
 import { PaymentService } from "../shared/payment.service";
 import { Title } from "@angular/platform-browser";
-import { Subscription } from "rxjs";
+import { Subscription, Observable } from "rxjs";
 import {
   StripeService,
   Elements,
@@ -18,6 +18,9 @@ import {
   ElementOptions,
 } from "ngx-stripe";
 import { FormGroup, Validators, FormControl } from "@angular/forms";
+import { Order } from '../models/order.model';
+import { User } from '../models/user.model';
+import { UserService } from '../shared/user.service';
 
 declare var Stripe: any;
 // Your Stripe public key
@@ -34,17 +37,20 @@ const elements = stripe.elements();
 })
 export class CheckoutComponent implements OnInit, OnDestroy {
   private checkoutSubscription: Subscription;
+  private chargeSubscription: Subscription;
   private stripeSubscriptio: Subscription;
   public message: string;
   public isLoading: boolean = true;
   public isError: boolean = false;
   public isNoOrder: boolean = false;
+  public ispaymentDone: boolean = false;
   public checkoutData: {
     amount: number;
     stripePublicKey: string;
     noActiveOrder: Boolean;
     currency: string;
     status: boolean;
+    order: Order
   } = null;
 
   // Stripe elements
@@ -78,7 +84,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     private stripeService: StripeService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
     // Set page title
     this.titleService.setTitle("Checkout");
     // Initialize stripe form
@@ -94,7 +100,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           checkoutData.noActiveOrder == false
         ) {
           this.checkoutData = checkoutData;
-          console.log(checkoutData);
         } else {
           // Set no checkout order in place
           this.isNoOrder = true;
@@ -121,9 +126,14 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     if (this.stripeSubscriptio != null) {
       this.stripeSubscriptio.unsubscribe();
     }
+    if( this.chargeSubscription != null ) {
+      this.chargeSubscription.unsubscribe();
+    }
   }
 
   buy() {
+    // No error in the begining
+    this.error = null;
     const name = this.stripeForm.get("name").value;
     // Set proceed button state
     const originalBtn = (this.proceedBtn.nativeElement as HTMLButtonElement)
@@ -136,29 +146,43 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     (this.proceedBtn.nativeElement as HTMLButtonElement).disabled = true;
     this.stripeSubscriptio = this.stripeService
       .createToken(this.card.getCard(), { name })
-      .subscribe((result) => {
-        if (result.token) {
-          // const paymentIntentDto: PaymentIntentDto = {
-          //   token: result.token.id,
-          //   amount: this.precio,
-          //   currency: 'EUR',
-          //   description: this.descripcion
-          // };
-          // this.paymentService.pagar(paymentIntentDto).subscribe(
-          //   data => {
-          //     this.abrirModal(data[`id`], this.nombre, data[`description`], data[`amount`]);
-          //     this.router.navigate(['/']);
-          //   }
-          // );
-          // this.error = null;
-          console.log("Token: " + JSON.stringify(result.token));
-        } else if (result.error) {
-          this.error = result.error.message;
+      .subscribe(
+        (result) => {
+          if (result.token) {
+            // Proceed to server for payment
+            this.pursuitPurchase(result.token.id, originalBtn);
+          } else if (result.error) {
+            this.error = result.error.message;
+            // Set origin button state
+            (this.proceedBtn.nativeElement as HTMLButtonElement).innerHTML = originalBtn;
+            (this.proceedBtn.nativeElement as HTMLButtonElement).disabled = false;
+          }
+        },
+        () => {
+          // Set origin button state
+          (this.proceedBtn.nativeElement as HTMLButtonElement).innerHTML = originalBtn;
+          (this.proceedBtn.nativeElement as HTMLButtonElement).disabled = false;
         }
+      );
+  }
+
+  pursuitPurchase(token, originalBtn) {
+    console.log(token);
+    this.chargeSubscription = this.paymentService.chargeCard(token).subscribe(
+      (data) => {
+        console.log(data);
         // Set origin button state
-        (this.proceedBtn
-          .nativeElement as HTMLButtonElement).innerHTML = originalBtn;
+        (this.proceedBtn.nativeElement as HTMLButtonElement).innerHTML = originalBtn;
         (this.proceedBtn.nativeElement as HTMLButtonElement).disabled = false;
-      });
+      },
+      (err) => {
+        this.error = err;
+        // Set origin button state
+        (this.proceedBtn.nativeElement as HTMLButtonElement).innerHTML = originalBtn;
+        (this.proceedBtn.nativeElement as HTMLButtonElement).disabled = false;
+      },
+      () => {
+      }
+    );
   }
 }

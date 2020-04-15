@@ -1,4 +1,4 @@
-<div class="row page payment-page">
+<div class="row dark">
   <!-- Loading -->
   <div
     class="col-12 text-center mt-5 mb-5"
@@ -73,100 +73,95 @@
       invisible: !(!isError && !isNoOrder && !isLoading && checkoutData != null)
     }"
   >
-    <section class="payment-form dark">
-      <div class="block-heading">
-        <h2 class="font-weight-bold display-4 text-center">Payment</h2>
-        <p>
-          Welcome to our checkout system, we provide secured ways of payment
-        </p>
-
-        <!-- stripe-payment.component.html -->
-        <form
-          novalidate
-          (ngSubmit)="buy()"
-          [formGroup]="stripeForm"
-          #f="ngForm"
-          class="shadow p-3 mb-5 bg-white rounded"
-        >
-          <!-- Total amount -->
+    <section class="payment-form">
+      <div class="container">
+        <div class="block-heading">
+          <h2>Payment</h2>
+          <p>
+            Welcome to our checkout system, we provide secured ways of payment.
+          </p>
+        </div>
+        <form (ngSubmit)="buy()" [formGroup]="stripeForm">
           <div class="products">
-            <h2 class="title text-center display-2">Amount</h2>
+            <h3 class="title">Checkout</h3>
+            <div
+              class="item"
+              *ngFor="
+                let mealOrder of checkoutData?.order.mealOrders;
+                let i = index
+              "
+            >
+              <span class="price">{{ mealOrder.totalPrice }} Dhs</span>
+              <p class="item-name">{{ mealOrder.meal.name }}</p>
+              <p class="item-description">Product {{ i + 1 }}</p>
+            </div>
             <div class="total">
-              <h2 class="text-dark">
-                Total: <span class="price">{{ checkoutData?.amount }} Dhs</span>
-              </h2>
+              Total<span class="price">{{ checkoutData?.amount }} Dhs</span>
             </div>
           </div>
-
           <div class="card-details">
-            <h2 class="title text-center display-2">Credit Card Details</h2>
-
-            <!-- Name -->
+            <h3 class="title">Credit Card Details</h3>
             <div class="row">
-              <div class="col-12">
-                <div class="form-group">
-                  <label for="form_name">Name *</label>
-                  <input
-                    formControlName="name"
-                    [ngClass]="{
-                      'is-invalid':
+              <div class="form-group col-12">
+                <label for="card-holder">Name</label>
+                <input
+                  formControlName="name"
+                  [ngClass]="{
+                    'is-invalid':
                       stripeForm.controls.name.touched &&
                       stripeForm.controls.name.invalid,
-                      'is-valid':
+                    'is-valid':
                       stripeForm.controls.name.touched &&
                       stripeForm.controls.name.valid
-                    }"
-                    type="text"
-                    name="name"
-                    class="form-control"
-                    placeholder="Please enter your name *"
-                  />
-                  <div
-                    class="invalid-feedback"
-                    *ngIf="
+                  }"
+                  type="text"
+                  name="name"
+                  class="form-control"
+                  placeholder="Please enter your name *"
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
                     stripeForm.controls.name.touched &&
                     stripeForm.controls.name.invalid
-                    "
+                  "
+                >
+                  <ng-container
+                    *ngIf="stripeForm.controls.name.errors.required"
                   >
-                    <ng-container
-                      *ngIf="stripeForm.controls.name.errors.required"
-                    >
-                      Name is required
-                    </ng-container>
-                  </div>
+                    Name is required
+                  </ng-container>
                 </div>
               </div>
-            </div>
+              <div class="form-group col-12">
+                <label for="card-number">Card</label>
 
-            <!-- Card -->
-            <div class="row">
-              <div class="col-12">
-                <div class="form-group">
-                  <label for="form_name">Card *</label>
-                  <!-- Stripe Form -->
-                  <ngx-stripe-card
-                    [options]="cardOptions"
-                    [elementsOptions]="elementsOptions"
-                    class="field"
-                  ></ngx-stripe-card>
-                  <div *ngIf="error" class="alert alert-danger">
-                    {{ error }}
-                  </div>
+                <!-- Stripe Form -->
+                <ngx-stripe-card
+                  [options]="cardOptions"
+                  [elementsOptions]="elementsOptions"
+                  class="field"
+                ></ngx-stripe-card>
+
+                <!-- Payment error -->
+                <div
+                  *ngIf="error"
+                  class="shadow p-3 rounded text-white text-center font-weight-bold bg-danger"
+                >
+                  <i class="fas fa-exclamation-triangle"></i> {{ error }}
                 </div>
               </div>
+              <div class="form-group col-sm-12">
+                <button
+                  #proceedBtn
+                  [disabled]="!stripeForm.valid"
+                  type="submit"
+                  class="btn btn-primary btn-block"
+                >
+                  <i class="fas fa-money-check-alt"></i> Proceed
+                </button>
+              </div>
             </div>
-          </div>
-
-          <div>
-            <button
-              class="form-group col-sm-12"
-              [disabled]="!f.valid"
-              type="submit"
-              class="btn btn-primary btn-block"
-              #proceedBtn
-            >
-            <i class="fas fa-money-check-alt"></i> Proceed
-            </button>
           </div>
         </form>
       </div>

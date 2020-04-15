@@ -14,7 +14,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import { AuthService } from "../shared/auth/auth.service";
 import { UserService } from "../shared/user.service";
 import { MealOrderService } from "../shared/meal-order.service";
-import { Title } from '@angular/platform-browser';
+import { Title } from "@angular/platform-browser";
 
 enum ChangeType {
   INCREMENT,
@@ -42,11 +42,13 @@ export class ProductComponent implements OnInit, OnDestroy {
   @ViewChild("btnPrefer") btnPrefer: ElementRef;
   @ViewChild("quantity") quantity: ElementRef;
 
-
   eventsSubject: Subject<number> = new Subject<number>();
 
-  transferedData: {meal: Meal, reviewed: Boolean} = {meal: null, reviewed: false};
-  
+  transferedData: { meal: Meal; reviewed: Boolean } = {
+    meal: null,
+    reviewed: false,
+  };
+
   constructor(
     private route: ActivatedRoute,
     private mealService: MealService,
@@ -75,11 +77,14 @@ export class ProductComponent implements OnInit, OnDestroy {
             // Emit event to child reviews child component
             this.eventsSubject.next(response.meal.id);
             // Set if meal is reviewed by current user
-            const currentUser = this.userService.getAuthenticatedUserDetails().subscribe(
-              (user) => {
-                this.transferedData.reviewed = response.meal.reviews.filter((review) => review.user.id == user.id).length > 0;
-              }
-            );
+            const currentUser = this.userService
+              .getAuthenticatedUserDetails()
+              .subscribe((user) => {
+                this.transferedData.reviewed =
+                  response.meal.reviews.filter(
+                    (review) => review.user.id == user.id
+                  ).length > 0;
+              });
           },
           (error) => {
             this.errorMessage = "No product has been found";
@@ -89,7 +94,7 @@ export class ProductComponent implements OnInit, OnDestroy {
             // Set null to Transfered Data
             this.transferedData = null;
             // Set page title
-            this.titleService.setTitle('No product found');
+            this.titleService.setTitle("No product found");
           },
           () => {
             this.isLoading = false;
@@ -236,37 +241,24 @@ export class ProductComponent implements OnInit, OnDestroy {
           </div>
           Adding meal 
       `;
-      (this.addMealToCartBtn.nativeElement as HTMLButtonElement).disabled = true;
+      (this.addMealToCartBtn
+        .nativeElement as HTMLButtonElement).disabled = true;
       this.orderSubscription = this.mealOrderService
         .addMealOrder(this.mealOrder.meal.id, this.mealOrder.quantity)
         .subscribe(
           (data) => {
             // Chek if data contain an error message
-            if (data["error"]) {
-              const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-              });
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+            });
 
-              Toast.fire({
-                type: "error",
-                title: data["message"],
-              });
-            } else {
-              const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-              });
-
-              Toast.fire({
-                type: "success",
-                title: "Your order has been added to your cart successfully",
-              });
-            }
+            Toast.fire({
+              type: data.error ? "error" : "success",
+              title: data.message,
+            });
           },
           (err) => {
             const Toast = Swal.mixin({
@@ -296,7 +288,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   onToggleReviewForm() {
-    if( this.transferedData.meal == null ) {
+    if (this.transferedData.meal == null) {
       this.transferedData.meal = this.mealOrder.meal;
     } else {
       this.transferedData.meal = null;
@@ -315,5 +307,4 @@ export class ProductComponent implements OnInit, OnDestroy {
       unfilledStars: Array(5 - rating).fill("*"),
     };
   }
-
 }
