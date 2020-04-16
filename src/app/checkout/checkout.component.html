@@ -45,7 +45,7 @@
 
   <!-- Error or No Order message -->
   <div
-    class="col-sm-12 col-md-10 col-lg-8 col-xl-8 shadow-sm p-3 mb-5 bg-white rounded mx-auto mt-5"
+    class="col-sm-12 col-md-10 col-lg-8 col-xl-8 shadow-sm p-3 mb-5 rounded mx-auto mt-5"
     *ngIf="isError || isNoOrder"
   >
     <div
@@ -170,11 +170,11 @@
         </form>
 
         <!-- Payment Done -->
-        <div class="col-12" *ngIf="isPaymentDone">
+        <div class="col-12 p-g" style="height: 100vh; width: 100vw;" *ngIf="isPaymentDone">
           <div
             class="shadow p-3 rounded text-white text-center font-weight-bold bg-success"
           >
-            <i class="fas fa-check-square"></i> Your payment has been proceeded successfully
+            <i class="fas fa-check-square"></i> Your payment has been processed successfully
           </div>
           <!-- Payment details -->
         </div>
