@@ -21,6 +21,7 @@ import { FormGroup, Validators, FormControl } from "@angular/forms";
 import { Order } from '../models/order.model';
 import { User } from '../models/user.model';
 import { UserService } from '../shared/user.service';
+import { Payment } from '../models/payment.model';
 
 declare var Stripe: any;
 // Your Stripe public key
@@ -43,7 +44,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   public isLoading: boolean = true;
   public isError: boolean = false;
   public isNoOrder: boolean = false;
-  public ispaymentDone: boolean = false;
   public checkoutData: {
     amount: number;
     stripePublicKey: string;
@@ -77,6 +77,9 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   };
   public stripeForm: FormGroup;
   @ViewChild("proceedBtn", { static: false }) proceedBtn: ElementRef;
+
+  isPaymentDone: boolean = false;
+  order: Order = null;
 
   constructor(
     private paymentService: PaymentService,
@@ -167,10 +170,16 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
   pursuitPurchase(token, originalBtn) {
-    console.log(token);
     this.chargeSubscription = this.paymentService.chargeCard(token).subscribe(
       (data) => {
         console.log(data);
+        // Check if payment is done successfully
+        if( data.status == true ) {
+          this.order = data.order;
+          this.isPaymentDone = true;
+        } else {
+          this.error = data.message;
+        }
         // Set origin button state
         (this.proceedBtn.nativeElement as HTMLButtonElement).innerHTML = originalBtn;
         (this.proceedBtn.nativeElement as HTMLButtonElement).disabled = false;

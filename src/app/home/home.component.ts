@@ -153,6 +153,9 @@ export class HomeComponent implements OnInit, OnDestroy {
               type: data.error ? "error" : "success",
               title: data.message,
             });
+            // Set button to original state
+            event.target.innerHTML = originalContent;
+            event.target.disabled = false;
           },
           (err) => {
             const Toast = Swal.mixin({
@@ -166,11 +169,11 @@ export class HomeComponent implements OnInit, OnDestroy {
               type: "error",
               title: "An error occurred, please try again!",
             });
-          },
-          () => {
             // Set button to original state
             event.target.innerHTML = originalContent;
             event.target.disabled = false;
+          },
+          () => {
           }
         );
     } else {

@@ -13,7 +13,12 @@
               ><img
                 src="{{ user?.image?.file }}?ts={{ ts }}"
                 alt="{{ user?.username }}"
-                style="height: 100%; width: 100%; max-height: 100%; max-width: 100%;"
+                style="
+                  height: 100%;
+                  width: 100%;
+                  max-height: 100%;
+                  max-width: 100%;
+                "
                 class="rounded mb-2 img-thumbnail"
             /></a>
           </div>
@@ -232,7 +237,12 @@
 
                 <!-- Orders history -->
                 <tr *ngFor="let order of userOrders" align="center">
-                  <th scope="row">{{ order.id }}</th>
+                  <th scope="row">
+                    {{ order.id }}
+                    <span *ngIf="order.delivered" class="badge badge-success"
+                      >Purchased</span
+                    >
+                  </th>
                   <th>{{ order.totalPrice }} Dhs</th>
                   <td *ngIf="order.delivered; else notDelivered">
                     <i class="far fa-check-square text-success"></i>

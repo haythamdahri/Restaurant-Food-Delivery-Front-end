@@ -4,7 +4,7 @@ import { CartService } from "./../shared/cart.service";
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { Order } from "../models/order.model";
 import Swal from "sweetalert2";
-import { FormControl, Validators, FormGroup } from "@angular/forms";
+import { FormControl, Validators, FormGroup, FormBuilder, FormArray } from "@angular/forms";
 import { Title } from "@angular/platform-browser";
 import { MealOrderService } from "../shared/meal-order.service";
 
@@ -20,12 +20,13 @@ export class CartComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   mealSaveSubscription: Subscription;
   mealOrderSubscription: Subscription;
-  form;
+  mealForm: FormGroup;
 
   constructor(
     public cartService: CartService,
     public mealOrderService: MealOrderService,
-    public titleService: Title
+    public titleService: Title,
+    private formBuilder: FormBuilder
   ) {}
 
   ngOnInit() {
@@ -33,12 +34,9 @@ export class CartComponent implements OnInit, OnDestroy {
     this.errorMode = false;
     // Set page title
     this.titleService.setTitle("Cart");
-    this.form = new FormGroup({
-      quantity: new FormControl("", [
-        Validators.required,
-        Validators.min(1),
-        Validators.max(500),
-      ]),
+    // Init Form Array
+    this.mealForm = this.formBuilder.group({
+      mealOrders: this.formBuilder.array([]),
     });
     // fetch Data
     this.fetchData();
@@ -54,6 +52,7 @@ export class CartComponent implements OnInit, OnDestroy {
     if (this.mealOrderSubscription != null) {
       this.mealOrderSubscription.unsubscribe();
     }
+    this.mealForm = null;
   }
 
   fetchData() {
@@ -63,6 +62,21 @@ export class CartComponent implements OnInit, OnDestroy {
           this.activeOrder = new Order();
         } else {
           this.activeOrder = data["activeOrder"];
+          // Init form
+          this.mealForm = this.formBuilder.group({
+            mealOrders: this.formBuilder.array([])
+          });
+          const control = this.mealForm.controls['mealOrders'] as FormArray;
+          // Create form for each meal order
+          this.activeOrder.mealOrders.map((mealOrder) => {
+            control.push(this.formBuilder.group({
+              quantity: new FormControl(mealOrder.quantity, [
+                Validators.required,
+                Validators.min(1),
+                Validators.max(500),
+              ]),
+            }));
+          });
         }
       },
       (err) => {
@@ -72,7 +86,7 @@ export class CartComponent implements OnInit, OnDestroy {
     );
   }
 
-  onDeleteMealOrder(id: number) {
+  onDeleteMealOrder(event: any, id: number) {
     Swal.fire({
       title: "Are you sure?",
       text: "Do you want to delete the meal from your cart",
@@ -84,6 +98,14 @@ export class CartComponent implements OnInit, OnDestroy {
       cancelButtonText: '<i class="far fa-times-circle"></i> No, cancel',
     }).then((result) => {
       if (result.value) {
+        // Button
+        const btn = (event.target as HTMLButtonElement);
+        const originalContent = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = (
+          '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Deleting...'
+        );
+        btn.disabled = true
         // Delete method invokation
         this.cartService.deleteMealOrder(id).subscribe(
           (data) => {
@@ -93,22 +115,22 @@ export class CartComponent implements OnInit, OnDestroy {
               showConfirmButton: false,
               timer: 3000,
             });
-            if( data.status == true ) {
-              Toast.fire({
-                type: "success",
-                title: data.message,
-              });
-            } else {
-              Toast.fire({
-                type: "error",
-                title: data.message,
-              });
-            }
+            Toast.fire({
+              type: data.status == true ? 'success': 'error',
+              title: data.message,
+            });
             this.subscription.unsubscribe();
             this.errorMode = false;
             this.activeOrder = null;
+            // Init Form Array
+            this.mealForm = this.formBuilder.group({
+              mealOrders: this.formBuilder.array([]),
+            });
             // Fetch data
             this.fetchData();
+            // Delete button original state
+            btn.innerHTML = originalContent;
+            btn.disabled = false;
           },
           (err) => {
             const Toast = Swal.mixin({
@@ -117,54 +139,46 @@ export class CartComponent implements OnInit, OnDestroy {
               showConfirmButton: false,
               timer: 3000,
             });
-
             Toast.fire({
               type: "error",
               title: "An error occurred",
             });
+            // Delete button original state
+            btn.innerHTML = originalContent;
+            btn.disabled = false;
           }
         );
       }
     });
   }
 
-  onQuantityChange(event) {
-    const quantity = Number(event.target.value);
-    event.target.value = parseInt(event.target.value);
-    if (quantity <= 0 || quantity > 1500) {
-      event.target.classList.add("is-invalid");
-      event.target.classList.remove("is-valid");
-    } else {
-      event.target.classList.add("is-valid");
-      event.target.classList.remove("is-invalid");
-    }
-  }
-
-  async onUpdateMealOrderQuantity(mealOrderId: number) {
-    const newQuantity = Number((document.getElementById("quantity"+ mealOrderId) as HTMLInputElement).value);
-    if (newQuantity <= 0 || newQuantity > 1500) {
+  async onUpdateMealOrderQuantity(event: any, mealOrderId: number, i) {
+    const btn = (event.target as HTMLButtonElement);
+    const newQuantity = Number(((this.mealForm.controls.mealOrders as FormArray).controls[i] as FormGroup).controls.quantity.value);
+    if (((this.mealForm.controls.mealOrders as FormArray).controls[i] as FormGroup).controls.quantity.invalid) {
       const Toast = Swal.mixin({
         toast: true,
-        position: "bottom-left",
+        position: "top-end",
         showConfirmButton: false,
         timer: 3000,
       });
-
       Toast.fire({
         type: "error",
-        title: "Invalid quantity, please set a value between 1 and 1500 unit",
+        title: "Invalid quantity, please set a value between 1 and 500 unit",
       });
     } else {
-      document.getElementById("updateBtn" + mealOrderId).innerHTML = (
+      btn.innerHTML = (
         '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...'
       );
-      document.getElementById("updateBtn" + mealOrderId).setAttribute("disabled", "true");
+      btn.setAttribute("disabled", "true");
       // Perform mealOrder quantity update
-      this.performMealOrderQuantityUpdate(mealOrderId, newQuantity);
+      this.performMealOrderQuantityUpdate(btn, mealOrderId, newQuantity);
     }
   }
 
-  performMealOrderQuantityUpdate(mealOrderId: number, newQuantity: number) {
+  performMealOrderQuantityUpdate(btn: HTMLButtonElement, mealOrderId: number, newQuantity: number) {
+    console.log(newQuantity);
+    console.log(mealOrderId);
     this.mealSaveSubscription = this.mealOrderService
       .updateQuantity(mealOrderId, newQuantity)
       .subscribe(
@@ -195,10 +209,10 @@ export class CartComponent implements OnInit, OnDestroy {
             title: "An error occurred",
           });
           // Update button state
-          document.getElementById("updateBtn" + mealOrderId).innerHTML = (
+          btn.innerHTML = (
             '<i class="fas fa-redo-alt"></i> Update'
           );
-          document.getElementById("updateBtn" + mealOrderId).removeAttribute("disabled");
+          btn.removeAttribute("disabled");
         },
         () => {
         }

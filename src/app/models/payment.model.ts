@@ -1,7 +1,10 @@
+import { Order } from './order.model';
+import { User } from './user.model';
+
 export class Payment {
-    public amount: number;
-    public stripePublicKey: string;
-    public noActiveOrder: boolean;
-    public currency: string;
-    public status: boolean
+    public id: number;
+    public user: User;
+    public order: Order;
+    public chargeId: number;
+    public timestamp: Date;
 }

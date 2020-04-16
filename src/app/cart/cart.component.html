@@ -19,125 +19,159 @@
       </button>
 
       <div class="table-responsive" *ngIf="!errorMode">
-        <table class="table table-striped">
-          <thead align="center">
-            <tr>
-              <th scope="col"></th>
-              <th scope="col">Product</th>
-              <th scope="col">Available</th>
-              <th scope="col" class="text-center">Quantity</th>
-              <th scope="col" class="text-right">Price</th>
-              <th scope="col"></th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- No order done yet message -->
-            <tr
-              *ngIf="
-                activeOrder &&
-                !errorMode &&
-                (activeOrder.mealOrders == null ||
-                  activeOrder.mealOrders?.length == 0)"
-            >
-              <td
-                colspan="7"
-                class="alert alert-warning font-weight-bold text-center"
+        <form name="f" [formGroup]="mealForm" novalidate>
+          <table class="table table-striped" formArrayName="mealOrders">
+            <thead align="center">
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">Product</th>
+                <th scope="col">Available</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Price</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- No order done yet message -->
+              <tr
+                *ngIf="
+                  activeOrder &&
+                  !errorMode &&
+                  (activeOrder.mealOrders == null ||
+                    activeOrder.mealOrders?.length == 0)
+                "
               >
-                <i class="fas fa-exclamation-circle"></i> Your cart is empty, no
-                order in progress yet!
-              </td>
-            </tr>
-
-            <!-- Loading icon -->
-            <tr *ngIf="!activeOrder && !errorMode">
-              <td colspan="7">
-                <div class="col-12 text-center">
-                  <div class="spinner-border" role="status">
-                    <span class="sr-only">Loading...</span>
-                  </div>
-                </div>
-              </td>
-            </tr>
-
-            <!-- Orders display -->
-            <tr
-              align="center"
-              *ngFor="let mealOrder of activeOrder?.mealOrders"
-            >
-              <td>
-                <img
-                  src="{{ mealOrder.meal.image.file }}"
-                  style="height: 50px; width: 50px;"
-                />
-              </td>
-              <td>
-                <a
-                  [routerLink]="['/products', mealOrder.meal.id]"
-                  class="font-weight-bold"
-                  >{{ mealOrder.meal.name }}</a
+                <td
+                  colspan="7"
+                  class="alert alert-warning font-weight-bold text-center"
                 >
-              </td>
-              <td>
-                {{ mealOrder.meal.stock > 0 ? "In Stock" : "Not available" }}
-              </td>
-              <td>
-                <input
-                  class="form-control"
-                  pattern="[0-9]*"
-                  (keyup)="onQuantityChange($event)"
-                  id="quantity{{ mealOrder.id }}"
-                  required
-                  max="650"
-                  min="1"
-                  type="number"
-                  value="{{ mealOrder.quantity }}"
-                />
-              </td>
-              <td class="text-right">{{ mealOrder.totalPrice }} Dhs</td>
-              <td class="text-right">
-                <button
-                  id="updateBtn{{ mealOrder.id }}"
-                  (click)="onUpdateMealOrderQuantity(mealOrder.id)"
-                  class="btn btn-sm btn-warning"
-                >
-                  <i class="fas fa-redo-alt"></i> Update
-                </button>
-              </td>
-              <td class="text-right">
-                <button
-                  (click)="onDeleteMealOrder(mealOrder.id)"
-                  class="btn btn-sm btn-danger"
-                >
-                  <i class="fa fa-trash"></i>
-                </button>
-              </td>
-            </tr>
-            <ng-container
-              *ngIf="
-                activeOrder &&
-                !errorMode &&
-                activeOrder.mealOrders &&
-                activeOrder.mealOrders.length != 0
-              "
-            >
-              <tr>
-                <td colspan="6">Sub-Total</td>
-                <td class="text-right">{{ activeOrder?.price }} Dhs</td>
-              </tr>
-              <tr>
-                <td colspan="6">Shipping</td>
-                <td class="text-right">{{ activeOrder?.shippingFees }} Dhs</td>
-              </tr>
-              <tr>
-                <td colspan="6"><strong>Total</strong></td>
-                <td class="text-right">
-                  <strong>{{ activeOrder?.totalPrice }} Dhs</strong>
+                  <i class="fas fa-exclamation-circle"></i> Your cart is empty,
+                  no order in progress yet!
                 </td>
               </tr>
-            </ng-container>
-          </tbody>
-        </table>
+
+              <!-- Loading icon -->
+              <tr *ngIf="!activeOrder && !errorMode">
+                <td colspan="7">
+                  <div class="col-12 text-center">
+                    <div class="spinner-border" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Orders display -->
+              <tr
+                align="center"
+                [formGroupName]="i"
+                *ngFor="
+                  let quantityControl of mealForm?.controls?.mealOrders
+                    .controls;
+                  let i = index
+                "
+              >
+                <td>
+                  <img
+                    src="{{ activeOrder.mealOrders[i].meal.image.file }}"
+                    style="height: 50px; width: 50px;"
+                  />
+                </td>
+                <td>
+                  <a
+                    [routerLink]="[
+                      '/products',
+                      activeOrder.mealOrders[i].meal.id
+                    ]"
+                    class="font-weight-bold"
+                    >{{ activeOrder.mealOrders[i].meal.name }}</a
+                  >
+                </td>
+                <td>
+                  {{
+                    activeOrder.mealOrders[i].meal.stock > 0
+                      ? "In Stock"
+                      : "Not available"
+                  }}
+                </td>
+                <td>
+                  <input
+                    class="form-control"
+                    type="number"
+                    name="quantity"
+                    formControlName="quantity"
+                    [ngClass]="{'is-valid': mealForm.controls.mealOrders.controls[i].controls.quantity.touched && mealForm.controls.mealOrders.controls[i].controls.quantity.valid, 
+                                'is-invalid': mealForm.controls.mealOrders.controls[i].controls.quantity.touched && mealForm.controls.mealOrders.controls[i].controls.quantity.invalid}"
+                  />
+                  <div class="invalid-feedback" *ngIf="mealForm.controls.mealOrders.controls[i].controls.quantity.touched && 
+                            mealForm.controls.mealOrders.controls[i].controls.quantity.invalid">
+                    <ng-container
+                      *ngIf="
+                        mealForm.controls.mealOrders.controls[i].controls.quantity.errors.required
+                      "
+                    >
+                      Quantity is required
+                    </ng-container>
+                    <ng-container
+                      *ngIf="
+                        mealForm.controls.mealOrders.controls[i].controls.quantity.errors.min ||
+                        mealForm.controls.mealOrders.controls[i].controls.quantity.errors.max
+                      "
+                    >
+                      Invalid quantity, value must be between 1 and 500
+                    </ng-container>
+                  </div>
+                </td>
+                <td class="text-right">{{ activeOrder.mealOrders[i].totalPrice }} Dhs</td>
+                <td class="text-right">
+                  <button
+                    [disabled]="mealForm.controls.mealOrders.controls[i].controls.quantity.invalid"
+                    (click)="onUpdateMealOrderQuantity($event, activeOrder.mealOrders[i].id, i)"
+                    class="btn btn-sm btn-warning"
+                    type="button"
+                  >
+                    <i class="fas fa-redo-alt"></i> Update
+                  </button>
+                </td>
+                <td class="text-right">
+                  <button
+                    (click)="onDeleteMealOrder($event, activeOrder.mealOrders[i].id)"
+                    class="btn btn-sm btn-danger"
+                    type="button"
+                  >
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              <ng-container
+                *ngIf="
+                  activeOrder &&
+                  !errorMode &&
+                  activeOrder.mealOrders &&
+                  activeOrder.mealOrders.length != 0
+                "
+              >
+                <tr>
+                  <td colspan="6">Sub-Total</td>
+                  <td class="text-right">{{ activeOrder?.price }} Dhs</td>
+                </tr>
+                <tr>
+                  <td colspan="6">Shipping</td>
+                  <td class="text-right">
+                    {{ activeOrder?.shippingFees }} Dhs
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="6"><strong>Total</strong></td>
+                  <td class="text-right">
+                    <strong>{{ activeOrder?.totalPrice }} Dhs</strong>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </form>
       </div>
     </div>
     <div
@@ -145,7 +179,8 @@
       *ngIf="
         activeOrder &&
         !errorMode &&
-        (activeOrder.mealOrders != null && activeOrder.mealOrders?.length != 0)
+        activeOrder.mealOrders != null &&
+        activeOrder.mealOrders?.length != 0
       "
     >
       <div class="row">

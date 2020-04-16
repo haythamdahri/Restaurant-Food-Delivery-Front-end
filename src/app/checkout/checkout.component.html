@@ -58,7 +58,7 @@
       <i class="fas fa-exclamation-triangle"></i> {{ message }}
       <a
         routerLink="/"
-        class="btn btn-light text-center font-weight-bold btn-block"
+        class="btn btn-light text-center font-weight-bold"
         role="button"
       >
         <i class="fa fa-home"></i> Home
@@ -81,7 +81,11 @@
             Welcome to our checkout system, we provide secured ways of payment.
           </p>
         </div>
-        <form (ngSubmit)="buy()" [formGroup]="stripeForm">
+        <form
+          (ngSubmit)="buy()"
+          [formGroup]="stripeForm"
+          *ngIf="!isPaymentDone"
+        >
           <div class="products">
             <h3 class="title">Checkout</h3>
             <div
@@ -164,6 +168,16 @@
             </div>
           </div>
         </form>
+
+        <!-- Payment Done -->
+        <div class="col-12" *ngIf="isPaymentDone">
+          <div
+            class="shadow p-3 rounded text-white text-center font-weight-bold bg-success"
+          >
+            <i class="fas fa-check-square"></i> Your payment has been proceeded successfully
+          </div>
+          <!-- Payment details -->
+        </div>
       </div>
     </section>
   </main>
