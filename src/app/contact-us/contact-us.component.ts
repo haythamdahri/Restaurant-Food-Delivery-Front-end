@@ -30,7 +30,7 @@ export class ContactUsComponent implements OnInit, OnDestroy {
       lastName: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
       email: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(60)]),
       phone: new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(14)]),
-      message: new FormControl('', [Validators.required, Validators.minLength(100), Validators.maxLength(15000)]),
+      content: new FormControl('', [Validators.required, Validators.minLength(100), Validators.maxLength(15000)]),
     });
   }
 
@@ -56,7 +56,7 @@ export class ContactUsComponent implements OnInit, OnDestroy {
       this.contactMessage.firstName = this.form.controls.firstName.value;
       this.contactMessage.lastName = this.form.controls.lastName.value;
       this.contactMessage.phone = this.form.controls.phone.value;
-      this.contactMessage.message = this.form.controls.message.value;
+      this.contactMessage.content = this.form.controls.content.value;
       const formData = new FormData();
       this.subscription = this.contactService.sendContactMessage(this.contactMessage).subscribe(
         (message: ContactMessage) => {

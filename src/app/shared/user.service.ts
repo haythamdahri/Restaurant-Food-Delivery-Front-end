@@ -1,20 +1,19 @@
-import { AuthService } from './auth/auth.service';
-import { catchError, retry } from 'rxjs/operators';
-import { User } from './../models/user.model';
-import { HttpClient, HttpParams, HttpEventType } from '@angular/common/http';
-import { Injectable, EventEmitter } from '@angular/core';
-import { map } from 'rxjs/operators';
-import { throwError, pipe } from 'rxjs';
-import { Router } from '@angular/router';
-import { Order } from '../models/order.model';
-import { Meal } from '../models/meal.model';
-import { ConstantsService } from './constants.service';
+import { AuthService } from "./auth/auth.service";
+import { catchError, retry } from "rxjs/operators";
+import { User } from "./../models/user.model";
+import { HttpClient, HttpParams, HttpEventType } from "@angular/common/http";
+import { Injectable, EventEmitter } from "@angular/core";
+import { map } from "rxjs/operators";
+import { throwError, pipe } from "rxjs";
+import { Router } from "@angular/router";
+import { Order } from "../models/order.model";
+import { Meal } from "../models/meal.model";
+import { ConstantsService } from "./constants.service";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class UserService {
- 
   public static API_ENDPOINT = "http://localhost:8080/api";
   public static API_V1_ENDPOINT = "http://localhost:8080/api/v1/users/";
   public static SIGN_UP_ENDPOINT = "http://localhost:8080/api/v1/users/";
@@ -44,7 +43,7 @@ export class UserService {
     private http: HttpClient,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   register(user: User) {
     return this.http.post<User>(UserService.SIGN_UP_ENDPOINT, user).pipe(
@@ -91,19 +90,18 @@ export class UserService {
     return this.http
       .get<User>(`${UserService.USER_DETAILS_API_ENDPOINT}`, {
         params: new HttpParams().append(
-          'email',
+          "email",
           this.authService.getAuthenticatedUser().email
         ),
       })
       .pipe(
         map((data) => {
-          console.log(data);
-          data.image.file = ConstantsService.FILES_ENDOINT + '/' + data.image.id;
+          data.image.file =
+            ConstantsService.FILES_ENDOINT + "/" + data.image.id;
           return data;
         }),
         retry(5),
         catchError((error) => {
-          console.log(error);
           // Logout user
           // this.authService.logout();
           // Redirect user to login page
@@ -128,10 +126,13 @@ export class UserService {
 
   toggleMealFromPreferrences(id) {
     return this.http
-      .post<{status: boolean, preferred: boolean, message: string}>(`${UserService.USERS_PREFERRED_MEALS}?id=${id}`, {})
+      .post<{ status: boolean; preferred: boolean; message: string }>(
+        `${UserService.USERS_PREFERRED_MEALS}?id=${id}`,
+        {}
+      )
       .pipe(retry(5), catchError(this.handleHttpError));
   }
-  
+
   saveUser(username: string, location: string, userId: number) {
     return this.http
       .patch<User>(`${UserService.API_ENDPOINT}/users/${userId}`, {
@@ -153,19 +154,20 @@ export class UserService {
       .post<{ status: boolean; message: string; user: User }>(
         UserService.UPDATE_IMAGE_ENDPOINT,
         formData,
-        { reportProgress: true, observe: 'events' }
+        { reportProgress: true, observe: "events"}
       )
       .pipe(
         map((event) => {
           switch (event.type) {
             case HttpEventType.UploadProgress:
               const progress = Math.round((100 * event.loaded) / event.total);
-              return { status: 'progress', message: progress };
+              return { status: "progress", message: progress };
 
             case HttpEventType.Response:
               // Emit user update event
               this.userUpdateEvent.emit(true);
-              event.body.user.image.file = ConstantsService.FILES_ENDOINT + '/' + event.body.user.image.id;
+              event.body.user.image.file =
+                ConstantsService.FILES_ENDOINT + "/" + event.body.user.image.id;
               return event.body;
             default:
               return `Unhandled event: ${event.type}`;
@@ -180,7 +182,7 @@ export class UserService {
     return this.http
       .post<{ status: boolean; message: string }>(
         `${UserService.UPDATE_EMAIL_ENDPOINT}`,
-        new HttpParams().append('email', email)
+        new HttpParams().append("email", email)
       )
       .pipe(
         map((data) => {
@@ -193,7 +195,7 @@ export class UserService {
   }
 
   handleHttpError(error) {
-    let errorMessage = '';
+    let errorMessage = "";
     if (error.error instanceof ErrorEvent) {
       // client-side error
       errorMessage = `Error: ${error.error.message}`;

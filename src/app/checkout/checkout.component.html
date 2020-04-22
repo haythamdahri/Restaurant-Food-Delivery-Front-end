@@ -1,17 +1,10 @@
 <div class="row dark">
   <!-- Loading -->
-  <div
-    class="col-12 text-center mt-5 mb-5"
-    *ngIf="isLoading && !isError && !isNoOrder"
-  >
+  <div class="col-12 text-center mt-5 mb-5" *ngIf="isLoading && !isError && !isNoOrder">
     <h3 class="text-primary display-4 font-weight-bold text-center mb-5">
       Loading Checkout Data ...
       <div class="text-center">
-        <div
-          class="spinner-border"
-          role="status"
-          style="width: 3rem; height: 3rem;"
-        >
+        <div class="spinner-border" role="status" style="width: 3rem; height: 3rem;">
           <span class="sr-only">Loading...</span>
         </div>
       </div>
@@ -44,35 +37,23 @@
   </div>
 
   <!-- Error or No Order message -->
-  <div
-    class="col-sm-12 col-md-10 col-lg-8 col-xl-8 shadow-sm p-3 mb-5 rounded mx-auto mt-5"
-    *ngIf="isError || isNoOrder"
-  >
-    <div
-      class="shadow p-3 rounded text-white text-center font-weight-bold"
-      [ngClass]="{
+  <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 shadow-sm p-3 mb-5 rounded mx-auto mt-5"
+    *ngIf="isError || isNoOrder">
+    <div class="shadow p-3 rounded text-white text-center font-weight-bold" [ngClass]="{
         'bg-danger': isError && !isNoOrder,
         'bg-warning': !isError && isNoOrder
-      }"
-    >
+      }">
       <i class="fas fa-exclamation-triangle"></i> {{ message }}
-      <a
-        routerLink="/"
-        class="btn btn-light text-center font-weight-bold"
-        role="button"
-      >
+      <a routerLink="/" class="btn btn-light text-center font-weight-bold" role="button">
         <i class="fa fa-home"></i> Home
       </a>
     </div>
   </div>
 
   <!-- Checkout -->
-  <main
-    class="page payment-page col-sm-12 col-md-8 col-lg-8 col-xl-8 mx-auto"
-    [ngClass]="{
+  <main class="page payment-page col-sm-12 col-md-8 col-lg-8 col-xl-8 mx-auto" [ngClass]="{
       invisible: !(!isError && !isNoOrder && !isLoading && checkoutData != null)
-    }"
-  >
+    }">
     <section class="payment-form">
       <div class="container">
         <div class="block-heading">
@@ -81,22 +62,16 @@
             Welcome to our checkout system, we provide secured ways of payment.
           </p>
         </div>
-        <form
-          (ngSubmit)="buy()"
-          [formGroup]="stripeForm"
-          *ngIf="!isPaymentDone"
-        >
+        <form (ngSubmit)="onBuy()" [formGroup]="paymentForm" *ngIf="!isPaymentDone">
           <div class="products">
             <h3 class="title">Checkout</h3>
-            <div
-              class="item"
-              *ngFor="
+            <div class="item" *ngFor="
                 let mealOrder of checkoutData?.order.mealOrders;
                 let i = index
-              "
-            >
+              ">
               <span class="price">{{ mealOrder.totalPrice }} Dhs</span>
-              <p class="item-name">{{ mealOrder.meal.name }}</p>
+              <p class="item-name">{{ mealOrder.meal.name }} <label class="ml-5 mr-5">*</label> <label
+                  class="text-secondary">{{ mealOrder.quantity }}</label></p>
               <p class="item-description">Product {{ i + 1 }}</p>
             </div>
             <div class="total">
@@ -106,62 +81,235 @@
           <div class="card-details">
             <h3 class="title">Credit Card Details</h3>
             <div class="row">
+              <!-- Country -->
               <div class="form-group col-12">
-                <label for="card-holder">Name</label>
-                <input
-                  formControlName="name"
-                  [ngClass]="{
-                    'is-invalid':
-                      stripeForm.controls.name.touched &&
-                      stripeForm.controls.name.invalid,
-                    'is-valid':
-                      stripeForm.controls.name.touched &&
-                      stripeForm.controls.name.valid
-                  }"
-                  type="text"
-                  name="name"
-                  class="form-control"
-                  placeholder="Please enter your name *"
-                />
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
-                    stripeForm.controls.name.touched &&
-                    stripeForm.controls.name.invalid
-                  "
-                >
-                  <ng-container
-                    *ngIf="stripeForm.controls.name.errors.required"
-                  >
-                    Name is required
+                <label for="country">Country</label>
+                <select formControlName="country" [ngClass]="{
+                  'is-invalid':
+                    paymentForm.controls.country.touched &&
+                    paymentForm.controls.country.invalid,
+                  'is-valid':
+                    paymentForm.controls.country.touched &&
+                    paymentForm.controls.country.valid
+                }" name="country" class="form-control">
+                  <option *ngFor="let country of countries">
+                    {{ country.name }}
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="
+                    paymentForm.controls.country.touched &&
+                    paymentForm.controls.country.invalid
+                  ">
+                  <ng-container *ngIf="paymentForm.controls.country.errors.required">
+                    Country is required
                   </ng-container>
                 </div>
               </div>
+              <!-- firstName -->
+              <div class="form-group col-6">
+                <label for="firstName">First Name</label>
+                <input formControlName="firstName" [ngClass]="{
+                    'is-invalid':
+                      paymentForm.controls.firstName.touched &&
+                      paymentForm.controls.firstName.invalid,
+                    'is-valid':
+                      paymentForm.controls.firstName.touched &&
+                      paymentForm.controls.firstName.valid
+                  }" type="text" name="firstName" class="form-control" placeholder="Please enter your first name *" />
+                <div class="invalid-feedback" *ngIf="
+                    paymentForm.controls.firstName.touched &&
+                    paymentForm.controls.firstName.invalid
+                  ">
+                  <ng-container *ngIf="paymentForm.controls.firstName.errors.required">
+                    First name is required
+                  </ng-container>
+                  <ng-container
+                    *ngIf="paymentForm.controls.firstName.errors.minlength || paymentForm.controls.firstName.errors.maxlength">
+                    Invalid first name
+                  </ng-container>
+                </div>
+              </div>
+              <!-- lastName -->
+              <div class="form-group col-6">
+                <label for="lastName">Last Name</label>
+                <input formControlName="lastName" [ngClass]="{
+                    'is-invalid':
+                      paymentForm.controls.lastName.touched &&
+                      paymentForm.controls.lastName.invalid,
+                    'is-valid':
+                      paymentForm.controls.lastName.touched &&
+                      paymentForm.controls.lastName.valid
+                  }" type="text" name="lastName" class="form-control" placeholder="Please enter your last name *" />
+                <div class="invalid-feedback" *ngIf="
+                    paymentForm.controls.lastName.touched &&
+                    paymentForm.controls.lastName.invalid
+                  ">
+                  <ng-container *ngIf="paymentForm.controls.lastName.errors.required">
+                    Last name is required
+                  </ng-container>
+                  <ng-container
+                    *ngIf="paymentForm.controls.lastName.errors.minlength || paymentForm.controls.lastName.errors.maxlength">
+                    Invalid last name
+                  </ng-container>
+                </div>
+              </div>
+              <!-- address -->
+              <div class="form-group col-12">
+                <label for="card-holder">Address</label>
+                <textarea formControlName="address" rows="10" [ngClass]="{
+                    'is-invalid':
+                      paymentForm.controls.address.touched &&
+                      paymentForm.controls.address.invalid,
+                    'is-valid':
+                      paymentForm.controls.address.touched &&
+                      paymentForm.controls.address.valid
+                  }" type="text" name="address" class="form-control"
+                  placeholder="Please enter your address *"></textarea>
+                <div class="invalid-feedback" *ngIf="
+                    paymentForm.controls.address.touched &&
+                    paymentForm.controls.address.invalid
+                  ">
+                  <ng-container *ngIf="paymentForm.controls.address.errors.required">
+                    Address is required
+                  </ng-container>
+                  <ng-container
+                    *ngIf="paymentForm.controls.address.errors.minlength || paymentForm.controls.address.errors.maxlength">
+                    Invalid address
+                  </ng-container>
+                </div>
+              </div>
+              <!-- city -->
+              <div class="form-group col-6">
+                <label for="card-holder">City</label>
+                <input formControlName="city" [ngClass]="{
+                    'is-invalid':
+                      paymentForm.controls.city.touched &&
+                      paymentForm.controls.city.invalid,
+                    'is-valid':
+                      paymentForm.controls.city.touched &&
+                      paymentForm.controls.city.valid
+                  }" type="text" name="city" class="form-control" placeholder="Please enter your city *" />
+                <div class="invalid-feedback" *ngIf="
+                    paymentForm.controls.city.touched &&
+                    paymentForm.controls.city.invalid
+                  ">
+                  <ng-container *ngIf="paymentForm.controls.city.errors.required">
+                    City is required
+                  </ng-container>
+                  <ng-container
+                    *ngIf="paymentForm.controls.city.errors.minlength || paymentForm.controls.city.errors.maxlength">
+                    Invalid city
+                  </ng-container>
+                </div>
+              </div>
+              <!-- State -->
+              <div class="form-group col-6">
+                <label for="state">State</label>
+                <input formControlName="state" [ngClass]="{
+                    'is-invalid':
+                      paymentForm.controls.state.touched &&
+                      paymentForm.controls.state.invalid,
+                    'is-valid':
+                      paymentForm.controls.state.touched &&
+                      paymentForm.controls.state.valid
+                  }" type="text" name="state" class="form-control" placeholder="Please enter your state *" />
+                <div class="invalid-feedback" *ngIf="
+                    paymentForm.controls.state.touched &&
+                    paymentForm.controls.state.invalid
+                  ">
+                  <ng-container *ngIf="paymentForm.controls.state.errors.required">
+                    State is required
+                  </ng-container>
+                  <ng-container
+                    *ngIf="paymentForm.controls.state.errors.minlength || paymentForm.controls.state.errors.maxlength">
+                    Invalid state
+                  </ng-container>
+                </div>
+              </div>
+              <!-- postalCode -->
+              <div class="form-group col-12">
+                <label for="postalCode">Postal Code</label>
+                <input formControlName="postalCode" [ngClass]="{
+                    'is-invalid':
+                      paymentForm.controls.postalCode.touched &&
+                      paymentForm.controls.postalCode.invalid,
+                    'is-valid':
+                      paymentForm.controls.postalCode.touched &&
+                      paymentForm.controls.postalCode.valid
+                  }" type="text" name="postalCode" class="form-control"
+                  placeholder="Please enter your postal code *" />
+                <div class="invalid-feedback" *ngIf="
+                    paymentForm.controls.postalCode.touched &&
+                    paymentForm.controls.postalCode.invalid
+                  ">
+                  <ng-container *ngIf="paymentForm.controls.postalCode.errors.required">
+                    Postal code is required
+                  </ng-container>
+                  <ng-container
+                    *ngIf="paymentForm.controls.postalCode.errors.minlength || paymentForm.controls.postalCode.errors.maxlength">
+                    Invalid state
+                  </ng-container>
+                </div>
+              </div>
+              <!-- email -->
+              <div class="form-group col-12">
+                <label for="email">Email</label>
+                <input formControlName="email" [ngClass]="{
+                    'is-invalid':
+                      paymentForm.controls.email.touched &&
+                      paymentForm.controls.email.invalid,
+                    'is-valid':
+                      paymentForm.controls.email.touched &&
+                      paymentForm.controls.email.valid
+                  }" type="email" name="email" class="form-control" placeholder="Please enter your email *" />
+                <div class="invalid-feedback" *ngIf="
+                    paymentForm.controls.email.touched &&
+                    paymentForm.controls.email.invalid
+                  ">
+                  <ng-container *ngIf="paymentForm.controls.postalCode.errors.required">
+                    Email is required
+                  </ng-container>
+                  <ng-container
+                    *ngIf="paymentForm.controls.postalCode.errors.minlength || paymentForm.controls.postalCode.errors.maxlength || paymentForm.controls.postalCode.errors.email">
+                    Invalid email
+                  </ng-container>
+                </div>
+              </div>
+              <!-- email -->
+              <div class="form-group col-12">
+                <label for="phone">Phone</label>
+                <input formControlName="phone" [ngClass]="{
+                    'is-invalid':
+                      paymentForm.controls.phone.touched &&
+                      paymentForm.controls.phone.invalid,
+                    'is-valid':
+                      paymentForm.controls.phone.touched &&
+                      paymentForm.controls.phone.valid
+                  }" type="number" name="phone" class="form-control" placeholder="Please enter your phone *" />
+                <div class="invalid-feedback" *ngIf="
+                    paymentForm.controls.phone.touched &&
+                    paymentForm.controls.phone.invalid
+                  ">
+                  <ng-container *ngIf="paymentForm.controls.phone.errors.required">
+                    Phone is required
+                  </ng-container>
+                </div>
+              </div>
+              <!-- Name -->
               <div class="form-group col-12">
                 <label for="card-number">Card</label>
 
-                <!-- Stripe Form -->
-                <ngx-stripe-card
-                  [options]="cardOptions"
-                  [elementsOptions]="elementsOptions"
-                  class="field"
-                ></ngx-stripe-card>
+                <!-- Payment Form -->
+                <ngx-stripe-card [options]="cardOptions" [elementsOptions]="elementsOptions" class="field">
+                </ngx-stripe-card>
 
                 <!-- Payment error -->
-                <div
-                  *ngIf="error"
-                  class="shadow p-3 rounded text-white text-center font-weight-bold bg-danger"
-                >
+                <div *ngIf="error" class="shadow p-3 rounded text-white text-center font-weight-bold bg-danger">
                   <i class="fas fa-exclamation-triangle"></i> {{ error }}
                 </div>
               </div>
               <div class="form-group col-sm-12">
-                <button
-                  #proceedBtn
-                  [disabled]="!stripeForm.valid"
-                  type="submit"
-                  class="btn btn-primary btn-block"
-                >
+                <button #proceedBtn [disabled]="!paymentForm.valid" type="submit" class="btn btn-primary btn-block">
                   <i class="fas fa-money-check-alt"></i> Proceed
                 </button>
               </div>
@@ -171,9 +319,7 @@
 
         <!-- Payment Done -->
         <div class="col-12 p-g" style="height: 100vh; width: 100vw;" *ngIf="isPaymentDone">
-          <div
-            class="shadow p-3 rounded text-white text-center font-weight-bold bg-success"
-          >
+          <div class="shadow p-3 rounded text-white text-center font-weight-bold bg-success">
             <i class="fas fa-check-square"></i> Your payment has been processed successfully
           </div>
           <!-- Payment details -->

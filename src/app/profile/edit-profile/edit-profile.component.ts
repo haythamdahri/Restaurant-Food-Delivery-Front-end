@@ -72,13 +72,13 @@ export class EditProfileComponent implements OnInit, OnDestroy {
           this.user = null;
           const Toast = Swal.mixin({
             toast: true,
-            position: 'bottom-left',
+            position: 'top-end',
             showConfirmButton: false,
             timer: 3000
           });
           Toast.fire({
             type: 'success',
-            title: 'User data has been updated successfully'
+            title: 'User informations has been updated successfully'
           });
           (<HTMLButtonElement>this.saveBtn.nativeElement).innerHTML = '<i class="far fa-save"></i> Save';
           (<HTMLButtonElement>this.saveBtn.nativeElement).removeAttribute('disabled');
@@ -86,7 +86,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
         (err) => {
           const Toast = Swal.mixin({
             toast: true,
-            position: 'bottom-left',
+            position: 'top-end',
             showConfirmButton: false,
             timer: 3000
           });

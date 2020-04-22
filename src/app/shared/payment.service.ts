@@ -8,6 +8,7 @@ import { Order } from "../models/order.model";
 import { catchError, retry } from "rxjs/operators";
 import { throwError } from "rxjs";
 import { Payment } from '../models/payment.model';
+import { Shipping } from '../models/shipping.model';
 
 const PAYMENT_ENDPOINT = "http://localhost:8080/api/v1/payments";
 
@@ -30,10 +31,10 @@ export class PaymentService {
     }>(`${PAYMENT_ENDPOINT}/checkout`);
   }
 
-  chargeCard(token: string) {
+  chargeCard(token: string, shipping: Shipping) {
     const headers = new HttpHeaders({ token: token });
     return this.http
-      .post<{status: boolean, message: string, order: Order}>(`${PAYMENT_ENDPOINT}/charge`, {}, { headers: headers })
+      .post<{status: boolean, message: string, order: Order}>(`${PAYMENT_ENDPOINT}/charge`, shipping, { headers: headers })
       .pipe(catchError(this.handleError));
   }
 

@@ -45,7 +45,7 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private titleService: Title,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.titleService.setTitle("Password reset");
@@ -181,10 +181,11 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
   }
 
   onResetPassword() {
+    const originalContent = (<HTMLButtonElement>this.passwordResetBtn.nativeElement).innerHTML;
     if (this.form.invalid) {
       const Toast = Swal.mixin({
         toast: true,
-        position: "bottom-left",
+        position: "top-end",
         showConfirmButton: false,
         timer: 3000
       });
@@ -204,11 +205,8 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
         .resetPassword(this.token, this.form.controls.password.value)
         .subscribe(
           data => {
-            (<HTMLButtonElement>this.passwordResetBtn.nativeElement).innerHTML =
-              '<i class="fas fa-share-square"></i> Reset';
-            (<HTMLButtonElement>(
-              this.passwordResetBtn.nativeElement
-            )).setAttribute("disabled", "true");
+            (<HTMLButtonElement>this.passwordResetBtn.nativeElement).innerHTML = originalContent;
+            (<HTMLButtonElement>(this.passwordResetBtn.nativeElement)).setAttribute("disabled", "true");
             this.message = data.message;
             if (data.status) {
               this.passwordResetSuccess = true;
@@ -220,11 +218,8 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
           },
           err => {
             this.message = "An error occurred, please try again";
-            (<HTMLButtonElement>this.passwordResetBtn.nativeElement).innerHTML =
-              '<i class="fas fa-share-square"></i> Reset';
-            (<HTMLButtonElement>(
-              this.passwordResetBtn.nativeElement
-            )).setAttribute("disabled", "true");
+            (<HTMLButtonElement>this.passwordResetBtn.nativeElement).innerHTML = originalContent;
+            (<HTMLButtonElement>(this.passwordResetBtn.nativeElement)).setAttribute("disabled", "true");
           }
         );
     }

@@ -2,26 +2,25 @@ import {
   Component,
   OnInit,
   OnDestroy,
-  ChangeDetectorRef,
   ViewChild,
   ElementRef,
 } from "@angular/core";
 import { PaymentService } from "../shared/payment.service";
 import { Title } from "@angular/platform-browser";
-import { Subscription, Observable } from "rxjs";
+import { Subscription } from "rxjs";
 import {
   StripeService,
   Elements,
-  Element as StripeElement,
   ElementsOptions,
   StripeCardComponent,
   ElementOptions,
 } from "ngx-stripe";
 import { FormGroup, Validators, FormControl } from "@angular/forms";
 import { Order } from '../models/order.model';
-import { User } from '../models/user.model';
-import { UserService } from '../shared/user.service';
-import { Payment } from '../models/payment.model';
+import { CountriesService } from '../shared/countries.service';
+import { Country } from '../models/country.model';
+import { Shipping } from '../models/shipping.model';
+import Swal from 'sweetalert2';
 
 declare var Stripe: any;
 // Your Stripe public key
@@ -39,7 +38,8 @@ const elements = stripe.elements();
 export class CheckoutComponent implements OnInit, OnDestroy {
   private checkoutSubscription: Subscription;
   private chargeSubscription: Subscription;
-  private stripeSubscriptio: Subscription;
+  private countriesSubscription: Subscription;
+  private stripeSubscription: Subscription;
   public message: string;
   public isLoading: boolean = true;
   public isError: boolean = false;
@@ -52,6 +52,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     status: boolean;
     order: Order
   } = null;
+  public countries: Array<Country>;
+  public shipping: Shipping = new Shipping();
 
   // Stripe elements
   error: any;
@@ -75,7 +77,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   elementsOptions: ElementsOptions = {
     locale: "en",
   };
-  public stripeForm: FormGroup;
+  public paymentForm: FormGroup;
   @ViewChild("proceedBtn", { static: false }) proceedBtn: ElementRef;
 
   isPaymentDone: boolean = false;
@@ -84,15 +86,24 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   constructor(
     private paymentService: PaymentService,
     private titleService: Title,
-    private stripeService: StripeService
+    private stripeService: StripeService,
+    private countriesService: CountriesService
   ) {}
 
   async ngOnInit() {
     // Set page title
     this.titleService.setTitle("Checkout");
     // Initialize stripe form
-    this.stripeForm = new FormGroup({
-      name: new FormControl("", Validators.required),
+    this.paymentForm = new FormGroup({
+      country: new FormControl("", Validators.required),
+      firstName: new FormControl("", [Validators.required, Validators.minLength(2), Validators.maxLength(20)]),
+      lastName: new FormControl("", [Validators.required, Validators.minLength(2), Validators.maxLength(20)]),
+      address: new FormControl("", [Validators.required, Validators.minLength(15), Validators.maxLength(250)]),
+      city: new FormControl("", [Validators.required, Validators.minLength(3), Validators.maxLength(20)]),
+      state: new FormControl("", [Validators.required, Validators.minLength(3), Validators.maxLength(20)]),
+      postalCode: new FormControl("", [Validators.required, Validators.minLength(3), Validators.maxLength(20)]),
+      email: new FormControl("", [Validators.required, Validators.email, Validators.minLength(8), Validators.maxLength(40)]),
+      phone: new FormControl("", [Validators.required])
     });
     // Fetch checkout data
     this.checkoutSubscription = this.paymentService.getCheckoutData().subscribe(
@@ -103,6 +114,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           checkoutData.noActiveOrder == false
         ) {
           this.checkoutData = checkoutData;
+          // Fetch countries
+          this.fetchCountries();
         } else {
           // Set no checkout order in place
           this.isNoOrder = true;
@@ -121,23 +134,48 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     );
   }
 
+  fetchCountries() {
+    this.countriesSubscription = this.countriesService.getCountries().subscribe(
+      (countries) => {
+        this.countries = countries;
+      },
+      (err) => {
+        // Fill temprory countries
+        const tempCountry = new Country();
+        tempCountry.name = 'WORLD';
+        this.countries = [tempCountry];
+      }
+    )
+  }
+
   ngOnDestroy() {
     // Unsubscribe from subscritpions
     if (this.checkoutSubscription != null) {
       this.checkoutSubscription.unsubscribe();
     }
-    if (this.stripeSubscriptio != null) {
-      this.stripeSubscriptio.unsubscribe();
+    if (this.stripeSubscription != null) {
+      this.stripeSubscription.unsubscribe();
     }
     if( this.chargeSubscription != null ) {
       this.chargeSubscription.unsubscribe();
     }
+    if( this.countriesSubscription != null ) {
+      this.countriesSubscription.unsubscribe();
+    }
   }
 
-  buy() {
+  onBuy() {
+    // Check if the form is valid
+    if( this.paymentForm.invalid ) {
+      Swal.fire({
+        type: 'error',
+        title: 'Invalid data',
+        text: 'Payment form data is invalid, please recheck your inputs!'
+      });
+      return null;
+    }
     // No error in the begining
     this.error = null;
-    const name = this.stripeForm.get("name").value;
     // Set proceed button state
     const originalBtn = (this.proceedBtn.nativeElement as HTMLButtonElement)
       .innerHTML;
@@ -147,7 +185,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       </div> Proceeding
     `;
     (this.proceedBtn.nativeElement as HTMLButtonElement).disabled = true;
-    this.stripeSubscriptio = this.stripeService
+    this.stripeSubscription = this.stripeService
       .createToken(this.card.getCard(), { name })
       .subscribe(
         (result) => {
@@ -170,13 +208,16 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
   pursuitPurchase(token, originalBtn) {
-    this.chargeSubscription = this.paymentService.chargeCard(token).subscribe(
+    // Set form data in shipping object
+    this.shipping = this.paymentForm.value;
+    this.chargeSubscription = this.paymentService.chargeCard(token, this.shipping).subscribe(
       (data) => {
         console.log(data);
         // Check if payment is done successfully
         if( data.status == true ) {
           this.order = data.order;
           this.isPaymentDone = true;
+          this.message = data.message;
         } else {
           this.error = data.message;
         }

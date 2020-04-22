@@ -24,6 +24,7 @@ export class LeftSidebarComponent implements OnInit, OnDestroy {
     // Fetch data using service
     this.mealsSubscription = this.mealService.getPopularMeals().subscribe(
       (meals) => {
+        console.log(meals);
         this.isError = false;
         this.popularMeals = meals;
       },

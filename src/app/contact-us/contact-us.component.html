@@ -189,31 +189,31 @@
             <div class="form-group">
               <label for="form_message">Message *</label>
               <textarea
-                formControlName="message"
+                formControlName="content"
                 class="form-control"
                 [ngClass]="{
                   'is-invalid':
-                    form.controls.message.touched &&
-                    form.controls.message.invalid,
+                    form.controls.content.touched &&
+                    form.controls.content.invalid,
                   'is-valid':
-                    form.controls.message.touched && form.controls.message.valid
+                    form.controls.content.touched && form.controls.content.valid
                 }"
-                placeholder="Message for me *"
+                placeholder="Message ..."
                 rows="10"
               ></textarea>
               <div
                 class="invalid-feedback"
                 *ngIf="
-                  form.controls.message.touched && form.controls.message.invalid
+                  form.controls.content.touched && form.controls.content.invalid
                 "
               >
-                <ng-container *ngIf="form.controls.message.errors.required">
+                <ng-container *ngIf="form.controls.content.errors.required">
                   Message is required
                 </ng-container>
                 <ng-container
                   *ngIf="
-                    form.controls.message.errors.minlength ||
-                    form.controls.message.errors.maxlength
+                    form.controls.content.errors.minlength ||
+                    form.controls.content.errors.maxlength
                   "
                 >
                   Message must be valid

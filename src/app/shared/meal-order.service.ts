@@ -19,7 +19,7 @@ export class MealOrderService {
   }
 
   addMealOrder(mealId: number, quantity: number) {
-    return this.http.post<{error: boolean, message: string}>(`${this.API_V1}/`, {mealId, quantity});
+    return this.http.post<{status: boolean, message: string}>(`${this.API_V1}/`, {mealId, quantity});
   }
 
   saveMealOrder(mealOrder: MealOrder) {

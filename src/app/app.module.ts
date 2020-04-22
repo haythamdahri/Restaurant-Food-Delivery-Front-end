@@ -30,6 +30,7 @@ import { ReviewFormComponent } from "./product/review-form/review-form.component
 import { StarRatingModule } from "angular-star-rating";
 import { CheckoutComponent } from "./checkout/checkout.component";
 import { NgxStripeModule } from "ngx-stripe";
+import { PaymentsComponent } from './payments/payments.component';
 
 @NgModule({
   declarations: [
@@ -55,10 +56,11 @@ import { NgxStripeModule } from "ngx-stripe";
     ReviewsComponent,
     ReviewFormComponent,
     CheckoutComponent,
+    PaymentsComponent,
   ],
   imports: [
-    BrowserModule,
     AppRoutingModule,
+    BrowserModule,
     CustomModule,
     LayoutModule,
     StarRatingModule.forRoot(),

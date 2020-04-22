@@ -4,6 +4,6 @@ export class ContactMessage {
     public lastName: string;
     public email: string;
     public phone: string;
-    public message: string;
+    public content: string;
     public time: Date;
 }

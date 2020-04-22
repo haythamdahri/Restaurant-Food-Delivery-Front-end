@@ -11,6 +11,7 @@ import { User } from "../models/user.model";
 import { Subscription } from "rxjs";
 import Swal from "sweetalert2";
 import { Title } from "@angular/platform-browser";
+import { ActivatedRoute, Params } from "@angular/router";
 
 @Component({
   selector: "app-profile",
@@ -36,10 +37,22 @@ export class ProfileComponent implements OnInit, OnDestroy {
   uploadProgress = 0;
   ts: number;
   editedEmail;
+  private routeSubscription: Subscription;
+  params: Params;
 
-  constructor(private userService: UserService, private titleService: Title) {}
+  constructor(
+    private userService: UserService,
+    private titleService: Title,
+    public route: ActivatedRoute
+  ) { }
 
   ngOnInit() {
+    // Subscribe to activated route
+    this.routeSubscription = this.route.queryParams.subscribe(
+      (params: Params) => {
+        this.params = params;
+      }
+    );
     // Set page title
     this.titleService.setTitle("Profile");
     // Initialize fields
@@ -52,7 +65,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.ordersSubscription = this.userService.getUserOrdersHistory().subscribe(
       (data) => {
         this.userOrders = data;
-        console.log(data);
         this.loadingOrders = false;
       },
       (err) => {
@@ -85,20 +97,17 @@ export class ProfileComponent implements OnInit, OnDestroy {
       .updateUserImage(formData)
       .subscribe(
         (response) => {
-          if (
-            typeof response["status"] === "string" ||
-            response["status"] instanceof String
-          ) {
+          if (response["status"] === "string" || response["status"] instanceof String) {
             this.uploadProgress = response["message"];
           } else {
             // Update user is status true
-            if (response["status"] == true && response["user"]) {
+            if (response["status"] == true && response["user"] != null) {
               this.user = response["user"];
               this.ts = Date.now();
               // User message
               const Toast = Swal.mixin({
                 toast: true,
-                position: "bottom-left",
+                position: "top-end",
                 showConfirmButton: false,
                 timer: 3000,
               });
@@ -116,7 +125,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.user.image = oldImage;
           const Toast = Swal.mixin({
             toast: true,
-            position: "bottom-left",
+            position: "top-end",
             showConfirmButton: false,
             timer: 3000,
           });
@@ -124,6 +133,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             type: "error",
             title: "An error occurred, please try again",
           });
+          this.ngOnInit();
         },
         () => {
           // Hide uploading progress bar
@@ -139,11 +149,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if( this.userSubscription != null ) {
+    if (this.userSubscription != null) {
       this.userSubscription.unsubscribe();
     }
-    if( this.ordersSubscription != null ) {
+    if (this.ordersSubscription != null) {
       this.ordersSubscription.unsubscribe();
+    }
+    if (this.routeSubscription != null) {
+      this.routeSubscription.unsubscribe();
     }
     this.user = null;
     this.userOrders = null;

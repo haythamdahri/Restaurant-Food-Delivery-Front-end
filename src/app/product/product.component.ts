@@ -76,15 +76,17 @@ export class ProductComponent implements OnInit, OnDestroy {
             this.titleService.setTitle(response.meal.name);
             // Emit event to child reviews child component
             this.eventsSubject.next(response.meal.id);
-            // Set if meal is reviewed by current user
-            const currentUser = this.userService
-              .getAuthenticatedUserDetails()
-              .subscribe((user) => {
-                this.transferedData.reviewed =
-                  response.meal.reviews.filter(
-                    (review) => review.user.id == user.id
-                  ).length > 0;
-              });
+            // Set if meal is reviewed by current user | Check user if authenticated first
+            if( this.authService.isAuthenticated() ) {
+              const currentUser = this.userService
+                .getAuthenticatedUserDetails()
+                .subscribe((user) => {
+                  this.transferedData.reviewed =
+                    response.meal.reviews.filter(
+                      (review) => review.user.id == user.id
+                    ).length > 0;
+                });
+            }
           },
           (error) => {
             this.errorMessage = "No product has been found";
@@ -256,7 +258,7 @@ export class ProductComponent implements OnInit, OnDestroy {
             });
 
             Toast.fire({
-              type: data.error ? "error" : "success",
+              type: data.status ? "success" : "error",
               title: data.message,
             });
           },

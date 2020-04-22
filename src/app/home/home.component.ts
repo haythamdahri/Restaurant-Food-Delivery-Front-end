@@ -141,6 +141,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         .addMealOrder(id, 1)
         .subscribe(
           (data) => {
+            console.log(data);
             // Chek if data contain an error message
             const Toast = Swal.mixin({
               toast: true,
@@ -150,7 +151,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             });
 
             Toast.fire({
-              type: data.error ? "error" : "success",
+              type: data.status ? "success" : "error",
               title: data.message,
             });
             // Set button to original state
