@@ -1,5 +1,6 @@
 import { User } from "./user.model";
 import { MealOrder } from './meal-order.model';
+import { Shipping } from './shipping.model';
 export class Order {
     id: number;
     user: User;
@@ -7,7 +8,7 @@ export class Order {
     price: number;
     totalPrice: number;
     shippingFees: number;
-    deliveryAddress: string;
+    shipping: Shipping;
     time: Date;
     delivered: boolean;
     cancelled: boolean;

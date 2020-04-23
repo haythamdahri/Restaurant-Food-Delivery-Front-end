@@ -1,0 +1,240 @@
+<div class="row">
+
+    <!-- Loading -->
+    <div class="col-12 text-center mt-5 mb-5" *ngIf="loading">
+        <h3 class="text-primary display-4 font-weight-bold text-center mb-5">
+            Loading Payment Details ...
+            <div class="text-center">
+                <div class="spinner-border" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+        </h3>
+
+        <div class="spinner-grow text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-secondary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-success" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-danger" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-warning" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-info" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-light" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-dark" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Error message -->
+    <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 shadow-sm p-3 mb-5 rounded mx-auto mt-5" *ngIf="error">
+        <div class="shadow p-3 rounded text-center text-white font-weight-bold bg-danger">
+            <i class="fas fa-exclamation-triangle"></i> {{ message }}
+            <a routerLink="/payments" class="btn btn-light text-center font-weight-bold" role="button">
+                <i class="fab fa-cc-amazon-pay"></i> Payments
+            </a>
+        </div>
+    </div>
+
+    <!-- Payment details -->
+    <div class="col-sm-12 col-md-12 col-lg-12 mx-auto mt-5" *ngIf="payment != null">
+        <div class="row">
+            <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3 content-right">
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link active text-center mb-2 p-2" id="z" data-toggle="pill" href="#payment-pill" role="tab"
+                        aria-controls="payment-pill" aria-selected="true">
+                        <h4 class="font-weight-bold"><i class="far fa-money-bill-alt"></i> Payment Details</h4>
+                    </a>
+                    <a class="nav-link text-center mb-2 p-2" id="v-order-pill-tab" data-toggle="pill" href="#order-pill"
+                        role="tab" aria-controls="order-pill" aria-selected="false">
+                        <h4 class="font-weight-bold"><i class="fab fa-opencart"></i> Order Details</h4>
+                    </a>
+                    <a class="nav-link text-center mb-2 p-2" id="v-order-pill-tab" data-toggle="pill" href="#shipping-pill"
+                        role="tab" aria-controls="shipping-pill" aria-selected="false">
+                        <h4 class="font-weight-bold"><i class="fas fa-shipping-fast"></i> Shipping Details</h4>
+                    </a>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-9 col-lg-9 col-xl-9">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-pane fade show active" id="payment-pill" role="tabpanel"
+                        aria-labelledby="payment-pill-tab">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                        <strong><i class="fas fa-sort-numeric-up-alt"></i> Payment ID: </strong>
+                                    </div>
+                                    <div class="col-sm-12 col-md-9 col-lg-9 col-xl-9">
+                                        {{ payment.id }}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                        <strong><i class="fas fa-calendar-alt"></i> Payment Date: </strong>
+                                    </div>
+                                    <div class="col-sm-12 col-md-9 col-lg-9 col-xl-9">
+                                        {{ payment.timestamp | date: 'full' }}
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab-pane fade" id="order-pill" role="tabpanel" aria-labelledby="order-pill-tab">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                        <strong><i class="fas fa-sort-numeric-up-alt"></i> Order ID:</strong>
+                                    </div>
+                                    <div class="col-sm-12 col-md-9 col-lg-9 col-xl-9">
+                                        {{ payment.order.id }}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                        <strong><i class="fas fa-calendar-alt"></i> Order Date:</strong>
+                                    </div>
+                                    <div class="col-sm-12 col-md-9 col-lg-9 col-xl-9">
+                                        {{ payment.order.time | date: 'full' }}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-3 col-lg-3 col-xl-3">
+                                        <strong><i class="fas fa-lightbulb"></i> Order Delivery Status:</strong>
+                                    </div>
+                                    <div class="col-sm-12 col-md-9 col-lg-9 col-xl-9">
+                                        <i *ngIf="payment.order.delivered" class="far fa-check-square text-success"></i>
+                                        <i *ngIf="!payment.order.delivered" class="far fa-window-close text-danger"></i>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab-pane fade" id="shipping-pill" role="tabpanel" aria-labelledby="shipping-pill-tab">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                        <strong><i class="fas fa-sort-numeric-up-alt"></i> Shipping ID:</strong>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8">
+                                        {{ payment.order.shipping.id }}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                        <strong><i class="fas fa-flag"></i> Shipping Country:</strong>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8">
+                                        {{ payment.order.shipping.country }}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                        <strong><i class="fas fa-file-signature"></i> Shipping First Name:</strong>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8">
+                                        {{ payment.order.shipping.firstName }}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                        <strong><i class="fas fa-file-signature"></i> Shipping Last Name:</strong>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8">
+                                        {{ payment.order.shipping.lastName }}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                        <strong><i class="fas fa-map-marked-alt"></i> Shipping Address:</strong>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8">
+                                        {{ payment.order.shipping.address }}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                        <strong><i class="fas fa-city"></i> Shipping City: </strong>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8">
+                                        {{ payment.order.shipping.city }}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                        <strong><i class="fas fa-flag-usa"></i> Shipping State:</strong>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8">
+                                        {{ payment.order.shipping.state }}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                        <strong><i class="fab fa-cuttlefish"></i> Shipping Postal Code:</strong>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8">
+                                        {{ payment.order.shipping.code }}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                        <strong><i class="fas fa-at"></i> Shipping Email:</strong>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8">
+                                        {{ payment.order.shipping.email }}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+                                        <strong><i class="fas fa-mobile-alt"></i> Shipping Phone:</strong>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8">
+                                        {{ payment.order.shipping.phone }}
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

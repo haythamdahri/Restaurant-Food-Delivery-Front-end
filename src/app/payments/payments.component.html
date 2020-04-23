@@ -1,1 +1,69 @@
-<p>payments works!</p>
+<div class="row">
+
+    <div class="col-12 mt-5 mb-5">
+        <h5 class=" text-center font-weight-bold">
+            <i class="fas fa-money-check-alt"></i>
+            <strong>
+                Welcome to payments page, you will find all your payments history
+            </strong>
+        </h5>
+    </div>
+
+    <div class="col-10 mx-auto mx-auto">
+        <div class="table-responsive">
+            <table class="table shadow p-3 mb-5 bg-white rounded">
+                <thead class="thead-light">
+                    <tr align="center">
+                        <th scope="col">#</th>
+                        <th scope="col">Transaction date</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Loading icon -->
+                    <tr *ngIf="loading">
+                        <td colspan="3">
+                            <div class="col-12 text-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- Error -->
+                    <tr align="center" *ngIf="error">
+                        <td class="alert alert-danger font-weight-bold text-center" colspan="3">
+                            <i class="fas fa-exclamation-circle"></i> {{ message }}
+                        </td>
+                    </tr>
+                    <!-- Empty payments -->
+                    <tr align="center" *ngIf="page?.content?.length == 0">
+                        <td class="alert alert-warning font-weight-bold text-center" colspan="3">
+                            <i class="fas fa-exclamation-circle"></i> No payment has been done in your account!
+                        </td>
+                    </tr>
+                    <!-- Payments -->
+                    <tr align="center" *ngFor="let payment of page?.content">
+                        <th scope="row">{{ payment.id }}</th>
+                        <td>{{ payment.timestamp | date: 'dd-MM-yyyy, HH:mm:ss' }}</td>
+                        <td>
+                            <a [routerLink]="[payment.id]" class="btn btn-secondary btn-sm font-weight-bold"><i
+                                    class="far fa-eye"></i>
+                                View details</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="col-8 mx-auto">
+        <div class="col-12">
+            <hr class="my-no w-100" />
+            <app-custom-pagination [page]="page" [loading]="loading" (nextPageEvent)="getNextPage()"
+                (previousPageEvent)="getPreviousPage()" (pageSizeEvent)="getPageInNewSize($event)">
+            </app-custom-pagination>
+        </div>
+    </div>
+</div>

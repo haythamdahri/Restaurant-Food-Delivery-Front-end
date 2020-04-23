@@ -31,6 +31,7 @@ import { StarRatingModule } from "angular-star-rating";
 import { CheckoutComponent } from "./checkout/checkout.component";
 import { NgxStripeModule } from "ngx-stripe";
 import { PaymentsComponent } from './payments/payments.component';
+import { PaymentComponent } from './payments/payment/payment.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { PaymentsComponent } from './payments/payments.component';
     ReviewFormComponent,
     CheckoutComponent,
     PaymentsComponent,
+    PaymentComponent,
   ],
   imports: [
     AppRoutingModule,

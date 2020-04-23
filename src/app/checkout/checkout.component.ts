@@ -218,6 +218,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           this.order = data.order;
           this.isPaymentDone = true;
           this.message = data.message;
+          // Scroll to top
+          window.scroll(0,0);
         } else {
           this.error = data.message;
         }
