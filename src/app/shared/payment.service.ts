@@ -60,6 +60,14 @@ export class PaymentService {
     );
   }
 
+  downloadPaymentDetailsFile(id: number) {
+    return this.http.get(`${PAYMENT_ENDPOINT}/download/${id}`, 
+        { headers: new HttpHeaders({ 'Accept': 'application/pdf' }), responseType: 'blob' }).pipe(
+      retry(3),
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: HttpErrorResponse) {
     let message = "";
     if (error.error instanceof ErrorEvent) {
