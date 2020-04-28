@@ -38,14 +38,14 @@
 
   <!-- Error or No Order message -->
   <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 shadow-sm p-3 mb-5 rounded mx-auto mt-5"
-    *ngIf="isError || isNoOrder">
+    *ngIf="isError || isNoOrder || isInsufficientStock">
     <div class="shadow p-3 rounded text-white text-center font-weight-bold" [ngClass]="{
         'bg-danger': isError && !isNoOrder,
-        'bg-warning': !isError && isNoOrder
+        'bg-warning': !isError && (isNoOrder || isInsufficientStock) 
       }">
       <i class="fas fa-exclamation-triangle"></i> {{ message }}
-      <a routerLink="/" class="btn btn-light text-center font-weight-bold" role="button">
-        <i class="fa fa-home"></i> Home
+      <a routerLink="/cart" class="btn btn-light text-center font-weight-bold" role="button">
+        <i class="far fa-credit-card"></i> Cart
       </a>
     </div>
   </div>

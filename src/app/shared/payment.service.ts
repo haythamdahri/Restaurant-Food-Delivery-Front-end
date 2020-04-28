@@ -27,12 +27,14 @@ export class PaymentService {
 
   getCheckoutData() {
     return this.http.get<{
-      amount: number;
-      stripePublicKey: string;
-      noActiveOrder: Boolean;
-      currency: string;
-      status: boolean;
-      order: Order;
+      amount: number,
+      stripePublicKey: string,
+      noActiveOrder: Boolean,
+      insufficientStock: Boolean,
+      currency: string,
+      status: boolean,
+      order: Order,
+      message: string
     }>(`${PAYMENT_ENDPOINT}/checkout`);
   }
 

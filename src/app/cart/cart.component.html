@@ -88,7 +88,8 @@
                     >{{ activeOrder.mealOrders[i].meal.name }}</a
                   >
                 </td>
-                <td>
+                <td class="font-weight-bold" [ngClass]="{'text-danger': activeOrder.mealOrders[i].meal.stock <= 0,
+                'text-success': activeOrder.mealOrders[i].meal.stock > 0}">
                   {{
                     activeOrder.mealOrders[i].meal.stock > 0
                       ? "In Stock"

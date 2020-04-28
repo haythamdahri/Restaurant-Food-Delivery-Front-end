@@ -141,7 +141,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         .addMealOrder(id, 1)
         .subscribe(
           (data) => {
-            console.log(data);
             // Chek if data contain an error message
             const Toast = Swal.mixin({
               toast: true,

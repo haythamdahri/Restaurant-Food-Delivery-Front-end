@@ -44,6 +44,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   public isLoading: boolean = true;
   public isError: boolean = false;
   public isNoOrder: boolean = false;
+  public isInsufficientStock: boolean = false;
   public checkoutData: {
     amount: number;
     stripePublicKey: string;
@@ -109,18 +110,17 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     this.checkoutSubscription = this.paymentService.getCheckoutData().subscribe(
       (checkoutData) => {
         // Check if user has an order in progress
-        if (
-          checkoutData.status == true &&
-          checkoutData.noActiveOrder == false
-        ) {
+        if ( checkoutData.status == true ) {
           this.checkoutData = checkoutData;
           // Fetch countries
           this.fetchCountries();
         } else {
-          // Set no checkout order in place
-          this.isNoOrder = true;
-          this.isError = false;
-          this.message = "No order in place, please add products to your cart!";
+            // Set no checkout order in place depending on response
+            // Insufficient stock message
+            this.isNoOrder = checkoutData.status == false && checkoutData.noActiveOrder ? true : false;
+            this.isError = false;
+            this.isInsufficientStock = checkoutData.insufficientStock ? true : false;
+            this.message = checkoutData.message;
         }
       },
       (error) => {
@@ -212,7 +212,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     this.shipping = this.paymentForm.value;
     this.chargeSubscription = this.paymentService.chargeCard(token, this.shipping).subscribe(
       (data) => {
-        console.log(data);
         // Check if payment is done successfully
         if( data.status == true ) {
           this.order = data.order;
