@@ -46,7 +46,7 @@ export class PaymentService {
   }
 
   getPaymentsHistoryPage(pageable: Pageable): Observable<Page<Payment>> {
-    let url = PAYMENT_ENDPOINT + '/'
+    let url = PAYMENT_ENDPOINT + '/userpayments'
       + '?page=' + pageable.pageNumber
       + '&size=' + pageable.pageSize;
     return this.http.get<Page<Payment>>(url, httpOptions).pipe(

@@ -21,7 +21,7 @@ export class ReviewService {
   ): Observable<Page<Review>> {
     let url =
       API_V1_REVIEWS +
-      "/" +
+      "/approved" +
       "?meal=" +
       mealId +
       "&page=" +
