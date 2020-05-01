@@ -11,7 +11,6 @@ import { Review } from '../models/review.model';
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
-const API = "http://localhost:8080/api/meals";
 const API_V1 = "http://localhost:8080/api/v1/meals";
 const FILES_ENDOINT =
   "http://localhost:8080/api/v1/restaurantfiles/file";
@@ -71,10 +70,6 @@ export class MealService {
       retry(5),
       catchError(this.handleHttpError)
     );
-  }
-
-  saveMeal(meal: Meal) {
-    return this.http.post<Meal>(`${API}`, meal);
   }
 
   saveMealFormData(formData: FormData) {

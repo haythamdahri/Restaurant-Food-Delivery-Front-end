@@ -10,5 +10,6 @@ export class Meal {
     public views: number;
     public salePrice: number;
     public preferred: boolean;
+    public deleted: boolean;
     public reviews: Array<Review>;
 }
