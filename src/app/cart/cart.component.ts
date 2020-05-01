@@ -17,6 +17,7 @@ import { MealOrderService } from "../shared/meal-order.service";
 export class CartComponent implements OnInit, OnDestroy {
   activeOrder: Order;
   errorMode = false;
+  loadingMode = true;
   subscription: Subscription;
   mealSaveSubscription: Subscription;
   mealOrderSubscription: Subscription;
@@ -56,6 +57,9 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   fetchData() {
+    // Set loading mode
+    this.loadingMode = true;
+    this.errorMode = false;
     this.subscription = this.cartService.getUserCartOrders().subscribe(
       (data) => {
         if (data["noActiveOrder"]) {
@@ -78,10 +82,15 @@ export class CartComponent implements OnInit, OnDestroy {
             }));
           });
         }
+        // Set loading mode to false
+        this.loadingMode = false;
       },
       (err) => {
-        console.log(err);
         this.errorMode = true;
+      },
+      () => {
+        // Set loading mode to false
+        this.loadingMode = false;
       }
     );
   }
@@ -218,4 +227,5 @@ export class CartComponent implements OnInit, OnDestroy {
         }
       );
   }
+
 }

@@ -18,6 +18,14 @@
         <i class="fas fa-sync-alt"></i> Reload
       </button>
 
+      <!-- Warning message -->
+      <div
+        *ngIf="!errorMode && !loadingMode && cartService.hasOrderDeletedMeals(activeOrder)"
+        class="shadow p-3 rounded bg-warning text-white text-center font-weight-bold mb-3 fade show"
+      >
+        <i class="fas fa-exclamation-triangle"></i> Your cart has non existing meals, please remove them to proceed checkout!
+      </div>
+
       <div class="table-responsive" *ngIf="!errorMode">
         <form name="f" [formGroup]="mealForm" novalidate>
           <table class="table table-striped" formArrayName="mealOrders">
@@ -87,6 +95,11 @@
                     class="font-weight-bold"
                     >{{ activeOrder.mealOrders[i].meal.name }}</a
                   >
+                    <h3 class="text-center" *ngIf="activeOrder.mealOrders[i].meal.deleted">
+                     <span class="badge badge-pill badge-warning">
+                       <i class="fas fa-minus-circle"></i> Deleted
+                      </span>
+                    </h3>
                 </td>
                 <td class="font-weight-bold" [ngClass]="{'text-danger': activeOrder.mealOrders[i].meal.stock <= 0,
                 'text-success': activeOrder.mealOrders[i].meal.stock > 0}">
