@@ -29,46 +29,51 @@
 
   <!-- Error message -->
   <div class="col-12 text-center mt-5 mb-5" *ngIf="isError">
-    <div
-      class="shadow p-3 rounded bg-danger text-white text-center font-weight-bold"
-    >
+    <div class="shadow p-3 rounded bg-danger text-white text-center font-weight-bold">
       <i class="fas fa-exclamation-triangle"></i> {{ errorMessage }}
     </div>
   </div>
 
   <!-- Product image -->
   <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
-    
 
-    <a
-        href="{{ mealOrder?.meal?.image.file }}"
-        data-lightbox="roadtrip"
-        attr.data-title="{{  mealOrder?.meal?.name }}"
-        attr.data-alt="{{  mealOrder?.meal?.name }}"
-        ><img
-        *ngIf="!isLoading && !isError"
-        src="{{ mealOrder?.meal?.image.file }}"
-        style="width: 100%; height: 100%; object-fit: cover;"
-        class="img-fluid"
-        alt="Responsive image"
-      />
+
+    <a href="{{ mealOrder?.meal?.image.file }}" data-lightbox="roadtrip" attr.data-title="{{  mealOrder?.meal?.name }}"
+      attr.data-alt="{{  mealOrder?.meal?.name }}"><img *ngIf="!isLoading && !isError"
+        src="{{ mealOrder?.meal?.image.file }}" style="width: 100%; height: 100%; object-fit: cover;" class="img-fluid"
+        alt="Responsive image" />
     </a>
 
 
   </div>
 
   <!-- Product -->
-  <div
-    class="col-sm-12 col-md-8 col-lg-8 col-xl-8 mt-5"
-    *ngIf="!isError && !isLoading"
-  >
+  <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8 mt-5" *ngIf="!isError && !isLoading">
     <h5 class="font-weight-bold text-primary text-center display-4">
       {{ mealOrder?.meal?.name }}
     </h5>
     <div class="col-12">
+      <!-- Check sale price -->
+      <p class="card-text" *ngIf="mealOrder?.meal?.salePrice == null">
+        <b class="mr-5">Price: </b> {{ mealOrder?.meal?.price }} Dhs
+      </p>
+      <ng-container class="card-text" *ngIf="mealOrder?.meal?.salePrice != null">
+        <p>
+          <b class="mr-5">Price: </b><label class="ml-5 w-25 text-center">{{ mealOrder?.meal?.salePrice }} Dhs</label>
+          <i class="text-danger"><del class="w-25 text-center">{{ mealOrder?.meal?.price }} Dhs</del></i>
+        </p>
+      </ng-container>
+    </div>
+
+    <div class="col-12">
+      <hr />
+    </div>
+
+    <div class="col-12">
       <b>Rating: </b>
       <!-- Rating -->
-      <star-rating [starType]="'svg'" [rating]="mealService.getRating(mealOrder?.meal?.reviews)" [readOnly]="true" labelPosition="top" size="medium"></star-rating>
+      <star-rating [starType]="'svg'" [rating]="mealService.getRating(mealOrder?.meal?.reviews)" [readOnly]="true"  
+        labelPosition="top" size="medium"></star-rating>
     </div>
 
     <div class="col-12">
@@ -77,37 +82,21 @@
 
     <!-- Quantity field -->
     <div class="col-12 form-group row">
-      <label
-        for="staticEmail"
-        class="col-sm-2 col-form-label font-weight-bold text-dark"
-        >Quantity:
+      <label for="staticEmail" class="col-sm-2 col-form-label font-weight-bold text-dark">Quantity:
       </label>
       <div class="col-sm-10 w-75 btn-group mx-auto">
         <div class="input-group">
           <div class="input-group-prepend">
-            <button
-              class="input-group-text btn btn-light text-dark shadow bg-white rounded"
-              (click)="onMealQuantityUpDown(changeType.INCREMENT)"
-            >
+            <button class="input-group-text btn btn-light text-dark shadow bg-white rounded"
+              (click)="onMealQuantityUpDown(changeType.INCREMENT)">
               <i class="fas fa-plus-circle rounded-circle"></i>
             </button>
           </div>
-          <input
-            [disabled]="isLoading && !isError"
-            class="form-control shadow bg-white rounded"
-            pattern="[0-9]*"
-            (keyup)="onQuantityChange($event)"
-            #quantity
-            required
-            max="650"
-            min="1"
-            type="number"
-            [value]="mealOrder.quantity"
-          />
-          <button
-            class="input-group-text btn btn-light text-dark shadow bg-white rounded"
-            (click)="onMealQuantityUpDown(changeType.DECREMENT)"
-          >
+          <input [disabled]="isLoading && !isError" class="form-control shadow bg-white rounded" pattern="[0-9]*"
+            (keyup)="onQuantityChange($event)" #quantity required max="650" min="1" type="number"
+            [value]="mealOrder.quantity" />
+          <button class="input-group-text btn btn-light text-dark shadow bg-white rounded"
+            (click)="onMealQuantityUpDown(changeType.DECREMENT)">
             <i class="fas fa-minus-circle rounded-circle"></i>
           </button>
         </div>
@@ -120,9 +109,7 @@
 
     <div class="col-12">
       <b class="mr-5">Views: </b>
-      <ng-container class="mx-auto"
-        >{{ mealOrder?.meal?.views }} <i class="fas fa-eye"></i
-      ></ng-container>
+      <ng-container class="mx-auto">{{ mealOrder?.meal?.views }} <i class="fas fa-eye"></i></ng-container>
     </div>
 
     <div class="col-12">
@@ -131,8 +118,7 @@
 
     <div class="col-12">
       <b class="mr-5">Available: </b>
-      <ng-container class="mx-auto"
-        >{{ mealOrder?.meal?.stock }} <i class="fas fa-store"></i>
+      <ng-container class="mx-auto">{{ mealOrder?.meal?.stock }} <i class="fas fa-store"></i>
       </ng-container>
     </div>
 
@@ -142,21 +128,12 @@
 
     <div class="row">
       <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center">
-        <button
-          #addMealToCartBtn
-          class="btn btn-outline-success btn-sm btn-block shadow-lg"
-          (click)="onAddMealOrder()"
-        >
+        <button #addMealToCartBtn class="btn btn-outline-success btn-sm btn-block shadow-lg" (click)="onAddMealOrder()">
           <i class="fas fa-cart-plus"></i> Add To Cart
         </button>
       </div>
       <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center">
-        <button
-          #btnPrefer
-          (click)="onMealPreference()"
-          class="btn"
-          style="background-color: transparent; color: red;"
-        >
+        <button #btnPrefer (click)="onMealPreference()" class="btn" style="background-color: transparent; color: red;">
           <i class="fas fa-heart" *ngIf="mealPreferred === true"></i>
           <i class="far fa-heart" *ngIf="mealPreferred === false"></i>
         </button>
@@ -167,39 +144,27 @@
   <!-- Review form -->
   <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center" *ngIf="authService.isAuthenticated()">
     <hr />
-    <button
-      class="btn btn-light font-weight-bold btn-sm btn-block"
-      [ngClass]="{'invisible': (mealOrder == null || mealOrder?.meal == null || isLoading || isError)}"
-      type="button"
-      data-toggle="collapse"
-      data-target="#reviewFormCollapse"
-      aria-expanded="false"
-      aria-controls="reviewFormCollapse"
-      (click)="onToggleReviewForm()"
-      [disabled]="mealOrder == null || mealOrder?.meal == null || isLoading || isError"
-    >
+    <button class="btn btn-light font-weight-bold btn-sm btn-block"
+      [ngClass]="{'invisible': (mealOrder == null || mealOrder?.meal == null || isLoading || isError)}" type="button"
+      data-toggle="collapse" data-target="#reviewFormCollapse" aria-expanded="false" aria-controls="reviewFormCollapse"
+      (click)="onToggleReviewForm()" [disabled]="mealOrder == null || mealOrder?.meal == null || isLoading || isError">
       <i class="fas fa-plus-circle"></i> Add Review
     </button>
   </div>
   <!-- Review Form Component -->
   <div class="collapse col-12" id="reviewFormCollapse">
-    <app-review-form
-      [transferedData]="transferedData"
-      (onMealFormEnd)="onMealFormEnd()"
-    ></app-review-form>
+    <app-review-form [transferedData]="transferedData" (onMealFormEnd)="onMealFormEnd()"></app-review-form>
   </div>
 
-<!-- Reviews -->
-<div class="col-12 shadow p-3 mb-5 mt-3 mr-2 ml-2 bg-white rounded">
-  <div
-    class="col-12 shadow-sm p-3 mb-2 bg-white rounded text-center text-danger font-weight-bold font-weight-bold"
-  >
-    <h4 class="display-5"><i class="fas fa-file-pdf"></i> Reviews</h4>
-  </div>
+  <!-- Reviews -->
+  <div class="col-12 shadow p-3 mb-5 mt-3 mr-2 ml-2 bg-white rounded">
+    <div class="col-12 shadow-sm p-3 mb-2 bg-white rounded text-center text-danger font-weight-bold font-weight-bold">
+      <h4 class="display-5"><i class="fas fa-file-pdf"></i> Reviews</h4>
+    </div>
 
-  <div class="col-12">
-    <!-- Reviews list -->
-    <app-reviews [events]="eventsSubject.asObservable()"></app-reviews>
+    <div class="col-12">
+      <!-- Reviews list -->
+      <app-reviews [events]="eventsSubject.asObservable()"></app-reviews>
+    </div>
   </div>
-</div>
 </div>
