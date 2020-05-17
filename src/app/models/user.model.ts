@@ -14,4 +14,6 @@ export class User {
     public roles: Array<Role>;
     public preferredMeals: Array<Meal>;
     private reviews: Array<Review>;
+    public online: boolean = false;
+    public lastOnlineTime: Date = new Date();
 }
