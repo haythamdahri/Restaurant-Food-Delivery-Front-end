@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  restaurant-frontend:
+    hostname: restaurant-frontend
+    container_name: restaurant-frontend
+    build:
+      context: ./
+    networks: 
+      - restaurant-network
+    ports:
+      - 80:80
+  
+networks: 
+  restaurant-network:
+    external: true

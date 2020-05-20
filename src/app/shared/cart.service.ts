@@ -2,27 +2,23 @@ import { AuthService } from './auth/auth.service';
 import { map, catchError, retry } from 'rxjs/operators';
 import {
   HttpClient,
-  HttpErrorResponse,
   HttpHeaders,
 } from '@angular/common/http';
 import { Injectable, ErrorHandler } from '@angular/core';
 import { throwError } from 'rxjs';
 import { ConstantsService } from './constants.service';
 import { Order } from '../models/order.model';
-import { Meal } from '../models/meal.model';
+import { environment } from "../../environments/environment";
 
-const FILES_ENDOINT =
-  "http://localhost:8080/api/v1/restaurantfiles/file";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
 
-  public API = "http://localhost:8080/api";
-  public API_V1 = "http://localhost:8080/api/v1";
-  // Temprory user with id = 1
-  public USER_CART = "http://localhost:8080/api/v1/usercart";
+  public API = environment.cartServiceEndpoint.API;
+  public API_V1 = environment.cartServiceEndpoint.API_V1;
+  public USER_CART = environment.cartServiceEndpoint.USER_CART;
   
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -36,7 +32,7 @@ export class CartService {
         if( data.noActiveOrder == false  ) {
           // Update image file and return data
           let mealOrders = data.activeOrder.mealOrders.map((mealOrder) => {
-            mealOrder.meal.image.file = FILES_ENDOINT + '/' + mealOrder.meal.image.id;
+            mealOrder.meal.image.file = ConstantsService.FILES_ENDOINT + '/' + mealOrder.meal.image.id;
             return mealOrder;
           });
           data.activeOrder.mealOrders = mealOrders;

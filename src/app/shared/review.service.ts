@@ -5,9 +5,10 @@ import { retry, catchError, map } from "rxjs/operators";
 import { Page } from "../pagination/page";
 import { Review } from "../models/review.model";
 import { Pageable } from "../pagination/pageable";
+import { environment } from "../../environments/environment";
 
-const API_V1_REVIEWS = "http://localhost:8080/api/v1/reviews";
-const FILES_ENDOINT = "http://localhost:8080/api/v1/restaurantfiles/file";
+const API_V1_REVIEWS = environment.reviewServiceEndpoints.API_V1_REVIEWS;
+const FILES_ENDOINT = environment.reviewServiceEndpoints.FILES_ENDOINT;
 
 @Injectable({
   providedIn: "root",
@@ -44,15 +45,11 @@ export class ReviewService {
 
   saveReview(review: { mealId: number; comment: string; rating: number }) {
     return this.http
-      .post<Review>(
-        `${API_V1_REVIEWS}/`,
-        review,
-        {
-          headers: new HttpHeaders()
-            .append("Content-Type", "application/json")
-            .append("accept", "application/json"),
-        }
-      )
+      .post<Review>(`${API_V1_REVIEWS}/`, review, {
+        headers: new HttpHeaders()
+          .append("Content-Type", "application/json")
+          .append("accept", "application/json"),
+      })
       .pipe(retry(5), catchError(this.handleHttpError));
   }
 

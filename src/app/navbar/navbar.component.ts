@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { User } from '../models/user.model';
 import { Subscription } from 'rxjs';
 import { UserService } from '../shared/user.service';
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-navbar',
@@ -21,6 +22,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   loadingImage = "../../assets/img/loading.gif";
   defaultUserImage = "../../assets/img/default.png";
   updates: number;
+  chatSupportURL: string = environment.chatSupportURL;
 
   constructor(public authService: AuthService, private router: Router, private userService: UserService) { }
 

@@ -9,33 +9,25 @@ import { Router } from "@angular/router";
 import { Order } from "../models/order.model";
 import { Meal } from "../models/meal.model";
 import { ConstantsService } from "./constants.service";
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: "root",
 })
 export class UserService {
-  public static API_ENDPOINT = "http://localhost:8080/api";
-  public static API_V1_ENDPOINT = "http://localhost:8080/api/v1/users/";
-  public static SIGN_UP_ENDPOINT = "http://localhost:8080/api/v1/users/";
-  public static ACTIVATION_ACCOUNT_ENDPOINT =
-    "http://localhost:8080/api/v1/users/activation";
-  public static PASSWORD_RESET_ENDPOINT =
-    "http://localhost:8080/api/v1/users/passwordreset";
-  public static UPDATE_EMAIL_ENDPOINT =
-    "http://localhost:8080/api/v1/users/email";
-  public static UPDATE_IMAGE_ENDPOINT =
-    "http://localhost:8080/api/v1/users/image";
-  public static TOKEN_ENDPOINT = "http://localhost:8080/api/v1/users/tokens";
-  public static AUTHENTICATED_USER_ORDERS_HISTORY =
-    "http://localhost:8080/api/v1/orders/authuser";
-  public static USERS_PREFERRED_MEALS =
-    "http://localhost:8080/api/v1/users/preferences";
-  public static USER_ORDERS_API_ENDPOINT =
-    "http://localhost:8080/api/orders/search/findByUserEmail";
-  public static USER_DETAILS_API_ENDPOINT =
-    "http://localhost:8080/api/v1/users/current";
-  public static FILES_ENDOINT =
-    "http://localhost:8080/api/v1/restaurantfiles/file";
+  public static API_ENDPOINT = environment.userServiceEndpoints.API_ENDPOINT;
+  public static API_V1_ENDPOINT = environment.userServiceEndpoints.API_V1_ENDPOINT;
+  public static SIGN_UP_ENDPOINT = environment.userServiceEndpoints.SIGN_UP_ENDPOINT;
+  public static ACTIVATION_ACCOUNT_ENDPOINT =environment.userServiceEndpoints.ACTIVATION_ACCOUNT_ENDPOINT;
+  public static PASSWORD_RESET_ENDPOINT =environment.userServiceEndpoints.PASSWORD_RESET_ENDPOINT;
+  public static UPDATE_EMAIL_ENDPOINT =environment.userServiceEndpoints.UPDATE_EMAIL_ENDPOINT;
+  public static UPDATE_IMAGE_ENDPOINT =environment.userServiceEndpoints.UPDATE_IMAGE_ENDPOINT;
+  public static TOKEN_ENDPOINT = environment.userServiceEndpoints.TOKEN_ENDPOINT;
+  public static AUTHENTICATED_USER_ORDERS_HISTORY =environment.userServiceEndpoints.AUTHENTICATED_USER_ORDERS_HISTORY;
+  public static USERS_PREFERRED_MEALS = environment.userServiceEndpoints.USERS_PREFERRED_MEALS;
+  public static USER_ORDERS_API_ENDPOINT = environment.userServiceEndpoints.USER_ORDERS_API_ENDPOINT;
+  public static USER_DETAILS_API_ENDPOINT = environment.userServiceEndpoints.USER_DETAILS_API_ENDPOINT;
+  public static FILES_ENDOINT = environment.userServiceEndpoints.FILES_ENDOINT;
 
   public userUpdateEvent: EventEmitter<any> = new EventEmitter<any>();
 
@@ -205,4 +197,5 @@ export class UserService {
     }
     return throwError(errorMessage);
   }
+  
 }

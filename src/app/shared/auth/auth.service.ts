@@ -1,21 +1,22 @@
-import { UserToken } from './../../models/user-token.model';
+import { UserToken } from "./../../models/user-token.model";
 import { map, retry, catchError } from "rxjs/operators";
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable, EventEmitter } from '@angular/core';
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { Injectable, EventEmitter } from "@angular/core";
 import * as jwtDecode from "jwt-decode";
-import { throwError, Observable } from 'rxjs';
+import { throwError } from "rxjs";
+import { environment } from "../../../environments/environment";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class AuthService {
-  private static API = 'http://localhost:8080';
-  private static AUTH_ENDPOINT = 'http://localhost:8080/auth/';
-  private static EMAIL_CHECK_ENDPINT = 'http://localhost:8080/api/users/search/existsByEmail';
+  private static AUTH_ENDPOINT = environment.authServiceEndpoints.AUTH_ENDPOINT;
+  private static EMAIL_CHECK_ENDPINT =
+    environment.authServiceEndpoints.EMAIL_CHECK_ENDPINT;
 
   public userAuthEvent: EventEmitter<any> = new EventEmitter<any>();
-  
-  constructor(private http: HttpClient) { }
+
+  constructor(private http: HttpClient) {}
 
   // Check expiration date
   isValidToken(expiration: number) {
@@ -25,7 +26,7 @@ export class AuthService {
 
   // Check if user is authenticated
   isAuthenticated() {
-    let userToken: UserToken = JSON.parse(localStorage.getItem('userToken'));
+    let userToken: UserToken = JSON.parse(localStorage.getItem("userToken"));
     // Checking expiration and email
     if (userToken != null && this.isValidToken(userToken.exp)) {
       return true;
@@ -37,7 +38,7 @@ export class AuthService {
 
   // Get current user
   getAuthenticatedUser() {
-    const userToken: UserToken = JSON.parse(localStorage.getItem('userToken'));
+    const userToken: UserToken = JSON.parse(localStorage.getItem("userToken"));
     if (userToken != null) {
       return userToken;
     } else {
@@ -50,12 +51,12 @@ export class AuthService {
     return this.http
       .post<{ token: string }>(`${AuthService.AUTH_ENDPOINT}`, {
         email,
-        password
+        password,
       })
       .pipe(
-        map(userData => {
+        map((userData) => {
           let userToken = this.decodeToken(userData.token);
-          localStorage.setItem('userToken', JSON.stringify(userToken));
+          localStorage.setItem("userToken", JSON.stringify(userToken));
           // Emit auth event
           this.userAuthEvent.emit(true);
           return userToken;
@@ -70,17 +71,15 @@ export class AuthService {
 
   // Check if user has role
   async hasRole(roleName: string) {
-    let userToken: UserToken = JSON.parse(localStorage.getItem('userToken'));
-    return (
-      userToken.roles.find(role => role.authority === roleName) != null
-    );
+    let userToken: UserToken = JSON.parse(localStorage.getItem("userToken"));
+    return userToken.roles.find((role) => role.authority === roleName) != null;
   }
 
   // Check if connected user is an admin
   isAdmin() {
-    let userToken: UserToken = JSON.parse(localStorage.getItem('userToken'));
+    let userToken: UserToken = JSON.parse(localStorage.getItem("userToken"));
     return (
-      userToken.roles.find(role => role.authority === 'ROLE_ADMIN') != null
+      userToken.roles.find((role) => role.authority === "ROLE_ADMIN") != null
     );
   }
 
@@ -88,7 +87,7 @@ export class AuthService {
   decodeToken(token: string) {
     var decoded = jwtDecode(token);
     let userToken = new UserToken();
-    userToken.bearerToken = 'Bearer ' + token;
+    userToken.bearerToken = "Bearer " + token;
     userToken.token = token;
     userToken.email = decoded.sub;
     userToken.roles = decoded.roles;
@@ -98,42 +97,50 @@ export class AuthService {
 
   // Check if the email is already used
   checkEmailValidity(email: string) {
-    return this.http.get<boolean>(AuthService.EMAIL_CHECK_ENDPINT, { params: new HttpParams().append('email', email) }).pipe(
-      map((exists) => {
-        if (exists) {
-          if (!this.isAuthenticated()) {
-            return { 'isEmailAlreadyUsed': exists };
-          } else {
-            if (this.getAuthenticatedUser().email !== email) {
-              return { 'isEmailAlreadyUsed': exists };
-            } else {
-              return null;
-            }
-          }
-        } else {
-          return null;
-        }
-      }),
-      retry(3),
-      catchError((error) => {
-        return throwError({isServerUnracheable: true});
+    return this.http
+      .get<boolean>(AuthService.EMAIL_CHECK_ENDPINT, {
+        params: new HttpParams().append("email", email),
       })
-    );
+      .pipe(
+        map((exists) => {
+          if (exists) {
+            if (!this.isAuthenticated()) {
+              return { isEmailAlreadyUsed: exists };
+            } else {
+              if (this.getAuthenticatedUser().email !== email) {
+                return { isEmailAlreadyUsed: exists };
+              } else {
+                return null;
+              }
+            }
+          } else {
+            return null;
+          }
+        }),
+        retry(3),
+        catchError((error) => {
+          return throwError({ isServerUnracheable: true });
+        })
+      );
   }
 
-  // Check if the email exists 
+  // Check if the email exists
   checkEmailExisting(email: string) {
-    return this.http.get<boolean>(AuthService.EMAIL_CHECK_ENDPINT, { params: new HttpParams().append('email', email) }).pipe(
-      map((exists) => {
-        if (exists) {
-          return null;
-        } else {
-          return { 'isEmailDoesNotExist': true };
-        }
-      }),
-      retry(3),
-      catchError(this.handleEmailValidityError)
-    );
+    return this.http
+      .get<boolean>(AuthService.EMAIL_CHECK_ENDPINT, {
+        params: new HttpParams().append("email", email),
+      })
+      .pipe(
+        map((exists) => {
+          if (exists) {
+            return null;
+          } else {
+            return { isEmailDoesNotExist: true };
+          }
+        }),
+        retry(3),
+        catchError(this.handleEmailValidityError)
+      );
   }
 
   handleEmailValidityError(error) {

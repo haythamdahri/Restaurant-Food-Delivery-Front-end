@@ -1,16 +1,15 @@
 import { MealOrder } from "../models/meal-order.model";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { map } from "rxjs/operators";
 import { throwError } from "rxjs";
-import { Meal } from '../models/meal.model';
+import { environment } from "../../environments/environment";
 
 @Injectable({
   providedIn: "root",
 })
 export class MealOrderService {
-  private API = "http://localhost:8080/api";
-  private API_V1 = "http://localhost:8080/api/v1/mealorders";
+  private API = environment.mealOrderServiceEndpoints.API;
+  private API_V1 = environment.mealOrderServiceEndpoints.API_V1;
 
   constructor(private http: HttpClient) {}
 
@@ -19,7 +18,10 @@ export class MealOrderService {
   }
 
   addMealOrder(mealId: number, quantity: number) {
-    return this.http.post<{status: boolean, message: string}>(`${this.API_V1}/`, {mealId, quantity});
+    return this.http.post<{ status: boolean; message: string }>(
+      `${this.API_V1}/`,
+      { mealId, quantity }
+    );
   }
 
   saveMealOrder(mealOrder: MealOrder) {
@@ -27,14 +29,17 @@ export class MealOrderService {
   }
 
   updateQuantity(mealOrderId: number, newQuantity: number) {
-    return this.http.patch<{status: boolean, message: string}>(`${this.API_V1}/${mealOrderId}/quantity/${newQuantity}`, {
-      id: mealOrderId,
-      quantity: parseInt(newQuantity.toString()),
-    });
+    return this.http.patch<{ status: boolean; message: string }>(
+      `${this.API_V1}/${mealOrderId}/quantity/${newQuantity}`,
+      {
+        id: mealOrderId,
+        quantity: parseInt(newQuantity.toString()),
+      }
+    );
   }
 
   handleHttpError(error) {
-    let errorMessage = '';
+    let errorMessage = "";
     if (error.error instanceof ErrorEvent) {
       // client-side error
       errorMessage = `Error: ${error.error.message}`;

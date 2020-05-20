@@ -1,18 +1,20 @@
 import { ContactMessage } from "./../models/contact-message.model";
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { environment } from "../../environments/environment";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class ContactService {
+  private static API = environment.contactServiceEndpoint.API;
 
-  private static API = 'http://localhost:8080/api';
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   sendContactMessage(contactMessage: ContactMessage) {
-    return this.http.post<ContactMessage>(`${ContactService.API}/contactmessages`, contactMessage);
+    return this.http.post<ContactMessage>(
+      `${ContactService.API}/contactmessages`,
+      contactMessage
+    );
   }
-
 }
